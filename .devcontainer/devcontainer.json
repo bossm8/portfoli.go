@@ -1,0 +1,21 @@
+{
+    "name": "Portfolio",
+    "build": {
+        "dockerfile": "./Dockerfile",
+        "context": "."
+    },
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+				"golang.go",
+				"ms-vscode.makefile-tools",
+                "AnbuselvanRocky.bootstrap5-vscode"
+            ]
+        }
+    },
+
+    "onCreateCommand": "/bin/bash .devcontainer/setup.sh",
+
+    "remoteUser": "port"
+}
