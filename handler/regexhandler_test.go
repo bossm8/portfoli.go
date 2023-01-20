@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"bossm.ch/portfolio/handler"
+	"bossm8.ch/portfolio/handler"
 )
 
 func TestRegexHandler(t *testing.T) {

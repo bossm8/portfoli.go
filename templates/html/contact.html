@@ -2,20 +2,20 @@
 {{ define "content" }}
 <div class="row align-items-center" style="height: 80%;">
     <div class="col">
-        <form class="needs-validation" novalidate>
+        <form class="needs-validation" method="post" action="/mail" novalidate>
             <div class="mb-4">
                 <label for="name" class="form-label">Your Name</label>
-                <input type="text" class="form-control" id="name" placeholder="Someone" required>
+                <input type="text" class="form-control" id="name" placeholder="Someone" name="name"required>
                 <div class="invalid-feedback">Plase tell me who you are</div>
             </div>
             <div class="mb-4">
                 <label for="email" class="form-label">Your Email Address</label>
-                <input type="email" class="form-control" id="email" placeholder="name@example.com" required>
+                <input type="email" class="form-control" id="email" placeholder="name@example.com" name="email" required>
                 <div class="invalid-feedback">I need a valid email address to get in touch with you</div>
             </div>
             <div class="mb-4">
                 <label for="message" class="form-label">Your Message</label>
-                <textarea class="form-control" id="message" rows="6" required></textarea>
+                <textarea class="form-control" id="message" name="message" rows="6" required></textarea>
                 <div class="invalid-feedback">Please tell me about you</div>
             </div>
             <button type="submit" class="btn btn-primary float-end mt-3 mb-5">Send</button>

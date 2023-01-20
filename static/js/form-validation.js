@@ -9,7 +9,6 @@
         form.addEventListener(
             'submit', 
             function (event) {
-                console.log('senting')
                 if (!form.checkValidity()) {
                     event.preventDefault()
                     event.stopPropagation()
