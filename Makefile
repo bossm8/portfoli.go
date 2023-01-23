@@ -2,7 +2,8 @@ run:
 	go run portfolio.go
 
 dist:
-	go build -o portfolio portfolio.go
+	test -d _build || mkdir _build
+	go build -o _build/portfolio portfolio.go
 
 test:
 	staticcheck ./...

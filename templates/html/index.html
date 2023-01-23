@@ -8,15 +8,15 @@
                 <div class="row d-flex justify-content-center align-items-center h-100" style="padding-top: 55px;">
                     <div class="col-12 col-md-6 text-white pt-5 pb-0 mb-0 pt-md-0 pb-md-4 mb-md-4 mb-lg-4 pb-lg-5 mb-xl-5">
                         <h1 class="mb-3" id="my-name">Hey, I'm <strong>{{ .Profile.FirstName }}</strong></h1>
-                        <h4 class="mb-5">Welcome to my world!</h4>
+                        <h4 class="mb-5">{{ .Profile.Slogan }}</h4>
                         {{ $href := "/contact" }}
                         {{ if not .RenderContact }}
                            {{ $href = (printf "mailto:%s" .Profile.Email) }}
                         {{ end }}
                         <a class="mt-2 btn btn-outline-light btn-lg" href="{{ $href }}" role="button">Let's get in Touch!</a>
                     </div>
-                    <div class="col-8 col-md-6 align-items-md-center d-flex">
-                       <div class="col mt-5 mt-md-0 mt-lg-5">
+                    <div class="col-8 col-sm-7 col-md-6 align-items-center d-flex">
+                       <div class="mt-5 mt-md-0 mt-lg-5">
                            <img src="/static/img/avatar.jpg" class="rounded-circle img-fluid">
                        </div>
                     </div>
@@ -26,8 +26,23 @@
 </div>
 {{ end }}
 {{ define "content" }}
-<div class="row mt-5 pt-5 pt-md-0 mt-md-0 pt-lg-2 mt-lg-2">
-    My Name: Boss Marco
+<div class="row mt-5 pt-5 pt-md-0 mt-md-0 pt-lg-2 mt-lg-2 pt-xl-5 mt-xl-4">
+    <div class="col-12">
+        <div class="display-6">
+            {{ .Profile.Heading }}
+        </div>
+        <div class="mt-4">
+            {{ .Profile.SubHeading }}
+        </div>
+    </div>
+    <div class="col mb-5">
+        <div class="mt-4 mb-5">You can find more information about me here:</div>
+        <div class="text-center text-md-start">
+        <a class="btn btn-outline-primary" href="/experience">Experience</a>
+        <a class="btn btn-outline-primary" href="/education">Education</a>
+        <a class="btn btn-outline-primary" href="/projects">Projects</a>
+        </div>
+    </div>
 </div>
 {{ end }}
 {{ define "scripts" }}
