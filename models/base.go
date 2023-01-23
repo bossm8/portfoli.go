@@ -1,6 +1,7 @@
 package models
 
 import (
+	"html/template"
 	"log"
 	"os"
 	"path/filepath"
@@ -16,6 +17,15 @@ type Base struct {
 	Description string `yaml:"description"`
 }
 
+type listConfig interface {
+	GetElements() []*PortfolioCard
+	GetConfigName() string
+}
+
+type PortfolioCard interface {
+	GetHTMLTemplate() template.HTML
+}
+
 func loadFromFile(filename string, obj interface{}) (err error) {
 	log.Printf("[INFO] Loading yaml file '%s' from directory '%s'\n", filename, confPath)
 	var yamlFile []byte
@@ -29,4 +39,9 @@ func loadFromFile(filename string, obj interface{}) (err error) {
 		log.Printf("[ERROR]: Failed to parse yaml file '%s': %s\n", filename, err)
 	}
 	return
+}
+
+func unmarshal(obj listConfig) []*PortfolioCard {
+	loadFromFile(obj.GetConfigName(), obj)
+	return obj.GetElements()
 }

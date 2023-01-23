@@ -71,7 +71,7 @@ func startServer(addr string) {
 	_http.Handle("/static/", http.StripPrefix("/static", fs))
 	_http.HandleFunc("/mail", sendMail)
 	_http.HandleFunc("/(success|fail)", serveStatus)
-	_http.HandleFunc("/(experience|education|projects)", serveWithContent)
+	_http.HandleFunc("/(experience|education|projects|certifications)", serveWithContent)
 	_http.HandleFunc(".*", serveParamless)
 
 	err := http.ListenAndServe(addr, _http)

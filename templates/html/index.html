@@ -25,7 +25,7 @@
 {{ end }}
 {{ define "content" }}
 <div class="row">
-    <div class="col-12 text-center text-md-start">
+    <div class="col-12 text-center text-lg-start">
         <div class="display-6">
             {{ .Profile.Heading }}
         </div>
@@ -33,18 +33,19 @@
             {{ .Profile.SubHeading }}
         </div>
     </div>
-    <div class="my-4 text-center text-md-start">
+    <div class="my-4 text-center text-lg-start">
        You can find more information about me here:
     </div>
-    <div class="col-12 col-md-6 col-lg-auto mb-2 mb-md-0">
-        <div class="text-center text-md-start">
+    <div class="col-12 col-lg-6 col-xl-auto mb-2 mb-lg-0">
+        <div class="text-center text-lg-start">
             <a class="btn btn-outline-primary" href="/experience">Experience</a>
             <a class="btn btn-outline-primary" href="/education">Education</a>
+            <a class="btn btn-outline-primary" href="/certifications">Certifications</a>
             <a class="btn btn-outline-primary" href="/projects">Projects</a>
         </div>
     </div>
-    <div class="col-12 col-md-auto">
-        <div class="text-center text-md-end">
+    <div class="col-12 col-lg-auto">
+        <div class="text-center text-lg-end">
         {{ range $social := .Profile.SocialMedia }}
             <a href="{{ $social.Link }}" class="btn btn-outline-primary" target="_blank">
                 <i class="bi-{{ $social.Type }}"></i>

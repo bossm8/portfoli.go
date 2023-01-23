@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-const smtpConfigName = "config.yml"
+const configName = "config.yml"
 
 // The configuration ot the smtp service
 type SMTPConfig struct {
@@ -55,7 +55,7 @@ func GetConfig() (cfg *Config, err error) {
 			Email:     "freddy@mercury.me",
 		},
 	}
-	if err = loadFromFile(smtpConfigName, cfg); nil != err {
+	if err = loadFromFile(configName, cfg); nil != err {
 		return
 	}
 	if _, err = mail.ParseAddress(cfg.Profile.Email); nil != err {
