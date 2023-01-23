@@ -1,7 +1,5 @@
 package models
 
-import "html/template"
-
 type ProjectConfig struct {
 	Projects []*Project `yaml:"projects"`
 }
@@ -9,16 +7,8 @@ type ProjectConfig struct {
 // Make sure the interface is implemented
 var _ listConfig = &ProjectConfig{}
 
-func (pc *ProjectConfig) GetRenderedElements() ([]template.HTML, error) {
-	data := make([]template.HTML, len(pc.Projects))
-	for idx, proj := range pc.Projects {
-		rendered, err := renderCard(proj)
-		if nil != err {
-			return nil, err
-		}
-		data[idx] = rendered
-	}
-	return data, nil
+func (pc *ProjectConfig) GetElements() []portfolioCard {
+	return castToCard(pc.Projects)
 }
 
 func (pc *ProjectConfig) GetConfigName() string {

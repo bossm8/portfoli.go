@@ -11,7 +11,7 @@ import (
 )
 
 func loadFromYAMLFile(filename string, obj interface{}) (err error) {
-	log.Printf("[INFO] Loading yaml file '%s' from directory '%s'\n", filename, configDir)
+	// log.Printf("[INFO] Loading yaml file '%s' from directory '%s'\n", filename, configDir)
 	var yamlFile []byte
 	if yamlFile, err = os.ReadFile(
 		filepath.Join(configDir, filename),
@@ -43,4 +43,12 @@ func renderCard(card portfolioCard) (template.HTML, error) {
 	}
 
 	return template.HTML(rendered.String()), nil
+}
+
+func castToCard[T portfolioCard](cards []T) []portfolioCard {
+	casted := make([]portfolioCard, len(cards))
+	for idx, crd := range cards {
+		casted[idx] = crd
+	}
+	return casted
 }

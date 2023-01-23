@@ -1,9 +1,5 @@
 package models
 
-import (
-	"html/template"
-)
-
 type ExperienceConfig struct {
 	Experiences []*Experience `yaml:"experiences"`
 }
@@ -11,16 +7,8 @@ type ExperienceConfig struct {
 // Make sure the interface is implemented
 var _ listConfig = &ExperienceConfig{}
 
-func (ec *ExperienceConfig) GetRenderedElements() ([]template.HTML, error) {
-	data := make([]template.HTML, len(ec.Experiences))
-	for idx, exp := range ec.Experiences {
-		rendered, err := renderCard(exp)
-		if nil != err {
-			return nil, err
-		}
-		data[idx] = rendered
-	}
-	return data, nil
+func (ed *ExperienceConfig) GetElements() []portfolioCard {
+	return castToCard(ed.Experiences)
 }
 
 func (ed *ExperienceConfig) GetConfigName() string {

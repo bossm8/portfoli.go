@@ -33,7 +33,7 @@ type Base struct {
 }
 
 type listConfig interface {
-	GetRenderedElements() ([]template.HTML, error)
+	GetElements() []portfolioCard
 	GetConfigName() string
 	GetContentKind() string
 	Load() error
@@ -49,7 +49,16 @@ func GetContent(kind string) ([]template.HTML, error) {
 		log.Printf("[ERROR] Generating content failed: %s\n", err)
 		return nil, err
 	}
-	data, err := content.GetRenderedElements()
+	cards := content.GetElements()
+	data := make([]template.HTML, 0)
+	for _, crd := range cards {
+		if tpl, err := renderCard(crd); nil != err {
+			return nil, err
+		} else {
+			data = append(data, tpl)
+		}
+
+	}
 	return data, err
 }
 

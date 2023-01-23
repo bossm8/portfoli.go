@@ -1,7 +1,5 @@
 package models
 
-import "html/template"
-
 type CertificationConfig struct {
 	Certifications []*Certification `yaml:"certifications"`
 }
@@ -9,16 +7,8 @@ type CertificationConfig struct {
 // Make sure the interface is implemented
 var _ listConfig = &CertificationConfig{}
 
-func (cc *CertificationConfig) GetRenderedElements() ([]template.HTML, error) {
-	data := make([]template.HTML, len(cc.Certifications))
-	for idx, crt := range cc.Certifications {
-		rendered, err := renderCard(crt)
-		if nil != err {
-			return nil, err
-		}
-		data[idx] = rendered
-	}
-	return data, nil
+func (cc *CertificationConfig) GetElements() []portfolioCard {
+	return castToCard(cc.Certifications)
 }
 
 func (cc *CertificationConfig) GetConfigName() string {

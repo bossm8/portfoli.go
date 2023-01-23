@@ -1,7 +1,5 @@
 package models
 
-import "html/template"
-
 type EducationConfig struct {
 	Educations []*Education `yaml:"educations"`
 }
@@ -9,16 +7,8 @@ type EducationConfig struct {
 // Make sure the interface is implemented
 var _ listConfig = &EducationConfig{}
 
-func (ec *EducationConfig) GetRenderedElements() ([]template.HTML, error) {
-	data := make([]template.HTML, len(ec.Educations))
-	for idx, edu := range ec.Educations {
-		rendered, err := renderCard(edu)
-		if nil != err {
-			return nil, err
-		}
-		data[idx] = rendered
-	}
-	return data, nil
+func (ec *EducationConfig) GetElements() []portfolioCard {
+	return castToCard(ec.Educations)
 }
 
 func (ec *EducationConfig) GetConfigName() string {
