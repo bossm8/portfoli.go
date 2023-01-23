@@ -2,21 +2,35 @@ package models
 
 import "html/template"
 
-const certificationConfigName = "certifications.yml"
-
 type CertificationConfig struct {
-	Certifications []*PortfolioCard `yaml:"certifications"`
+	Certifications []*Certification `yaml:"certifications"`
 }
 
 // Make sure the interface is implemented
 var _ listConfig = &CertificationConfig{}
 
-func (cc *CertificationConfig) GetElements() []*PortfolioCard {
-	return cc.Certifications
+func (cc *CertificationConfig) GetRenderedElements() ([]template.HTML, error) {
+	data := make([]template.HTML, len(cc.Certifications))
+	for idx, crt := range cc.Certifications {
+		rendered, err := renderCard(crt)
+		if nil != err {
+			return nil, err
+		}
+		data[idx] = rendered
+	}
+	return data, nil
 }
 
 func (cc *CertificationConfig) GetConfigName() string {
-	return certificationConfigName
+	return cc.GetContentKind() + ".yml"
+}
+
+func (cc *CertificationConfig) Load() error {
+	return unmarshal(cc)
+}
+
+func (cc *CertificationConfig) GetContentKind() string {
+	return kinds[kindCert]
 }
 
 type Certification struct {
@@ -25,12 +39,14 @@ type Certification struct {
 }
 
 // Make sure the interface is implemented
-var _ PortfolioCard = &Certification{}
+var _ portfolioCard = &Certification{}
 
-func GetCertifications() []*PortfolioCard {
-	return unmarshal(&CertificationConfig{})
+func (c *Certification) GetTemplateName() string {
+	return "certification.html"
 }
 
-func (c *Certification) GetHTMLTemplate() template.HTML {
-	return ""
+func LoadCertifications() (listConfig, error) {
+	cert := &CertificationConfig{}
+	err := cert.Load()
+	return cert, err
 }

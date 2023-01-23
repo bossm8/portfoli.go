@@ -2,21 +2,35 @@ package models
 
 import "html/template"
 
-const projectConfigName = "projects.yml"
-
 type ProjectConfig struct {
-	Projects []*PortfolioCard `yaml:"projects"`
+	Projects []*Project `yaml:"projects"`
 }
 
 // Make sure the interface is implemented
 var _ listConfig = &ProjectConfig{}
 
-func (pc *ProjectConfig) GetElements() []*PortfolioCard {
-	return pc.Projects
+func (pc *ProjectConfig) GetRenderedElements() ([]template.HTML, error) {
+	data := make([]template.HTML, len(pc.Projects))
+	for idx, proj := range pc.Projects {
+		rendered, err := renderCard(proj)
+		if nil != err {
+			return nil, err
+		}
+		data[idx] = rendered
+	}
+	return data, nil
 }
 
 func (pc *ProjectConfig) GetConfigName() string {
-	return projectConfigName
+	return pc.GetContentKind() + ".yml"
+}
+
+func (pc *ProjectConfig) Load() error {
+	return unmarshal(pc)
+}
+
+func (pc *ProjectConfig) GetContentKind() string {
+	return kinds[kindProj]
 }
 
 type Project struct {
@@ -24,12 +38,14 @@ type Project struct {
 }
 
 // Make sure the interface is implemented
-var _ PortfolioCard = &Project{}
+var _ portfolioCard = &Project{}
 
-func GetProjects() (proj []*Project) {
-	return
+func (p *Project) GetTemplateName() string {
+	return "project.html"
 }
 
-func (p *Project) GetHTMLTemplate() template.HTML {
-	return ""
+func LoadProjects() (listConfig, error) {
+	proj := &ProjectConfig{}
+	err := proj.Load()
+	return proj, err
 }

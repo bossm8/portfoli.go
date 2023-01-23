@@ -5,16 +5,16 @@
 
 function shake(element) {
 
-    var magnitude = 20;
-    var counter = 1;
-    var shakes = 20;
-    var decrease = magnitude/shakes;
+    let magnitude = 20;
+    let counter = 1;
+    let shakes = 20;
+    let decrease = magnitude/shakes;
   
-    var randInt = (min, max) => {
+    let randInt = (min, max) => {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     };
 
-    var _shake = function () {
+    let _shake = function () {
         if (counter < shakes) {
             magnitude -= decrease;
 
@@ -42,7 +42,7 @@ function doTheHarlemShake(element) {
         element.textContent
     ];
     
-    var animate = function (idx) {
+    let animate = function (idx) {
         if (strings.length === idx) {
             return;
         }
@@ -50,5 +50,5 @@ function doTheHarlemShake(element) {
         element.textContent = strings[idx];
         setTimeout(animate, 1000, idx+1);
     }
-    animate(0);
+    setTimeout(animate, 1000, 0);
 }

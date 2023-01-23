@@ -13,6 +13,6 @@ test:
 	go test ./...
 
 run: setup
-	go run portfolio.go
+	go run portfolio.go -config.dir ${PWD}/configs
 
 .PHONY: test dist setup run

@@ -1,16 +1,10 @@
-package models
+package server
 
 import (
 	"fmt"
 	"html/template"
 	"net/http"
 )
-
-type TPLData struct {
-	RenderContact bool
-	Data          interface{}
-	Profile       *ProfileConfig
-}
 
 type AlertMsg struct {
 	Title      string
@@ -21,7 +15,7 @@ type AlertMsg struct {
 	HttpStatus int
 }
 
-func GetMessages(emailAddress *string) map[string]map[string]*AlertMsg {
+func getMessages(emailAddress *string) map[string]map[string]*AlertMsg {
 	mailto := "<a href=\"mailto:%s\">%s</a>"
 	if nil == emailAddress {
 		mailto = ""

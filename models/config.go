@@ -9,6 +9,8 @@ import (
 	"strings"
 )
 
+var configDir string
+
 const configName = "config.yml"
 
 // The configuration ot the smtp service
@@ -28,15 +30,16 @@ type SocialMedia struct {
 
 // The configurations about yourself
 type ProfileConfig struct {
-	BrandName   string         `yaml:"brandname"`
-	BannerImage string         `yaml:"bannerimage"`
-	FirstName   string         `yaml:"firstname"`
-	LastName    string         `yaml:"lastname"`
-	Email       string         `yaml:"email"`
-	Heading     template.HTML  `yaml:"heading"`
-	SubHeading  template.HTML  `yaml:"subheading"`
-	Slogan      string         `yaml:"slogan"`
-	SocialMedia []*SocialMedia `yaml:"social"`
+	BrandName    string         `yaml:"brandname"`
+	BannerImage  string         `yaml:"bannerimage"`
+	FirstName    string         `yaml:"firstname"`
+	LastName     string         `yaml:"lastname"`
+	Email        string         `yaml:"email"`
+	Heading      template.HTML  `yaml:"heading"`
+	SubHeading   template.HTML  `yaml:"subheading"`
+	Slogan       string         `yaml:"slogan"`
+	SocialMedia  []*SocialMedia `yaml:"social"`
+	ContentKinds []string       `yaml:"content"`
 }
 
 // The configuration of the mailing service
@@ -46,8 +49,8 @@ type Config struct {
 }
 
 // Loads and returns the configuration from configs/mail.yaml
-func GetConfig() (cfg *Config, err error) {
-	cfg = &Config{
+func GetConfig() (*Config, error) {
+	cfg := &Config{
 		Profile: &ProfileConfig{
 			BrandName: "Queen",
 			FirstName: "Freddy",
@@ -55,13 +58,15 @@ func GetConfig() (cfg *Config, err error) {
 			Email:     "freddy@mercury.me",
 		},
 	}
-	if err = loadFromFile(configName, cfg); nil != err {
-		return
+	if err := loadFromYAMLFile(configName, cfg); nil != err {
+		return nil, err
 	}
-	if _, err = mail.ParseAddress(cfg.Profile.Email); nil != err {
+	if _, err := mail.ParseAddress(cfg.Profile.Email); nil != err {
 		log.Fatalf("[ERROR]: Invalid or missing profile email address %s", cfg.Profile.Email)
+		return nil, err
 	}
 
+	var err error
 	val := reflect.ValueOf(*cfg.SMTP)
 	for i := 0; i < val.NumField(); i++ {
 		if v := val.Field(i); v.IsZero() {
@@ -72,5 +77,9 @@ func GetConfig() (cfg *Config, err error) {
 			err = errors.New("missing key in SMTP config")
 		}
 	}
-	return
+	return cfg, err
+}
+
+func SetConfigDir(dir string) {
+	configDir = dir
 }
