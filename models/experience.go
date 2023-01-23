@@ -15,10 +15,6 @@ func (ed *ExperienceConfig) GetConfigName() string {
 	return ed.GetContentKind() + ".yml"
 }
 
-func (ed *ExperienceConfig) Load() error {
-	return unmarshal(ed)
-}
-
 func (ed *ExperienceConfig) GetContentKind() string {
 	return kinds[kindExp]
 }
@@ -33,10 +29,4 @@ var _ portfolioCard = &Experience{}
 
 func (e *Experience) GetTemplateName() string {
 	return "experience.html"
-}
-
-func LoadExperiences() (listConfig, error) {
-	exp := &ExperienceConfig{}
-	err := exp.Load()
-	return exp, err
 }

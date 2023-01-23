@@ -18,11 +18,11 @@ const (
 var (
 	templatesDir = filepath.Join("models", "templates", "html")
 	kinds        = []string{"experience", "education", "projects", "certifications"}
-	mapping      = map[string]func() (listConfig, error){
-		kinds[kindExp]:  LoadExperiences,
-		kinds[kindEdu]:  LoadEducation,
-		kinds[kindProj]: LoadProjects,
-		kinds[kindCert]: LoadCertifications,
+	mapping      = map[string]listConfig{
+		kinds[kindExp]:  &CertificationConfig{},
+		kinds[kindEdu]:  &EducationConfig{},
+		kinds[kindProj]: &ProjectConfig{},
+		kinds[kindCert]: &CertificationConfig{},
 	}
 )
 
@@ -36,7 +36,6 @@ type listConfig interface {
 	GetElements() []portfolioCard
 	GetConfigName() string
 	GetContentKind() string
-	Load() error
 }
 
 type portfolioCard interface {
@@ -44,12 +43,13 @@ type portfolioCard interface {
 }
 
 func GetContent(kind string) ([]template.HTML, error) {
-	content, err := mapping[kind]()
+	obj := mapping[kind]
+	err := loadListConfig(obj)
 	if nil != err {
 		log.Printf("[ERROR] Generating content failed: %s\n", err)
 		return nil, err
 	}
-	cards := content.GetElements()
+	cards := obj.GetElements()
 	data := make([]template.HTML, 0)
 	for _, crd := range cards {
 		if tpl, err := renderCard(crd); nil != err {

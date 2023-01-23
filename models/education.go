@@ -15,10 +15,6 @@ func (ec *EducationConfig) GetConfigName() string {
 	return ec.GetContentKind() + ".yml"
 }
 
-func (ec *EducationConfig) Load() error {
-	return unmarshal(ec)
-}
-
 func (ec *EducationConfig) GetContentKind() string {
 	return kinds[kindEdu]
 }
@@ -34,10 +30,4 @@ var _ portfolioCard = &Education{}
 
 func (e *Education) GetTemplateName() string {
 	return "education.html"
-}
-
-func LoadEducation() (listConfig, error) {
-	edu := &EducationConfig{}
-	err := edu.Load()
-	return edu, err
 }

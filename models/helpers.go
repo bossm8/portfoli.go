@@ -25,6 +25,11 @@ func loadFromYAMLFile(filename string, obj interface{}) (err error) {
 	return
 }
 
+func loadListConfig(kind listConfig) error {
+	err := unmarshal(kind)
+	return err
+}
+
 func unmarshal(obj listConfig) error {
 	return loadFromYAMLFile(obj.GetConfigName(), obj)
 }
