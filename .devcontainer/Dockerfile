@@ -5,6 +5,8 @@ RUN apt-get update && \
     apt-get install -y \
         git \
         vim \
+        wget \
+        unzip \
         webp \
         bash-completion
 

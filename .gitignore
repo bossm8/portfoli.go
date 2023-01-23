@@ -1,2 +1,4 @@
 *.yml
 _build
+*bootstrap*
+.installed
