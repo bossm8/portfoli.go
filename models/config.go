@@ -40,6 +40,7 @@ type ProfileConfig struct {
 	Slogan       string         `yaml:"slogan"`
 	SocialMedia  []*SocialMedia `yaml:"social"`
 	ContentKinds []string       `yaml:"content"`
+	Me           template.HTML  `yaml:"me"`
 }
 
 // The configuration of the mailing service

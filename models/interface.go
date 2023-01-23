@@ -1,36 +1,9 @@
 package models
 
 import (
-	"fmt"
 	"html/template"
-	"log"
-	"path/filepath"
-	"strings"
+	"time"
 )
-
-const (
-	kindExp = iota
-	kindEdu
-	kindProj
-	kindCert
-)
-
-var (
-	templatesDir = filepath.Join("models", "templates", "html")
-	kinds        = []string{"experience", "education", "projects", "certifications"}
-	mapping      = map[string]listConfig{
-		kinds[kindExp]:  &CertificationConfig{},
-		kinds[kindEdu]:  &EducationConfig{},
-		kinds[kindProj]: &ProjectConfig{},
-		kinds[kindCert]: &CertificationConfig{},
-	}
-)
-
-type Base struct {
-	Img         string `yaml:"img"`
-	Name        string `yaml:"name"`
-	Description string `yaml:"description"`
-}
 
 type listConfig interface {
 	GetElements() []portfolioCard
@@ -42,26 +15,27 @@ type portfolioCard interface {
 	GetTemplateName() string
 }
 
-func GetContent(kind string) ([]template.HTML, error) {
-	obj := mapping[kind]
-	err := loadListConfig(obj)
-	if nil != err {
-		log.Printf("[ERROR] Generating content failed: %s\n", err)
-		return nil, err
-	}
-	cards := obj.GetElements()
-	data := make([]template.HTML, 0)
-	for _, crd := range cards {
-		if tpl, err := renderCard(crd); nil != err {
-			return nil, err
-		} else {
-			data = append(data, tpl)
-		}
-
-	}
-	return data, err
+type Base struct {
+	Image       string        `yaml:"image"`
+	Name        string        `yaml:"name"`
+	Link        string        `yaml:"link"`
+	Description template.HTML `yaml:"description"`
 }
 
-func GetRoutingRegex() string {
-	return fmt.Sprintf("/(%s)", strings.Join(kinds, "|"))
+type DateRange struct {
+	From time.Time   `yaml:"from"`
+	To   interface{} `yaml:"to"`
+}
+
+func (d *DateRange) GetFromDateAsStr() string {
+	return d.From.Format("2006-01-02")
+}
+
+func (d *DateRange) GetToDateAsStr() string {
+	if date, ok := d.To.(time.Time); ok {
+		return date.Format("2006-01-02")
+	} else if str, ok := d.To.(string); ok {
+		return str
+	}
+	return "now"
 }

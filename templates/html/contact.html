@@ -2,7 +2,7 @@
 {{ define "content" }}
 <div class="row justify-content-center d-flex mt-4 mb-2">
     <div class="col-6 col-lg-3">
-        <div class="square rounded-circle avatar"></div>
+        <div class="square rounded-circle avatar shadow"></div>
     </div> 
     <div class="col-12 my-4 text-center">
         <div class="display-6">I'm happy to help!</div>
@@ -26,7 +26,7 @@
                 <textarea class="form-control" id="message" name="message" rows="6" required></textarea>
                 <div class="invalid-feedback">Please tell me about you</div>
             </div>
-            <div class="my-3">
+            <div class="my-3 clearfix">
                 <button type="submit" id="runaway" class="btn btn-primary float-end">Send</button>
             </div>
         </form>

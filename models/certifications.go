@@ -20,8 +20,8 @@ func (cc *CertificationConfig) GetContentKind() string {
 }
 
 type Certification struct {
-	Base           `yaml:",inline"`
-	Specialization string `yaml:"specialization"`
+	Base      `yaml:",inline"`
+	DateRange `yaml:",inline"`
 }
 
 // Make sure the interface is implemented

@@ -20,8 +20,9 @@ func (ed *ExperienceConfig) GetContentKind() string {
 }
 
 type Experience struct {
-	Base    `yaml:",inline"`
-	Company string `yaml:"company"`
+	Base      `yaml:",inline"`
+	Company   string `yaml:"company"`
+	DateRange `yaml:",inline"`
 }
 
 // Make sure the interface is implemented

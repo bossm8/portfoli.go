@@ -1,0 +1,54 @@
+{{/* Description */}}
+{{/* Either override the complete header/body/footer block */}}
+{{/* or */}}
+{{/* Use the default defined blocks and override the text content only */}}
+
+{{ define "card" }}
+<div class="card shadow">
+    {{ template "header" . }}
+    {{ template "body" . }}
+    {{ template "footer" . }}
+</div>
+{{ end }}
+
+{{/* Default Header */}}
+{{ define "header" }}
+<img class="card-img-top p-4" src="{{ .Image }}" alt="{{ .Name }}"/>
+<div class="card-header">
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col">
+            {{ template "header-text" . }}
+        </div>
+        <div class="col-2">
+            {{ if .Link }}
+            <a href="{{ .Link }}" class="float-end flex" target="_blank"><i class="bi-box-arrow-up-right"></i></a>
+            {{ end }}
+        </div>
+    </div>
+</div>
+{{ end }}
+{{/* Default Header Content */}}
+{{ define "header-text"}}{{ end }}
+
+{{/* Default Body */}}
+{{ define "body" }}
+<div class="card-body">
+    <h5 class="card-title">{{ template "body-title" . }}</h5>
+    <p class="card-text overflow-auto">
+        {{ template "body-text" . }}
+    </p>
+</div>
+{{ end }}
+{{/* Default Body Content */}}
+{{ define "body-title" }}{{ .Name }}{{ end }}
+{{ define "body-text" }}{{ .Description }}{{ end }}
+
+{{/* Default Footer */}}
+{{ define "footer" }}
+<div class="card-footer text-muted">
+    {{ template "footer-text" . }}
+</div>
+{{ end }}
+{{/* Default Footer Content */}}
+{{ define "footer-text" }}{{ end }}

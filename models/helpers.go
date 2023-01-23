@@ -35,8 +35,9 @@ func unmarshal(obj listConfig) error {
 }
 
 func renderCard(card portfolioCard) (template.HTML, error) {
+	cardTpl := filepath.Join(templatesDir, "base.html")
 	htmlTpl := filepath.Join(templatesDir, card.GetTemplateName())
-	tpl, err := template.ParseFiles(htmlTpl)
+	tpl, err := template.ParseFiles(cardTpl, htmlTpl)
 	if nil != err {
 		log.Printf("[ERROR] Failed to parse template '%s': %s\n", htmlTpl, err)
 		return "", err

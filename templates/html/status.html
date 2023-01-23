@@ -2,7 +2,7 @@
 {{ define "content" }}
 <div class="row d-flex justify-content-center">
     <div class="col">
-        <img src='/static/img/{{ or .Data.Image "404.png" }}' alt="Success">
+        <img src='/static/img/{{ or .Data.Image "404.png" }}' alt="Hmm, there might be something missing here">
         <div class='alert alert-{{ or .Data.Kind "warning" }} justify-content-center"'role="alert">
             <div class="mb-2 text-center"><strong>{{ .Data.Header }}</strong></div>
             <div class="text-center">{{ .Data.Message }}</div>

@@ -13,10 +13,10 @@
                         {{ if not .RenderContact }}
                            {{ $href = (printf "mailto:%s" .Profile.Email) }}
                         {{ end }}
-                        <a class="mt-2 btn btn-outline-light btn-lg" href="{{ $href }}" role="button">Let's get in Touch!</a>
+                        <a class="mt-2 btn btn-outline-light btn-lg shadow-lg" href="{{ $href }}" role="button">Let's get in Touch!</a>
                     </div>
                     <div class="col-8 col-md-6 col-lg-5 col-xl-4 align-items-center p-5">
-                       <div class="square rounded-circle avatar"></div> 
+                       <div class="square rounded-circle shadow-lg avatar"></div> 
                     </div>
                 </div>
             </div>
@@ -36,8 +36,9 @@
     <div class="my-4 text-center text-lg-start">
        You can find more information about me here:
     </div>
-    <div class="col-12 col-lg-6 col-xl-auto mb-2 mb-lg-0">
+    <div class="col-12 col-lg-7 col-xl-auto mb-2 mb-lg-0">
         <div class="text-center text-lg-start">
+            <a class="btn btn-outline-primary" href="/me">Bio'n'Skills</a>
             <a class="btn btn-outline-primary" href="/experience">Experience</a>
             <a class="btn btn-outline-primary" href="/education">Education</a>
             <a class="btn btn-outline-primary" href="/certifications">Certifications</a>

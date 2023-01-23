@@ -23,6 +23,7 @@ type Education struct {
 	Base           `yaml:",inline"`
 	School         string `yaml:"school"`
 	Specialization string `yaml:"specialization"`
+	DateRange      `yaml:",inline"`
 }
 
 // Make sure the interface is implemented
