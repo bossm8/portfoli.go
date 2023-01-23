@@ -19,16 +19,24 @@ type SMTPConfig struct {
 	Port int    `yaml:"port"`
 }
 
+// Generic social media type
+type SocialMedia struct {
+	// Make this one of the 'social' type icons of https://icons.getbootstrap.com/#icons
+	Type string `yaml:"type"`
+	Link string `yaml:"link"`
+}
+
 // The configurations about yourself
 type ProfileConfig struct {
-	BrandName   string        `yaml:"brandname"`
-	BannerImage string        `yaml:"bannerimage"`
-	FirstName   string        `yaml:"firstname"`
-	LastName    string        `yaml:"lastname"`
-	Email       string        `yaml:"email"`
-	Heading     template.HTML `yaml:"heading"`
-	SubHeading  template.HTML `yaml:"subheading"`
-	Slogan      string        `yaml:"slogan"`
+	BrandName   string         `yaml:"brandname"`
+	BannerImage string         `yaml:"bannerimage"`
+	FirstName   string         `yaml:"firstname"`
+	LastName    string         `yaml:"lastname"`
+	Email       string         `yaml:"email"`
+	Heading     template.HTML  `yaml:"heading"`
+	SubHeading  template.HTML  `yaml:"subheading"`
+	Slogan      string         `yaml:"slogan"`
+	SocialMedia []*SocialMedia `yaml:"social"`
 }
 
 // The configuration of the mailing service

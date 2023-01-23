@@ -71,7 +71,7 @@ func startServer(addr string) {
 	_http.Handle("/static/", http.StripPrefix("/static", fs))
 	_http.HandleFunc("/mail", sendMail)
 	_http.HandleFunc("/(success|fail)", serveStatus)
-	_http.HandleFunc("/(experience|education|project)", serveWithContent)
+	_http.HandleFunc("/(experience|education|projects)", serveWithContent)
 	_http.HandleFunc(".*", serveParamless)
 
 	err := http.ListenAndServe(addr, _http)
@@ -86,11 +86,11 @@ func serveParamless(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		htmlFile = filepath.Clean(r.URL.Path)
 	}
-	sendTemplate(w, r, htmlFile, nil)
+	sendTemplate(w, r, htmlFile, nil, nil)
 }
 
 func serveWithContent(w http.ResponseWriter, r *http.Request) {
-
+	sendTemplate(w, r, r.URL.Path, nil, nil)
 }
 
 func sendMail(w http.ResponseWriter, r *http.Request) {
@@ -151,10 +151,11 @@ func serveStatus(w http.ResponseWriter, r *http.Request) {
 	vals := r.URL.Query()
 	kind := vals.Get("kind")
 	status := strings.Replace(r.URL.Path, "/", "", -1)
-	sendTemplate(w, r, "status", messages[status][kind])
+	msg := messages[status][kind]
+	sendTemplate(w, r, "status", msg, &msg.HttpStatus)
 }
 
-func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, data interface{}) {
+func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, data interface{}, status *int) {
 
 	var tpl *template.Template
 	var err error
@@ -191,6 +192,9 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 		log.Printf("[ERROR] Failed to process template %s with error %s\n", tpl.Name(), err)
 		fail(w, r, "generic")
 		return
+	}
+	if nil != status && 100 <= *status {
+		w.WriteHeader(*status)
 	}
 	w.Write(resp.Bytes())
 
