@@ -1,6 +1,39 @@
 (function () {
     let nameField = document.getElementById("my-name");
-    doTheHarlemShake(nameField);
+    var running = false;
+    nameField.addEventListener("mouseover", () => {
+        doTheHarlemShake(nameField);
+    });
+
+    let originalText = nameField.textContent;
+    let strings = [
+        "Hi, my name is, what?",
+        "My name is, who?",
+        "My name is ...",
+        "Chka-Chka ...",
+        originalText
+    ];
+
+    var doTheHarlemShake = function(element) {
+        // This method takes an already running flag, which determines if the animation
+        // is already running (whaat...?) The first time it get's called this will be false
+        // because it is set to true only after anmiate was called the first time with this value.
+        // Once animate finishes all animations of the current run (handled all texts) it will set 
+        // the flag to false again so another mouse enter triggers the animation again.
+        let animate = function (idx, alreadyRunning) {
+            if (alreadyRunning)
+                return;
+            if (strings.length === idx) {
+                running = false;
+                return;
+            }
+            shake(element);
+            element.textContent = strings[idx];
+            setTimeout(animate, 1000, idx+1, alreadyRunning);
+        }
+        animate(0, running);
+        running = true;
+    };
 })();
 
 function shake(element) {
@@ -31,24 +64,4 @@ function shake(element) {
         }
     }
     _shake();
-}
-
-function doTheHarlemShake(element) {
-    let strings = [
-        "Hi, my name is, what?",
-        "My name is, who?",
-        "My name is ...",
-        "Chka-Chka ...",
-        element.textContent
-    ];
-    
-    let animate = function (idx) {
-        if (strings.length === idx) {
-            return;
-        }
-        shake(element);
-        element.textContent = strings[idx];
-        setTimeout(animate, 1000, idx+1);
-    }
-    setTimeout(animate, 1000, 0);
 }
