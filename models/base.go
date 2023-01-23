@@ -8,7 +8,6 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// var confPath = filepath.Join("..", "configs")
 var confPath = "configs"
 
 type Base struct {
@@ -17,14 +16,17 @@ type Base struct {
 	Description string `yaml:"description"`
 }
 
-func loadFromFile(filename string, obj interface{}) {
-	yamlFile, err := os.ReadFile(
+func loadFromFile(filename string, obj interface{}) (err error) {
+	log.Printf("[INFO] Loading yaml file '%s' from directory '%s'\n", filename, confPath)
+	var yamlFile []byte
+	if yamlFile, err = os.ReadFile(
 		filepath.Join(confPath, filename),
-	)
-	if err != nil {
-		log.Fatal(err)
+	); err != nil {
+		log.Printf("[ERROR]: Failed to load yaml file '%s': %s\n", filename, err)
+		return
 	}
-	if err := yaml.Unmarshal(yamlFile, obj); err != nil {
-		log.Fatal(err)
+	if err = yaml.Unmarshal(yamlFile, obj); err != nil {
+		log.Printf("[ERROR]: Failed to parse yaml file '%s': %s\n", filename, err)
 	}
+	return
 }

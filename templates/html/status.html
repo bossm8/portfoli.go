@@ -1,0 +1,17 @@
+{{ define "title" }}{{ or .Data.Title "404" }}{{ end }}
+{{ define "content" }}
+<div class="row d-flex justify-content-center">
+    <div class="col">
+        <img src='/static/img/{{ or .Data.Image "404.png" }}' alt="Success">
+        <div class='alert alert-{{ or .Data.Kind "warning" }} justify-content-center"'role="alert">
+            <div class="mb-2 text-center"><strong>{{ .Data.Header }}</strong></div>
+            <div class="text-center">{{ .Data.Message }}</div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <a href="/" class="btn btn-primary float-end">Take me home</a>
+    </div>
+</div>
+{{ end }}
