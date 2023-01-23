@@ -30,17 +30,18 @@ type SocialMedia struct {
 
 // The configurations about yourself
 type ProfileConfig struct {
-	BrandName    string         `yaml:"brandname"`
-	BannerImage  string         `yaml:"bannerimage"`
-	FirstName    string         `yaml:"firstname"`
-	LastName     string         `yaml:"lastname"`
-	Email        string         `yaml:"email"`
-	Heading      template.HTML  `yaml:"heading"`
-	SubHeading   template.HTML  `yaml:"subheading"`
-	Slogan       string         `yaml:"slogan"`
-	SocialMedia  []*SocialMedia `yaml:"social"`
-	ContentKinds []string       `yaml:"content"`
-	Me           template.HTML  `yaml:"me"`
+	BrandName      string         `yaml:"brandname"`
+	BannerImage    string         `yaml:"bannerimage"`
+	FirstName      string         `yaml:"firstname"`
+	LastName       string         `yaml:"lastname"`
+	Email          string         `yaml:"email"`
+	Heading        template.HTML  `yaml:"heading"`
+	SubHeading     template.HTML  `yaml:"subheading"`
+	Slogan         string         `yaml:"slogan"`
+	ContactHeading string         `yaml:"contactheading"`
+	SocialMedia    []*SocialMedia `yaml:"social"`
+	ContentKinds   []string       `yaml:"content"`
+	Me             template.HTML  `yaml:"me"`
 }
 
 // The configuration of the mailing service
