@@ -8,6 +8,7 @@ import (
 type TPLData struct {
 	RenderContact bool
 	Data          interface{}
+	Profile       *ProfileConfig
 }
 
 type AlertMsg struct {
@@ -18,7 +19,13 @@ type AlertMsg struct {
 	Kind    string
 }
 
-func GetMessages(emailAddress string) map[string]map[string]*AlertMsg {
+func GetMessages(emailAddress *string) map[string]map[string]*AlertMsg {
+	mailto := "<a href=\"mailto:%s\">%s</a>"
+	if nil == emailAddress {
+		mailto = ""
+	} else {
+		mailto = fmt.Sprintf(mailto, *emailAddress, *emailAddress)
+	}
 	return map[string]map[string]*AlertMsg{
 		"success": {
 			"contact": {
@@ -36,14 +43,10 @@ func GetMessages(emailAddress string) map[string]map[string]*AlertMsg {
 				Kind:    "danger",
 			},
 			"contact": {
-				Title:  "Error",
-				Header: "Oops, something went wrong",
-				Message: template.HTML(fmt.Sprintf(
-					"I could not process your contact request, please contact me here: <a href=\"mailto:%s\">%s</a>",
-					emailAddress,
-					emailAddress,
-				)),
-				Kind: "warning",
+				Title:   "Error",
+				Header:  "Oops, something went wrong",
+				Message: template.HTML("I could not process your contact request, please contact me here: " + mailto),
+				Kind:    "warning",
 			},
 			"notfound": {
 				Title:   "404",
@@ -52,14 +55,10 @@ func GetMessages(emailAddress string) map[string]map[string]*AlertMsg {
 				Kind:    "danger",
 			},
 			"generic": {
-				Title:  "Sumthin wong",
-				Header: "Oops, something went wrong",
-				Message: template.HTML(fmt.Sprintf(
-					"There was an error on my end, please try again or contact me on <a href=\"mailto:%s\">%s</a>",
-					emailAddress,
-					emailAddress,
-				)),
-				Kind: "warning",
+				Title:   "Sumthin Wong",
+				Header:  "Oops, something went wrong",
+				Message: template.HTML("There was an error on my end, please try again or contact me on " + mailto),
+				Kind:    "warning",
 			},
 		},
 	}

@@ -5,6 +5,7 @@ RUN apt-get update && \
     apt-get install -y \
         git \
         vim \
+        webp \
         bash-completion
 
 RUN useradd -ms /bin/bash port

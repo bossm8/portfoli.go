@@ -28,7 +28,8 @@ const (
 var (
 	baseTpl = filepath.Join("templates", "html", "base.html")
 
-	mailCfg       *models.MailConfig
+	cfg *models.Config
+
 	renderContact bool = true
 
 	messages map[string]map[string]*models.AlertMsg
@@ -49,14 +50,12 @@ func main() {
 	flag.Parse()
 
 	var err error
-	mailCfg, err = models.GetSMTPConfig()
+	cfg, err = models.GetConfig()
 	if err != nil {
 		log.Printf("[WARNING]: No smtp configuration loaded, will not render contact form")
 		renderContact = false
-		messages = models.GetMessages("")
-	} else {
-		messages = models.GetMessages(mailCfg.To)
 	}
+	messages = models.GetMessages(&cfg.Profile.Email)
 
 	startServer(fmt.Sprintf("%s:%d", *addr, *port))
 
@@ -68,10 +67,11 @@ func startServer(addr string) {
 
 	_http := &handler.RegexHandler{}
 
-	_http.Handle("/static/", http.StripPrefix("/static", fs))
 	_http.Handle("/favicon.ico", fs)
+	_http.Handle("/static/", http.StripPrefix("/static", fs))
 	_http.HandleFunc("/mail", sendMail)
 	_http.HandleFunc("/(success|fail)", serveStatus)
+	_http.HandleFunc("/(experience|education|project)", serveWithContent)
 	_http.HandleFunc(".*", serveParamless)
 
 	err := http.ListenAndServe(addr, _http)
@@ -87,6 +87,10 @@ func serveParamless(w http.ResponseWriter, r *http.Request) {
 		htmlFile = filepath.Clean(r.URL.Path)
 	}
 	sendTemplate(w, r, htmlFile, nil)
+}
+
+func serveWithContent(w http.ResponseWriter, r *http.Request) {
+
 }
 
 func sendMail(w http.ResponseWriter, r *http.Request) {
@@ -123,21 +127,21 @@ func sendMail(w http.ResponseWriter, r *http.Request) {
 	mail := gomail.NewMessage()
 	subject := fmt.Sprintf(mailSubject, form["name"])
 	mail.SetHeaders(map[string][]string{
-		"To":       {mailCfg.To},
-		"From":     {mailCfg.SMTP.User, "[Portfolio]: " + form["name"]},
+		"To":       {cfg.Profile.Email},
+		"From":     {cfg.SMTP.User, "[Portfolio]: " + form["name"]},
 		"Reply-To": {form["email"]},
 		"Subject":  {subject},
 	})
 	mail.SetBody("text/plain", form["message"])
 
-	smtp := mailCfg.SMTP
+	smtp := cfg.SMTP
 	dialer := gomail.NewDialer(smtp.Host, smtp.Port, smtp.User, smtp.Pass)
 	if err := dialer.DialAndSend(mail); err != nil {
 		log.Printf("[ERROR] Could not send email: %s\n", err)
 		fail(w, r, "contact")
 		return
 	}
-	log.Printf("[INFO] Sent contact email to %s\n", mailCfg.To)
+	log.Printf("[INFO] Sent contact email to %s\n", cfg.Profile.Email)
 
 	// redirect, so form gets cleared and a refresh does not trigger another send
 	http.Redirect(w, r, "/success?kind=contact", http.StatusSeeOther)
@@ -147,14 +151,10 @@ func serveStatus(w http.ResponseWriter, r *http.Request) {
 	vals := r.URL.Query()
 	kind := vals.Get("kind")
 	status := strings.Replace(r.URL.Path, "/", "", -1)
-	data := &models.TPLData{
-		RenderContact: renderContact,
-		Data:          messages[status][kind],
-	}
-	sendTemplate(w, r, "status", data)
+	sendTemplate(w, r, "status", messages[status][kind])
 }
 
-func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, data *models.TPLData) {
+func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, data interface{}) {
 
 	var tpl *template.Template
 	var err error
@@ -178,16 +178,16 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 		return
 	}
 
-	if nil == data {
-		data = &models.TPLData{
-			RenderContact: renderContact,
-		}
+	tplData := &models.TPLData{
+		Data:          data,
+		RenderContact: renderContact,
+		Profile:       cfg.Profile,
 	}
 
 	// We cannot pass w to ExecuteTemplate directly
 	// if the template fails we cannot redirect because there would be superfluous call to w.WriteHeader
 	resp := bytes.Buffer{}
-	if err = tpl.ExecuteTemplate(&resp, "base", data); nil != err {
+	if err = tpl.ExecuteTemplate(&resp, "base", tplData); nil != err {
 		log.Printf("[ERROR] Failed to process template %s with error %s\n", tpl.Name(), err)
 		fail(w, r, "generic")
 		return

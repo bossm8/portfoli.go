@@ -1,10 +1,5 @@
 (function () {
-    'use strict'
-  
-    // Fetch all the forms we want to apply custom Bootstrap validation styles to
-    var forms = document.querySelectorAll('.needs-validation')
-
-    // Loop over them and prevent submission
+    var forms = document.querySelectorAll('.needs-validation');
     Array.prototype.slice.call(forms).forEach((form) => {
         form.addEventListener(
             'submit', 
@@ -16,6 +11,6 @@
                 form.classList.add('was-validated')
             }, 
             false
-        )
+        );
       })
-  })()
+  })();
