@@ -4,7 +4,7 @@
 {{/* Use the default defined blocks and override the text content only */}}
 
 {{ define "card" }}
-<div class="card shadow h-100" style="max-height: 500px;">
+<div class="card shadow" style="height: 500px;">
     {{ template "header" . }}
     {{ template "body" . }}
     {{ template "footer" . }}
@@ -15,7 +15,7 @@
 {{ define "header" }}
 {{ $image := or .Image "/static/img/default" }}
 <div class="h-25 py-4 px-5">
-    <img class="card-img-top mh-100 w-auto img-fluid" src="{{ $image }}" alt="{{ .Name }}"/>
+    <img class="card-img-top mh-100 w-auto img-fluid" src="{{ $image }}" alt="Can't find no image ¯\_( ͡° ͜ʖ ͡°)_/¯"/>
 </div>
 <div class="card-header">
     <div class="row">

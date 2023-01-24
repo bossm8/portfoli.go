@@ -1,2 +1,13 @@
 {{ define "header-text" }}{{ .School }}{{ end }}
+{{ define "body" }}
+<div class="card-body overflow-auto">
+    <h5 class="card-title">{{ template "body-title" . }}</h5>
+    {{ if .Specialization }}
+        <h6 class="card-text text-muted"><small>Specialization in {{ .Specialization }}</small></h6>
+    {{ end }}
+    <p class="card-text overflow-auto">
+        {{ .Description }}
+    </p>
+</div>
+{{ end }}
 {{ define "footer-text" }}{{ .GetFromDateAsStr }} — {{ .GetToDateAsStr }}{{ end }}
