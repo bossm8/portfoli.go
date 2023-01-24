@@ -32,6 +32,7 @@ type SocialMedia struct {
 type ProfileConfig struct {
 	BrandName      string         `yaml:"brandname"`
 	BannerImage    string         `yaml:"bannerimage"`
+	Avatar         string         `yaml:"avatar"`
 	FirstName      string         `yaml:"firstname"`
 	LastName       string         `yaml:"lastname"`
 	Email          string         `yaml:"email"`

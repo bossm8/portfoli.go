@@ -6,7 +6,3 @@
     background-repeat:no-repeat;
     background-size: cover; 
 }
-
-.avatar {
-    background-image: url('/static/img/avatar.jpg');
-}

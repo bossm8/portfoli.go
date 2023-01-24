@@ -4,7 +4,7 @@
 {{/* Use the default defined blocks and override the text content only */}}
 
 {{ define "card" }}
-<div class="card shadow">
+<div class="card shadow h-100" style="max-height: 500px;">
     {{ template "header" . }}
     {{ template "body" . }}
     {{ template "footer" . }}
@@ -13,7 +13,8 @@
 
 {{/* Default Header */}}
 {{ define "header" }}
-<img class="card-img-top p-4" src="{{ .Image }}" alt="{{ .Name }}"/>
+{{ $image := or .Image "/static/img/default" }}
+<img class="card-img-top py-4 px-5 img-flex h-25" src="{{ $image }}" alt="{{ .Name }}"/>
 <div class="card-header">
     <div class="row">
         <div class="col-2"></div>
@@ -33,7 +34,7 @@
 
 {{/* Default Body */}}
 {{ define "body" }}
-<div class="card-body">
+<div class="card-body overflow-auto">
     <h5 class="card-title">{{ template "body-title" . }}</h5>
     <p class="card-text overflow-auto">
         {{ template "body-text" . }}

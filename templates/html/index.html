@@ -1,8 +1,10 @@
 {{ define "title" }}Welcome{{ end }}
 {{ define "content-header" }}
+{{ $avatar := or .Profile.Avatar "/static/img/avatar.jpg" }}
+{{ $banner := or .Profile.BannerImage "/static/img/banner.webp" }}
+<!-- Default image from https://unsplash.com/photos/xC7Ho08RYF4 thx!-->
 <div class="text-center bg-image"
-     style="background-image: url('/static/img/banner.webp'); background-size: cover;">
-     <!-- Default image from https://unsplash.com/photos/xC7Ho08RYF4 thx!-->
+     style="background-image: url('{{ $banner }}'); background-size: cover;">
       <div class="mask d-flex" style="background-color: rgba(0, 0, 0, 0.4);">
             <div class="container-fluid">
                 <div class="row d-flex justify-content-center align-items-center pt-5">
@@ -16,7 +18,7 @@
                         <a class="mt-2 btn btn-outline-light btn-lg shadow-lg" href="{{ $href }}" role="button">Let's get in Touch!</a>
                     </div>
                     <div class="col-8 col-md-6 col-lg-5 col-xl-4 align-items-center p-5">
-                       <div class="square rounded-circle shadow-lg avatar"></div> 
+                       <div class="square rounded-circle shadow-lg" style="background-image: url('{{ $avatar }}');"></div> 
                     </div>
                 </div>
             </div>

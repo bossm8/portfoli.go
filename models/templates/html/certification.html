@@ -1,1 +1,24 @@
-{{ define "footer-text" }}Achieved: {{ .GetFromDateAsStr }}{{ end }}
+{{ define "header" }}
+{{ $image := or .Image "/static/img/default" }}
+<img class="card-img-top py-4 px-5 img-flex h-75" src="{{ $image }}" alt="{{ .Name }}"/>
+<div class="card-footer h-25 d-flex flex-column align-items-center justify-content-center">
+    <div class="align-self-center w-100">
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col">
+                {{ .Name }}
+            </div>
+            <div class="col-2">
+                {{ if .Link }}
+                <a href="{{ .Link }}" class="float-end flex" target="_blank"><i class="bi-box-arrow-up-right"></i></a>
+                {{ end }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="text-muted col-12">Achieved: {{ .GetFromDateAsStr }}</div>
+        </div>
+    </div>
+</div>
+{{ end }}
+{{ define "body" }}{{ "" }}{{ end }}
+{{ define "footer" }}{{ "" }}{{ end }}

@@ -1,8 +1,9 @@
 {{ define "title" }}Contact{{ end }}
 {{ define "content" }}
+{{ $avatar := or .Profile.Avatar "/static/img/avatar.jpg" }}
 <div class="row justify-content-center d-flex mt-4 mb-2">
     <div class="col-6 col-lg-3">
-        <div class="square rounded-circle avatar shadow"></div>
+        <div class="square rounded-circle shadow" style="background-image: url('{{ $avatar }}');"></div>
     </div> 
     <div class="col-12 my-4 text-center">
         <div class="display-6">{{ .Profile.ContactHeading }}</div>
