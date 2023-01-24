@@ -14,7 +14,9 @@
 {{/* Default Header */}}
 {{ define "header" }}
 {{ $image := or .Image "/static/img/default" }}
-<img class="card-img-top py-4 px-5 img-flex h-25" src="{{ $image }}" alt="{{ .Name }}"/>
+<div class="h-25 py-4 px-5">
+    <img class="card-img-top mh-100 w-auto img-fluid" src="{{ $image }}" alt="{{ .Name }}"/>
+</div>
 <div class="card-header">
     <div class="row">
         <div class="col-2"></div>
