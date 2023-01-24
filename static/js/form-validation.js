@@ -1,6 +1,6 @@
 (function () {
     var forms = document.querySelectorAll('.needs-validation');
-    forms.forEach(f => addValidationListener(f))
+    forms.forEach(f => addValidationListener(f));
 })();
 
 function addValidationListener(form) {
@@ -10,6 +10,9 @@ function addValidationListener(form) {
             if (!form.checkValidity()) {
                 event.preventDefault()
                 event.stopPropagation()
+                makeButtonRun(true);
+            } else {
+                makeButtonRun(false);
             }
             form.classList.add('was-validated')
         }, 
@@ -17,25 +20,30 @@ function addValidationListener(form) {
     );
 }
 
-const button = document.getElementById("runaway-btn");
-
-const animateMove = (element, prop, pixels) =>
-  anime({
-    targets: element,
-    [prop]: `${pixels}px`,
-    easing: "easeOutCirc"
-  });
-
-["mouseover", "click"].forEach(function (el) {
-  button.addEventListener(el, function (event) {
-    const top = getRandomNumber(window.innerHeight - this.offsetHeight);
-    const left = getRandomNumber(window.innerWidth - this.offsetWidth);
-
-    animateMove(this, "left", left).play();
-    animateMove(this, "top", top).play();
-  });
-});
-
-const getRandomNumber = (num) => {
-  return Math.floor(Math.random() * (num + 1));
+const randInt = (max) => {
+  return Math.floor(Math.random() * (max + 1));
 };
+
+function makeButtonRun(runAway) {
+    console.log(runAway)
+    const button = document.getElementById("runaway");
+    if (run) {
+        button.addEventListener('mouseover', run);
+        button.addEventListener('click', run)
+    } else {
+        button.removeEventListener('mouseover', run);
+        button.removeEventListener('click', run);
+    }
+
+}
+
+function run() {
+    console.log(this)
+    const left = randInt(window.innerWidth - this.offsetWidth);
+    console.log(left)
+    anime({
+      targets: this,
+      ['left']: `${left}px`,
+      easing: "easeOutCirc"
+    }).play();
+}

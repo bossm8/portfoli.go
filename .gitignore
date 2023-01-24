@@ -1,4 +1,5 @@
 *.yml
 _build
 *bootstrap*
+*anime*.js
 .installed

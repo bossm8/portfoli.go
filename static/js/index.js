@@ -43,7 +43,7 @@ function shake(element) {
     let shakes = 20;
     let decrease = magnitude/shakes;
   
-    let randInt = (min, max) => {
+    const randInt = (min, max) => {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     };
 
