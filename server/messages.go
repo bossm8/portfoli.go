@@ -50,7 +50,7 @@ func getMessages(emailAddress *string) map[string]map[string]*AlertMsg {
 			"notfound": {
 				Title:      "404",
 				Header:     "Oops, something went wrong",
-				Message:    "I could not find the page you are looking for",
+				Message:    "<i class='bi-binoculars me-1'></i> I could not find the page you are looking for <i class='ms-1 bi-binoculars'></i>",
 				Kind:       "danger",
 				HttpStatus: http.StatusNotFound,
 			},
