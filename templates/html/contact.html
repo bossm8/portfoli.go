@@ -2,16 +2,16 @@
 {{ define "content" }}
 {{ $avatar := or .Profile.Avatar "/static/img/avatar.jpg" }}
 <div class="row justify-content-center d-flex mt-4 mb-2">
-    <div class="col-6 col-lg-3">
+    <div class="col-6 col-lg-3 col-xl-2">
         <div class="square rounded-circle shadow" style="background-image: url('{{ $avatar }}');"></div>
     </div> 
     <div class="col-12 my-4 text-center">
         <div class="display-6">{{ .Profile.ContactHeading }}</div>
     </div>
 </div>
-<div class="row align-items-center">
+<div class="row align-items-center mb-4">
     <div class="col">
-        <form class="needs-validation" method="post" action="/mail" novalidate>
+        <form id="contact-form" class="needs-validation" method="post" action="/mail" novalidate>
             <div class="mb-4">
                 <label for="name" class="form-label">Your Name</label>
                 <input type="text" class="form-control" id="name" placeholder="Someone" name="name"required>
@@ -20,6 +20,7 @@
             <div class="mb-4">
                 <label for="email" class="form-label">Your Email Address</label>
                 <input type="email" class="form-control" id="email" placeholder="name@example.com" name="email" required>
+                <div class="form-text">Your email address will never be logged by this application</div>
                 <div class="invalid-feedback">I need a valid email address to get in touch with you</div>
             </div>
             <div class="mb-4">
@@ -27,8 +28,8 @@
                 <textarea class="form-control" id="message" name="message" rows="6" required></textarea>
                 <div class="invalid-feedback">Please tell me about you</div>
             </div>
-            <div class="my-3 clearfix">
-                <button type="submit" id="runaway" class="btn btn-primary float-end">Send</button>
+            <div class="my-3 d-flex justify-content-end">
+                <button type="submit" id="runaway" class="btn btn-primary" style="position: absolute;">Send</button>
             </div>
         </form>
    </div>
