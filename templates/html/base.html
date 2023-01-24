@@ -33,18 +33,11 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="/me">About Me</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/experience">Experience</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/education">Education</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/certifications">Certifications</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/projects">Projects</a>
-                            </li>
+                            {{ range $content := .Profile.ContentKinds }}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/{{ $content }}">{{ $content | Title }}</a>
+                                </li>
+                            {{ end }}
                             {{ if .RenderContact }}
                             <li class="nav-item">
                                 <a class="nav-link" href="/contact">Contact</a>

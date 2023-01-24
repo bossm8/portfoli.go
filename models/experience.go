@@ -5,10 +5,10 @@ type ExperienceConfig struct {
 }
 
 // Make sure the interface is implemented
-var _ listConfig = &ExperienceConfig{}
+var _ ContentConfig = &ExperienceConfig{}
 
-func (ed *ExperienceConfig) GetElements() []portfolioCard {
-	return castToCard(ed.Experiences)
+func (ed *ExperienceConfig) GetElements() []Content {
+	return castToContent(ed.Experiences)
 }
 
 func (ed *ExperienceConfig) GetConfigName() string {
@@ -16,17 +16,17 @@ func (ed *ExperienceConfig) GetConfigName() string {
 }
 
 func (ed *ExperienceConfig) GetContentKind() string {
-	return kinds[kindExp]
+	return contentKinds[contentKindExperience]
 }
 
 type Experience struct {
-	Base      `yaml:",inline"`
-	Company   string `yaml:"company"`
-	DateRange `yaml:",inline"`
+	ContentBase      `yaml:",inline"`
+	Company          string `yaml:"company"`
+	ContentDateRange `yaml:",inline"`
 }
 
 // Make sure the interface is implemented
-var _ portfolioCard = &Experience{}
+var _ Content = &Experience{}
 
 func (e *Experience) GetTemplateName() string {
 	return "experience.html"

@@ -1,3 +1,5 @@
+// models contains all models for the application
+// meaning the configurable parts which will be used to render the webpage
 package models
 
 import (
@@ -9,26 +11,26 @@ import (
 )
 
 const (
-	kindExp = iota
-	kindEdu
-	kindProj
-	kindCert
+	contentKindExperience = iota
+	contentKindEducation
+	contenKindProject
+	contentkindCertification
 )
 
 var (
-	templatesDir = filepath.Join("models", "templates", "html")
-	kinds        = []string{"experience", "education", "projects", "certifications"}
-	mapping      = map[string]listConfig{
-		kinds[kindExp]:  &ExperienceConfig{},
-		kinds[kindEdu]:  &EducationConfig{},
-		kinds[kindProj]: &ProjectConfig{},
-		kinds[kindCert]: &CertificationConfig{},
+	templatesDir    = filepath.Join("models", "templates", "html")
+	contentKinds    = []string{"experience", "education", "projects", "certifications"}
+	contentMappings = map[string]ContentConfig{
+		contentKinds[contentKindExperience]:    &ExperienceConfig{},
+		contentKinds[contentKindEducation]:     &EducationConfig{},
+		contentKinds[contenKindProject]:        &ProjectConfig{},
+		contentKinds[contentkindCertification]: &CertificationConfig{},
 	}
 )
 
-func GetContent(kind string) ([]template.HTML, error) {
-	obj := mapping[kind]
-	err := loadListConfig(obj)
+func GetContent(contentKind string) ([]template.HTML, error) {
+	obj := contentMappings[contentKind]
+	err := loadContentConfig(obj)
 	if nil != err {
 		log.Printf("[ERROR] Generating content failed: %s\n", err)
 		return nil, err
@@ -36,7 +38,7 @@ func GetContent(kind string) ([]template.HTML, error) {
 	cards := obj.GetElements()
 	data := make([]template.HTML, 0)
 	for _, crd := range cards {
-		if tpl, err := renderCard(crd); nil != err {
+		if tpl, err := renderContent(crd); nil != err {
 			return nil, err
 		} else {
 			data = append(data, tpl)
@@ -47,5 +49,5 @@ func GetContent(kind string) ([]template.HTML, error) {
 }
 
 func GetRoutingRegex() string {
-	return fmt.Sprintf("/(%s)", strings.Join(kinds, "|"))
+	return fmt.Sprintf("/(%s)", strings.Join(contentKinds, "|"))
 }

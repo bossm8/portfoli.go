@@ -5,10 +5,10 @@ type EducationConfig struct {
 }
 
 // Make sure the interface is implemented
-var _ listConfig = &EducationConfig{}
+var _ ContentConfig = &EducationConfig{}
 
-func (ec *EducationConfig) GetElements() []portfolioCard {
-	return castToCard(ec.Educations)
+func (ec *EducationConfig) GetElements() []Content {
+	return castToContent(ec.Educations)
 }
 
 func (ec *EducationConfig) GetConfigName() string {
@@ -16,18 +16,18 @@ func (ec *EducationConfig) GetConfigName() string {
 }
 
 func (ec *EducationConfig) GetContentKind() string {
-	return kinds[kindEdu]
+	return contentKinds[contentKindEducation]
 }
 
 type Education struct {
-	Base           `yaml:",inline"`
-	School         string `yaml:"school"`
-	Specialization string `yaml:"specialization"`
-	DateRange      `yaml:",inline"`
+	ContentBase      `yaml:",inline"`
+	School           string `yaml:"school"`
+	Specialization   string `yaml:"specialization"`
+	ContentDateRange `yaml:",inline"`
 }
 
 // Make sure the interface is implemented
-var _ portfolioCard = &Education{}
+var _ Content = &Education{}
 
 func (e *Education) GetTemplateName() string {
 	return "education.html"

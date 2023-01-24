@@ -5,33 +5,33 @@ import (
 	"time"
 )
 
-type listConfig interface {
-	GetElements() []portfolioCard
+type ContentConfig interface {
+	GetElements() []Content
 	GetConfigName() string
 	GetContentKind() string
 }
 
-type portfolioCard interface {
+type Content interface {
 	GetTemplateName() string
 }
 
-type Base struct {
+type ContentBase struct {
 	Image       string        `yaml:"image"`
 	Name        string        `yaml:"name"`
 	Link        string        `yaml:"link"`
 	Description template.HTML `yaml:"description"`
 }
 
-type DateRange struct {
+type ContentDateRange struct {
 	From time.Time   `yaml:"from"`
 	To   interface{} `yaml:"to"`
 }
 
-func (d *DateRange) GetFromDateAsStr() string {
+func (d *ContentDateRange) GetFromDateAsStr() string {
 	return d.From.Format("2006-01-02")
 }
 
-func (d *DateRange) GetToDateAsStr() string {
+func (d *ContentDateRange) GetToDateAsStr() string {
 	if date, ok := d.To.(time.Time); ok {
 		return date.Format("2006-01-02")
 	} else if str, ok := d.To.(string); ok {

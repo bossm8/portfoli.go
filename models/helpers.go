@@ -25,25 +25,25 @@ func loadFromYAMLFile(filename string, obj interface{}) (err error) {
 	return
 }
 
-func loadListConfig(kind listConfig) error {
-	err := unmarshal(kind)
+func unmarshalContentConfig(content ContentConfig) error {
+	return loadFromYAMLFile(content.GetConfigName(), content)
+}
+
+func loadContentConfig(content ContentConfig) error {
+	err := unmarshalContentConfig(content)
 	return err
 }
 
-func unmarshal(obj listConfig) error {
-	return loadFromYAMLFile(obj.GetConfigName(), obj)
-}
-
-func renderCard(card portfolioCard) (template.HTML, error) {
-	cardTpl := filepath.Join(templatesDir, "base.html")
-	htmlTpl := filepath.Join(templatesDir, card.GetTemplateName())
-	tpl, err := template.ParseFiles(cardTpl, htmlTpl)
+func renderContent(content Content) (template.HTML, error) {
+	contentBaseTpl := filepath.Join(templatesDir, "base.html")
+	htmlTpl := filepath.Join(templatesDir, content.GetTemplateName())
+	tpl, err := template.ParseFiles(contentBaseTpl, htmlTpl)
 	if nil != err {
 		log.Printf("[ERROR] Failed to parse template '%s': %s\n", htmlTpl, err)
 		return "", err
 	}
 	rendered := bytes.Buffer{}
-	if err := tpl.ExecuteTemplate(&rendered, "card", card); nil != err {
+	if err := tpl.ExecuteTemplate(&rendered, "content", content); nil != err {
 		log.Printf("[ERROR] Failed to process template %s with error %s\n", tpl.Name(), err)
 		return "", err
 	}
@@ -51,9 +51,9 @@ func renderCard(card portfolioCard) (template.HTML, error) {
 	return template.HTML(rendered.String()), nil
 }
 
-func castToCard[T portfolioCard](cards []T) []portfolioCard {
-	casted := make([]portfolioCard, len(cards))
-	for idx, crd := range cards {
+func castToContent[T Content](content []T) []Content {
+	casted := make([]Content, len(content))
+	for idx, crd := range content {
 		casted[idx] = crd
 	}
 	return casted

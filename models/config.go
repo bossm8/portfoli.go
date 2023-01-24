@@ -9,26 +9,35 @@ import (
 	"strings"
 )
 
+// The directory where all (static and dynamic) configuration files are read from
 var configDir string
 
+// The name of the configuration file which contains the main application config
 const configName = "config.yml"
 
-// The configuration ot the smtp service
+// SMTPConfig contains the configuration of the mailing service
 type SMTPConfig struct {
+	// User which is used to login to the smpt service
+	// Should be an email, because emails will be sent with this address used
+	// as the From header (will be checked on loading)
 	User string `yaml:"user"`
+	// Password which is used to login to the smpt service
 	Pass string `yaml:"pass"`
+	// The smtp host which will send the emails
 	Host string `yaml:"host"`
-	Port int    `yaml:"port"`
+	// The port on which the smtp host listens on
+	Port int `yaml:"port"`
 }
 
-// Generic social media type
+// SocialMedia represents a generic social media type
 type SocialMedia struct {
 	// Make this one of the 'social' type icons of https://icons.getbootstrap.com/#icons
 	Type string `yaml:"type"`
 	Link string `yaml:"link"`
 }
 
-// The configurations about yourself
+// ProfileConfig contains the configurations about the profile which will
+// be highlighted in the portfolio
 type ProfileConfig struct {
 	BrandName      string         `yaml:"brandname"`
 	BannerImage    string         `yaml:"bannerimage"`
@@ -45,14 +54,16 @@ type ProfileConfig struct {
 	Me             template.HTML  `yaml:"me"`
 }
 
-// The configuration of the mailing service
+// Config contains the static configuration of the portfolio,
+// meaning the mailing config and your profile settings
 type Config struct {
 	Profile *ProfileConfig `yaml:"profile"`
 	SMTP    *SMTPConfig    `yaml:"smtp"`
 }
 
-// Loads and returns the configuration from configs/mail.yaml
+// GetConfig loads and returns the configuration from <config.dir>/config.yaml
 func GetConfig() (*Config, error) {
+	// Default values which well be used on first load when nothing is configured
 	cfg := &Config{
 		Profile: &ProfileConfig{
 			BrandName: "Queen",
@@ -69,6 +80,10 @@ func GetConfig() (*Config, error) {
 		return nil, err
 	}
 
+	// TODO: check for content types (enabled / disabled) if any and if they are valid
+
+	// All configuration of smtp is required for the mailing service to be working
+	// as yaml.v3 does not yet have a required tag, the check is made manually
 	var err error
 	val := reflect.ValueOf(*cfg.SMTP)
 	for i := 0; i < val.NumField(); i++ {
@@ -83,6 +98,8 @@ func GetConfig() (*Config, error) {
 	return cfg, err
 }
 
+// SetConfigDir sets the configuration directory where dynamic and static configurations
+// should be read from
 func SetConfigDir(dir string) {
 	configDir = dir
 }

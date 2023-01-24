@@ -5,10 +5,10 @@ type CertificationConfig struct {
 }
 
 // Make sure the interface is implemented
-var _ listConfig = &CertificationConfig{}
+var _ ContentConfig = &CertificationConfig{}
 
-func (cc *CertificationConfig) GetElements() []portfolioCard {
-	return castToCard(cc.Certifications)
+func (cc *CertificationConfig) GetElements() []Content {
+	return castToContent(cc.Certifications)
 }
 
 func (cc *CertificationConfig) GetConfigName() string {
@@ -16,16 +16,16 @@ func (cc *CertificationConfig) GetConfigName() string {
 }
 
 func (cc *CertificationConfig) GetContentKind() string {
-	return kinds[kindCert]
+	return contentKinds[contentkindCertification]
 }
 
 type Certification struct {
-	Base      `yaml:",inline"`
-	DateRange `yaml:",inline"`
+	ContentBase      `yaml:",inline"`
+	ContentDateRange `yaml:",inline"`
 }
 
 // Make sure the interface is implemented
-var _ portfolioCard = &Certification{}
+var _ Content = &Certification{}
 
 func (c *Certification) GetTemplateName() string {
 	return "certification.html"

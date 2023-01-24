@@ -59,7 +59,7 @@ func StartServer(addr string, configDir string) {
 	_http.Handle("/static/", http.StripPrefix("/static", fs))
 	_http.HandleFunc("/mail", sendMail)
 	_http.HandleFunc("/(success|fail)", serveStatus)
-	_http.HandleFunc(models.GetRoutingRegex(), serveWithContent)
+	_http.HandleFunc(models.GetRoutingRegex(), serveContent)
 	_http.HandleFunc(".*", serveParamless)
 
 	err := http.ListenAndServe(addr, _http)
@@ -77,12 +77,23 @@ func serveParamless(w http.ResponseWriter, r *http.Request) {
 	sendTemplate(w, r, htmlFile, nil, nil)
 }
 
-func serveWithContent(w http.ResponseWriter, r *http.Request) {
+func serveContent(w http.ResponseWriter, r *http.Request) {
 	// TODO: allow disabling of content types (check yaml content key)
 	tplName := filepath.Base(r.URL.Path)
+	enabled := false
+	for _, contentKind := range cfg.Profile.ContentKinds {
+		if contentKind == tplName {
+			enabled = true
+		}
+	}
+	if !enabled {
+		fail(w, r, "notfound")
+		return
+	}
 	content, err := models.GetContent(tplName)
 	if nil != err {
 		fail(w, r, "generic")
+		return
 	}
 	data := &struct {
 		HTML []template.HTML
@@ -174,7 +185,10 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 		return
 	}
 
-	if tpl, err = template.ParseFiles(baseTpl, htmlTpl); nil != err {
+	funcMap := template.FuncMap{
+		"Title": cases.Title(language.English).String,
+	}
+	if tpl, err = template.New(htmlTpl).Funcs(funcMap).ParseFiles(baseTpl, htmlTpl); nil != err {
 		log.Printf("[ERROR] Failed to parse template: %s with error %s\n", templateName, err)
 		fail(w, r, "generic")
 		return

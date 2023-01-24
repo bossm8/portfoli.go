@@ -5,10 +5,10 @@ type ProjectConfig struct {
 }
 
 // Make sure the interface is implemented
-var _ listConfig = &ProjectConfig{}
+var _ ContentConfig = &ProjectConfig{}
 
-func (pc *ProjectConfig) GetElements() []portfolioCard {
-	return castToCard(pc.Projects)
+func (pc *ProjectConfig) GetElements() []Content {
+	return castToContent(pc.Projects)
 }
 
 func (pc *ProjectConfig) GetConfigName() string {
@@ -16,15 +16,15 @@ func (pc *ProjectConfig) GetConfigName() string {
 }
 
 func (pc *ProjectConfig) GetContentKind() string {
-	return kinds[kindProj]
+	return contentKinds[contenKindProject]
 }
 
 type Project struct {
-	Base `yaml:",inline"`
+	ContentBase `yaml:",inline"`
 }
 
 // Make sure the interface is implemented
-var _ portfolioCard = &Project{}
+var _ Content = &Project{}
 
 func (p *Project) GetTemplateName() string {
 	return "project.html"
