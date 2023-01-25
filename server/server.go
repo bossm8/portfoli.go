@@ -28,8 +28,6 @@ var (
 
 	cfg *models.Config
 
-	renderContact bool = true
-
 	messages map[string]map[string]*AlertMsg
 )
 
@@ -38,7 +36,6 @@ func loadConfiguration() {
 	cfg, err = models.GetConfig()
 	if err != nil && errors.Is(err, models.InvalidSMTPConfigError) {
 		log.Printf("[WARNING]: No smtp configuration loaded, will not render contact form")
-		renderContact = false
 	} else if err != nil {
 		log.Fatalf("[ERROR] Aborting due to previous error")
 	}
@@ -169,7 +166,7 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 	var err error
 
 	// someone might enter /contact manually - make sure it is not returned if disabled
-	if !renderContact && templateName == "contact" {
+	if !cfg.RenderContact && templateName == "contact" {
 		fail(w, r, MsgContact)
 		return
 	}
@@ -192,8 +189,8 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 
 	tplData := &models.TemplateData{
 		Data:          data,
-		RenderContact: renderContact,
 		Profile:       cfg.Profile,
+		RenderContact: cfg.RenderContact,
 	}
 
 	// We cannot pass w to ExecuteTemplate directly

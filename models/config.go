@@ -45,8 +45,9 @@ type ProfileConfig struct {
 // Config contains the static configuration of the portfolio,
 // meaning the mailing config and your profile settings
 type Config struct {
-	Profile *ProfileConfig `yaml:"profile"`
-	SMTP    *SMTPConfig    `yaml:"smtp"`
+	Profile       *ProfileConfig `yaml:"profile"`
+	SMTP          *SMTPConfig    `yaml:"smtp"`
+	RenderContact bool
 }
 
 // GetConfig loads and returns the configuration from <config.dir>/config.yaml
@@ -70,6 +71,7 @@ func GetConfig() (*Config, error) {
 
 	// All configuration of smtp is required for the mailing service to be working
 	// as yaml.v3 does not yet have a required tag, the check is made manually
+	cfg.RenderContact = true
 	val := reflect.ValueOf(*cfg.SMTP)
 	for i := 0; i < val.NumField(); i++ {
 		if v := val.Field(i); v.IsZero() {
@@ -77,6 +79,7 @@ func GetConfig() (*Config, error) {
 				"[ERROR]: SMTP config lacking a correct value for '%s'\n",
 				strings.ToLower(val.Type().Field(i).Name),
 			)
+			cfg.RenderContact = false
 			return cfg, InvalidSMTPConfigError
 		}
 	}
