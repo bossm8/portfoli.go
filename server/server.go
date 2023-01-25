@@ -2,7 +2,6 @@ package server
 
 import (
 	"bytes"
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -12,7 +11,6 @@ import (
 
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
-	"gopkg.in/gomail.v2"
 
 	"bossm8.ch/portfolio/handler"
 	"bossm8.ch/portfolio/models"
@@ -22,11 +20,10 @@ import (
 const (
 	templateDir = "templates"
 	staticDir   = "static"
-	mailSubject = "[Portfolio] New message from %s"
 )
 
 var (
-	baseTpl = filepath.Join("templates", "html", "base.html")
+	baseTpl = filepath.Join(templateDir, "html", "base.html")
 
 	cfg *models.Config
 
@@ -129,29 +126,17 @@ func sendMail(w http.ResponseWriter, r *http.Request) {
 		)
 	}
 
-	if _, err := mail.ParseAddress(form["email"]); nil != err {
+	if addr, err := mail.ParseAddress(form["email"]); nil != err {
 		log.Println("[ERROR] Received invalid email address for contact form, will not send mail")
 		fail(w, r, MsgAddress)
 		return
+	} else {
+		if err := cfg.SMTP.SendMail(cfg.Profile.Email, form["name"], addr, form["messafe"]); err != nil {
+			fail(w, r, MsgContact)
+			return
+		}
 	}
 
-	mail := gomail.NewMessage()
-	subject := fmt.Sprintf(mailSubject, form["name"])
-	mail.SetHeaders(map[string][]string{
-		"To":       {cfg.Profile.Email},
-		"From":     {cfg.SMTP.User, "[Portfolio]: " + form["name"]},
-		"Reply-To": {form["email"]},
-		"Subject":  {subject},
-	})
-	mail.SetBody("text/plain", form["message"])
-
-	smtp := cfg.SMTP
-	dialer := gomail.NewDialer(smtp.Host, smtp.Port, smtp.User, smtp.Pass)
-	if err := dialer.DialAndSend(mail); err != nil {
-		log.Printf("[ERROR] Could not send email: %s\n", err)
-		fail(w, r, MsgContact)
-		return
-	}
 	log.Printf("[INFO] Sent contact email to %s\n", cfg.Profile.Email)
 
 	// redirect, so form gets cleared and a refresh does not trigger another send

@@ -15,20 +15,6 @@ var configDir string
 // The name of the configuration file which contains the main application config
 const configName = "config.yml"
 
-// SMTPConfig contains the configuration of the mailing service
-type SMTPConfig struct {
-	// User which is used to login to the smpt service
-	// Should be an email, because emails will be sent with this address used
-	// as the From header (will be checked on loading)
-	User string `yaml:"user"`
-	// Password which is used to login to the smpt service
-	Pass string `yaml:"pass"`
-	// The smtp host which will send the emails
-	Host string `yaml:"host"`
-	// The port on which the smtp host listens on
-	Port int `yaml:"port"`
-}
-
 // SocialMedia represents a generic social media type
 type SocialMedia struct {
 	// Make this one of the 'social' type icons of https://icons.getbootstrap.com/#icons
