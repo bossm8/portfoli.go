@@ -15,6 +15,16 @@ type AlertMsg struct {
 	HttpStatus int
 }
 
+const (
+	EndpointSuccess = "success"
+	EndpointFail    = "fail"
+
+	MsgContact  = "contact"
+	MsgAddress  = "address"
+	MsgNotFound = "notfound"
+	MsgGeneric  = "generic"
+)
+
 func getMessages(emailAddress *string) map[string]map[string]*AlertMsg {
 	mailto := "<a href=\"mailto:%s\">%s</a>"
 	if nil == emailAddress {
@@ -23,8 +33,8 @@ func getMessages(emailAddress *string) map[string]map[string]*AlertMsg {
 		mailto = fmt.Sprintf(mailto, *emailAddress, *emailAddress)
 	}
 	return map[string]map[string]*AlertMsg{
-		"success": {
-			"contact": {
+		EndpointSuccess: {
+			MsgContact: {
 				Title:      "Success",
 				Header:     "Message sent successfully",
 				Message:    "I will get in touch with you shortly",
@@ -32,29 +42,29 @@ func getMessages(emailAddress *string) map[string]map[string]*AlertMsg {
 				HttpStatus: http.StatusOK,
 			},
 		},
-		"fail": {
-			"address": {
+		EndpointFail: {
+			MsgAddress: {
 				Title:      "Error",
 				Header:     "Oops, something went went wrong",
 				Message:    "I could not understand your email address, please try again",
 				Kind:       "danger",
 				HttpStatus: http.StatusBadRequest,
 			},
-			"contact": {
+			MsgContact: {
 				Title:      "Error",
 				Header:     "Oops, something went wrong",
 				Message:    template.HTML("I could not process your contact request, please contact me here: " + mailto),
 				Kind:       "warning",
 				HttpStatus: http.StatusInternalServerError,
 			},
-			"notfound": {
+			MsgNotFound: {
 				Title:      "404",
 				Header:     "Oops, something went wrong",
 				Message:    "<i class='bi-binoculars me-1'></i> I could not find the page you are looking for <i class='ms-1 bi-binoculars'></i>",
 				Kind:       "danger",
 				HttpStatus: http.StatusNotFound,
 			},
-			"generic": {
+			MsgGeneric: {
 				Title:      "Sumthin Wong",
 				Header:     "Oops, something went wrong",
 				Message:    template.HTML("There was an error on my end, please try again or contact me on " + mailto),

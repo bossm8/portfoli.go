@@ -1,3 +1,4 @@
+// porfoli.go the simple and dynamic portfolio written with Go and Bootstrap
 package main
 
 import (
@@ -10,19 +11,21 @@ import (
 	"bossm8.ch/portfolio/server"
 )
 
-func getConfDirAbsPath(flag string) (dir string) {
-	if filepath.IsAbs(flag) {
-		return flag
+// convertToAbsPath takes the path of the directory
+// containing the configuration (either relative or absolute) and converts it
+// to an absolute path
+func convertToAbsPath(path *string) {
+	if filepath.IsAbs(*path) {
+		return
 	}
 	if exe, err := os.Executable(); err != nil {
 		log.Fatalf("[ERROR] parsing configuration directory: %s\n", err)
 	} else {
-		dir = filepath.Join(
+		*path = filepath.Join(
 			filepath.Dir(exe),
-			flag,
+			*path,
 		)
 	}
-	return
 }
 
 func main() {
@@ -44,9 +47,10 @@ func main() {
 	)
 	flag.Parse()
 
-	*configDir = getConfDirAbsPath(*configDir)
-
 	log.SetFlags(log.Lshortfile)
+
+	convertToAbsPath(configDir)
+	log.Printf("[INFO] using config path %s\n", *configDir)
 
 	server.StartServer(fmt.Sprintf("%s:%d", *addr, *port), *configDir)
 

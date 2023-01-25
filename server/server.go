@@ -9,7 +9,6 @@ import (
 	"net/mail"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -87,12 +86,12 @@ func serveContent(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if !enabled {
-		fail(w, r, "notfound")
+		fail(w, r, MsgNotFound)
 		return
 	}
 	content, err := models.GetContent(tplName)
 	if nil != err {
-		fail(w, r, "generic")
+		fail(w, r, MsgGeneric)
 		return
 	}
 	data := &struct {
@@ -113,7 +112,7 @@ func sendMail(w http.ResponseWriter, r *http.Request) {
 
 	if err := r.ParseForm(); err != nil {
 		log.Printf("[ERROR] Could not parse contact form: %s\n", err)
-		fail(w, r, "contact")
+		fail(w, r, MsgContact)
 		return
 	}
 
@@ -132,7 +131,7 @@ func sendMail(w http.ResponseWriter, r *http.Request) {
 
 	if _, err := mail.ParseAddress(form["email"]); nil != err {
 		log.Println("[ERROR] Received invalid email address for contact form, will not send mail")
-		fail(w, r, "address")
+		fail(w, r, MsgAddress)
 		return
 	}
 
@@ -150,7 +149,7 @@ func sendMail(w http.ResponseWriter, r *http.Request) {
 	dialer := gomail.NewDialer(smtp.Host, smtp.Port, smtp.User, smtp.Pass)
 	if err := dialer.DialAndSend(mail); err != nil {
 		log.Printf("[ERROR] Could not send email: %s\n", err)
-		fail(w, r, "contact")
+		fail(w, r, MsgContact)
 		return
 	}
 	log.Printf("[INFO] Sent contact email to %s\n", cfg.Profile.Email)
@@ -162,7 +161,7 @@ func sendMail(w http.ResponseWriter, r *http.Request) {
 func serveStatus(w http.ResponseWriter, r *http.Request) {
 	vals := r.URL.Query()
 	kind := vals.Get("kind")
-	status := strings.Replace(r.URL.Path, "/", "", -1)
+	status := filepath.Base(r.URL.Path)
 	msg := messages[status][kind]
 	sendTemplate(w, r, "status", msg, &msg.HttpStatus)
 }
@@ -174,14 +173,14 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 
 	// someone might enter /contact manually - make sure it is not returned if disabled
 	if !renderContact && templateName == "contact" {
-		fail(w, r, "notfound")
+		fail(w, r, MsgContact)
 		return
 	}
 
 	htmlTpl := filepath.Join(templateDir, "html", templateName+".html")
 
 	if res, err := os.Stat(htmlTpl); os.IsNotExist(err) || res.IsDir() {
-		fail(w, r, "notfound")
+		fail(w, r, MsgNotFound)
 		return
 	}
 
@@ -190,7 +189,7 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 	}
 	if tpl, err = template.New(htmlTpl).Funcs(funcMap).ParseFiles(baseTpl, htmlTpl); nil != err {
 		log.Printf("[ERROR] Failed to parse template: %s with error %s\n", templateName, err)
-		fail(w, r, "generic")
+		fail(w, r, MsgGeneric)
 		return
 	}
 
@@ -205,7 +204,7 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 	resp := bytes.Buffer{}
 	if err = tpl.ExecuteTemplate(&resp, "base", tplData); nil != err {
 		log.Printf("[ERROR] Failed to process template %s with error %s\n", tpl.Name(), err)
-		fail(w, r, "generic")
+		fail(w, r, MsgGeneric)
 		return
 	}
 	if nil != status && 100 <= *status {
