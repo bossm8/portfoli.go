@@ -34,7 +34,7 @@ var (
 func loadConfiguration() {
 	var err error
 	cfg, err = models.GetConfig()
-	if err != nil && errors.Is(err, models.InvalidSMTPConfigError) {
+	if err != nil && errors.Is(err, models.ErrInvalidSMTPConfig) {
 		log.Printf("[WARNING]: No smtp configuration loaded, will not render contact form")
 	} else if err != nil {
 		log.Fatalf("[ERROR] Aborting due to previous error")
@@ -55,7 +55,7 @@ func StartServer(addr string, configDir string) {
 	_http.Handle("/static/", http.StripPrefix("/static", fs))
 	_http.HandleFunc("/mail", sendMail)
 	_http.HandleFunc("/("+EndpointSuccess+"|"+EndpointFail+")", serveStatus)
-	_http.HandleFunc(models.GetRoutingRegex(), serveContent)
+	_http.HandleFunc("/"+models.GetRoutingRegexString(), serveContent)
 	_http.HandleFunc(".*", serveParamless)
 
 	err := http.ListenAndServe(addr, _http)
@@ -73,20 +73,26 @@ func serveParamless(w http.ResponseWriter, r *http.Request) {
 	sendTemplate(w, r, htmlFile, nil, nil)
 }
 
-func serveContent(w http.ResponseWriter, r *http.Request) {
-	// TODO: allow disabling of content types (check yaml content key)
-	tplName := filepath.Base(r.URL.Path)
+func isContentEnabled(requestedContent string) bool {
 	enabled := false
-	for _, contentKind := range cfg.Profile.ContentKinds {
-		if contentKind == tplName {
+	for _, configuredContent := range cfg.Profile.ContentKinds {
+		if configuredContent == requestedContent {
 			enabled = true
+			break
 		}
 	}
-	if !enabled {
+	return enabled
+}
+
+func serveContent(w http.ResponseWriter, r *http.Request) {
+
+	tplName := filepath.Base(r.URL.Path)
+	if !isContentEnabled(tplName) {
 		fail(w, r, MsgNotFound)
 		return
 	}
-	content, err := models.GetContent(tplName)
+
+	content, err := models.GetRenderedContent(tplName)
 	if nil != err {
 		fail(w, r, MsgGeneric)
 		return
@@ -121,6 +127,7 @@ func sendMail(w http.ResponseWriter, r *http.Request) {
 		"message": "",
 	}
 
+	// just sanitize everything
 	for key := range form {
 		form[key] = sanitizer.Sanitize(
 			r.FormValue(key),
@@ -149,7 +156,7 @@ func sendMail(w http.ResponseWriter, r *http.Request) {
 	log.Printf("[INFO] Sent contact email to %s\n", cfg.Profile.Email)
 
 	// redirect, so form gets cleared and a refresh does not trigger another send
-	http.Redirect(w, r, "/"+EndpointSuccess+"?kind="+MsgContact, http.StatusSeeOther)
+	success(w, r, MsgContact)
 }
 
 func serveStatus(w http.ResponseWriter, r *http.Request) {
@@ -178,6 +185,7 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 		return
 	}
 
+	// Title is used in templates to title case content kind names
 	funcMap := template.FuncMap{
 		"Title": cases.Title(language.English).String,
 	}
@@ -210,4 +218,8 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 
 func fail(w http.ResponseWriter, r *http.Request, kind string) {
 	http.Redirect(w, r, "/"+EndpointFail+"?kind="+kind, http.StatusSeeOther)
+}
+
+func success(w http.ResponseWriter, r *http.Request, kind string) {
+	http.Redirect(w, r, "/"+EndpointSuccess+"?kind="+kind, http.StatusSeeOther)
 }

@@ -28,13 +28,20 @@ var (
 	}
 )
 
-func GetContent(contentKind string) ([]template.HTML, error) {
-	obj := contentMappings[contentKind]
+// GetRenderedContent reads the content kind passed from its yaml configuration
+// and returns all configured elements as html to be placed in the main
+// template directly
+func GetRenderedContent(kind string) ([]template.HTML, error) {
+	// get the correct object to load
+	obj := contentMappings[kind]
+
 	err := loadContentConfig(obj)
 	if nil != err {
 		log.Printf("[ERROR] Generating content failed: %s\n", err)
 		return nil, err
 	}
+
+	// render the content read from yaml into the html models
 	cards := obj.GetElements()
 	data := make([]template.HTML, 0)
 	for _, crd := range cards {
@@ -48,6 +55,6 @@ func GetContent(contentKind string) ([]template.HTML, error) {
 	return data, err
 }
 
-func GetRoutingRegex() string {
-	return fmt.Sprintf("/(%s)", strings.Join(contentKinds, "|"))
+func GetRoutingRegexString() string {
+	return fmt.Sprintf("(%s)", strings.Join(contentKinds, "|"))
 }

@@ -22,7 +22,7 @@ type SocialMedia struct {
 	Link string `yaml:"link"`
 }
 
-var InvalidSMTPConfigError = errors.New("Invalid SMTP configuration")
+var ErrInvalidSMTPConfig = errors.New("invalid SMTP configuration")
 
 // ProfileConfig contains the configurations about the profile which will
 // be highlighted in the portfolio
@@ -61,7 +61,7 @@ func GetConfig() (*Config, error) {
 	}
 
 	// Check if all content kinds specified in the yaml config are valid
-	rex := regexp.MustCompile("(" + strings.Join(contentKinds, "|") + ")")
+	rex := regexp.MustCompile(GetRoutingRegexString())
 	for _, contentKind := range cfg.Profile.ContentKinds {
 		if !rex.MatchString(contentKind) {
 			log.Printf("[ERROR] Invalid content kind '%s', allowed values are: %s\n", contentKind, contentKinds)
@@ -80,7 +80,7 @@ func GetConfig() (*Config, error) {
 				strings.ToLower(val.Type().Field(i).Name),
 			)
 			cfg.RenderContact = false
-			return cfg, InvalidSMTPConfigError
+			return cfg, ErrInvalidSMTPConfig
 		}
 	}
 	return cfg, nil
