@@ -14,7 +14,7 @@
 {{/* Default Header */}}
 {{ define "header" }}
 {{ $image := or .Image "/static/img/default" }}
-<div class="h-25 py-4 px-5">
+<div class="h-25 py-4 px-5 d-flex align-items-center justify-content-center">
     <img class="card-img-top mh-100 w-auto img-fluid" src="{{ $image }}" alt="Can't find no image ¯\_( ͡° ͜ʖ ͡°)_/¯"/>
 </div>
 <div class="card-header">
@@ -36,9 +36,9 @@
 
 {{/* Default Body */}}
 {{ define "body" }}
-<div class="card-body overflow-auto">
+<div class="card-body" style="overflow: overlay;">
     <h5 class="card-title">{{ template "body-title" . }}</h5>
-    <p class="card-text overflow-auto">
+    <p class="card-text">
         {{ template "body-text" . }}
     </p>
 </div>

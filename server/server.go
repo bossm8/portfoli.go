@@ -2,6 +2,7 @@ package server
 
 import (
 	"bytes"
+	"errors"
 	"html/template"
 	"log"
 	"net/http"
@@ -35,11 +36,13 @@ var (
 func loadConfiguration() {
 	var err error
 	cfg, err = models.GetConfig()
-	if err != nil {
+	if err != nil && errors.Is(err, models.InvalidSMTPConfigError) {
 		log.Printf("[WARNING]: No smtp configuration loaded, will not render contact form")
 		renderContact = false
+	} else if err != nil {
+		log.Fatalf("[ERROR] Aborting due to previous error")
 	}
-	messages = getMessages(&cfg.Profile.Email)
+	messages = getMessages(cfg.Profile.Email.Address)
 }
 
 func StartServer(addr string, configDir string) {
@@ -54,7 +57,7 @@ func StartServer(addr string, configDir string) {
 	_http.Handle("/favicon.ico", fs)
 	_http.Handle("/static/", http.StripPrefix("/static", fs))
 	_http.HandleFunc("/mail", sendMail)
-	_http.HandleFunc("/(success|fail)", serveStatus)
+	_http.HandleFunc("/("+EndpointSuccess+"|"+EndpointFail+")", serveStatus)
 	_http.HandleFunc(models.GetRoutingRegex(), serveContent)
 	_http.HandleFunc(".*", serveParamless)
 
@@ -102,6 +105,7 @@ func serveContent(w http.ResponseWriter, r *http.Request) {
 }
 
 func sendMail(w http.ResponseWriter, r *http.Request) {
+
 	if r.Method != http.MethodPost {
 		http.Redirect(w, r, "/contact", http.StatusSeeOther)
 		return
@@ -126,21 +130,29 @@ func sendMail(w http.ResponseWriter, r *http.Request) {
 		)
 	}
 
-	if addr, err := mail.ParseAddress(form["email"]); nil != err {
+	var addr *mail.Address
+	var err error
+
+	if addr, err = mail.ParseAddress(form["email"]); nil != err {
 		log.Println("[ERROR] Received invalid email address for contact form, will not send mail")
 		fail(w, r, MsgAddress)
 		return
-	} else {
-		if err := cfg.SMTP.SendMail(cfg.Profile.Email, form["name"], addr, form["messafe"]); err != nil {
-			fail(w, r, MsgContact)
-			return
-		}
+	}
+
+	err = cfg.SMTP.SendMail(
+		cfg.Profile.Email.Address,
+		addr,
+		form["name"],
+		form["message"])
+	if nil != err {
+		fail(w, r, MsgContact)
+		return
 	}
 
 	log.Printf("[INFO] Sent contact email to %s\n", cfg.Profile.Email)
 
 	// redirect, so form gets cleared and a refresh does not trigger another send
-	http.Redirect(w, r, "/success?kind=contact", http.StatusSeeOther)
+	http.Redirect(w, r, "/"+EndpointSuccess+"?kind="+MsgContact, http.StatusSeeOther)
 }
 
 func serveStatus(w http.ResponseWriter, r *http.Request) {
@@ -200,5 +212,5 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 }
 
 func fail(w http.ResponseWriter, r *http.Request, kind string) {
-	http.Redirect(w, r, "/fail?kind="+kind, http.StatusSeeOther)
+	http.Redirect(w, r, "/"+EndpointFail+"?kind="+kind, http.StatusSeeOther)
 }

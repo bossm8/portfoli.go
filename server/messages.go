@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"net/mail"
 )
 
 type AlertMsg struct {
@@ -25,7 +26,7 @@ const (
 	MsgGeneric  = "generic"
 )
 
-func getMessages(emailAddress *string) map[string]map[string]*AlertMsg {
+func getMessages(emailAddress *mail.Address) map[string]map[string]*AlertMsg {
 	mailto := "<a href=\"mailto:%s\">%s</a>"
 	if nil == emailAddress {
 		mailto = ""
