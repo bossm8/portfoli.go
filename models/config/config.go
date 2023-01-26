@@ -1,16 +1,15 @@
-package models
+package config
 
 import (
 	"errors"
 	"html/template"
 	"log"
 	"reflect"
-	"regexp"
 	"strings"
-)
 
-// The directory where all (static and dynamic) configuration files are read from
-var configDir string
+	"bossm8.ch/portfolio/models/content"
+	"bossm8.ch/portfolio/models/utils"
+)
 
 // The name of the configuration file which contains the main application config
 const configName = "config.yml"
@@ -56,16 +55,13 @@ func GetConfig() (*Config, error) {
 	cfg := &Config{
 		Profile: &ProfileConfig{},
 	}
-	if err := loadFromYAMLFile(configName, cfg); nil != err {
+	if err := utils.LoadFromYAMLFile(configName, cfg); nil != err {
 		return nil, err
 	}
 
-	// Check if all content kinds specified in the yaml config are valid
-	rex := regexp.MustCompile(GetRoutingRegexString())
-	for _, contentKind := range cfg.Profile.ContentKinds {
-		if !rex.MatchString(contentKind) {
-			log.Printf("[ERROR] Invalid content kind '%s', allowed values are: %s\n", contentKind, contentKinds)
-			return nil, errors.New("invalid content kind " + contentKind)
+	for _, contentType := range cfg.Profile.ContentKinds {
+		if !content.IsValidContentType(contentType) {
+			return nil, errors.New("invalid content kind " + contentType)
 		}
 	}
 
@@ -84,10 +80,4 @@ func GetConfig() (*Config, error) {
 		}
 	}
 	return cfg, nil
-}
-
-// SetConfigDir sets the configuration directory where dynamic and static configurations
-// should be read from
-func SetConfigDir(dir string) {
-	configDir = dir
 }

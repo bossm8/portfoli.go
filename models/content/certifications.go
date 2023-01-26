@@ -1,4 +1,4 @@
-package models
+package content
 
 type CertificationConfig struct {
 	Certifications []*Certification `yaml:"certifications"`
@@ -16,7 +16,7 @@ func (cc *CertificationConfig) GetConfigName() string {
 }
 
 func (cc *CertificationConfig) GetContentKind() string {
-	return contentKinds[contentkindCertification]
+	return ContentTypes[typeCertification]
 }
 
 type Certification struct {

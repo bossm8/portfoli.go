@@ -1,4 +1,4 @@
-package models
+package content
 
 type EducationConfig struct {
 	Educations []*Education `yaml:"educations"`
@@ -16,7 +16,7 @@ func (ec *EducationConfig) GetConfigName() string {
 }
 
 func (ec *EducationConfig) GetContentKind() string {
-	return contentKinds[contentKindEducation]
+	return ContentTypes[typeEducation]
 }
 
 type Education struct {

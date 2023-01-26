@@ -1,4 +1,4 @@
-package models
+package content
 
 type ExperienceConfig struct {
 	Experiences []*Experience `yaml:"experiences"`
@@ -16,7 +16,7 @@ func (ed *ExperienceConfig) GetConfigName() string {
 }
 
 func (ed *ExperienceConfig) GetContentKind() string {
-	return contentKinds[contentKindExperience]
+	return ContentTypes[typeExperience]
 }
 
 type Experience struct {

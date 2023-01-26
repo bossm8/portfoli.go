@@ -1,4 +1,4 @@
-package models
+package content
 
 type ProjectConfig struct {
 	Projects []*Project `yaml:"projects"`
@@ -16,7 +16,7 @@ func (pc *ProjectConfig) GetConfigName() string {
 }
 
 func (pc *ProjectConfig) GetContentKind() string {
-	return contentKinds[contenKindProject]
+	return ContentTypes[typeProject]
 }
 
 type Project struct {

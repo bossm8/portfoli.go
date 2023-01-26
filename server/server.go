@@ -15,6 +15,8 @@ import (
 
 	"bossm8.ch/portfolio/handler"
 	"bossm8.ch/portfolio/models"
+	"bossm8.ch/portfolio/models/config"
+	"bossm8.ch/portfolio/models/content"
 	"github.com/microcosm-cc/bluemonday"
 )
 
@@ -26,15 +28,15 @@ const (
 var (
 	baseTpl = filepath.Join(templateDir, "html", "base.html")
 
-	cfg *models.Config
+	cfg *config.Config
 
 	messages map[string]map[string]*AlertMsg
 )
 
 func loadConfiguration() {
 	var err error
-	cfg, err = models.GetConfig()
-	if err != nil && errors.Is(err, models.ErrInvalidSMTPConfig) {
+	cfg, err = config.GetConfig()
+	if err != nil && errors.Is(err, config.ErrInvalidSMTPConfig) {
 		log.Printf("[WARNING]: No smtp configuration loaded, will not render contact form")
 	} else if err != nil {
 		log.Fatalf("[ERROR] Aborting due to previous error")
@@ -55,7 +57,7 @@ func StartServer(addr string, configDir string) {
 	_http.Handle("/static/", http.StripPrefix("/static", fs))
 	_http.HandleFunc("/mail", sendMail)
 	_http.HandleFunc("/("+EndpointSuccess+"|"+EndpointFail+")", serveStatus)
-	_http.HandleFunc("/"+models.GetRoutingRegexString(), serveContent)
+	_http.HandleFunc("/"+content.GetRoutingRegexString(), serveContent)
 	_http.HandleFunc(".*", serveParamless)
 
 	err := http.ListenAndServe(addr, _http)
@@ -92,7 +94,7 @@ func serveContent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	content, err := models.GetRenderedContent(tplName)
+	content, err := content.GetRenderedContent(tplName)
 	if nil != err {
 		fail(w, r, MsgGeneric)
 		return
