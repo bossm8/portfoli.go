@@ -3,6 +3,7 @@ package server
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -17,6 +18,7 @@ import (
 	"bossm8.ch/portfolio/models"
 	"bossm8.ch/portfolio/models/config"
 	"bossm8.ch/portfolio/models/content"
+	"bossm8.ch/portfolio/server/messages"
 	"github.com/microcosm-cc/bluemonday"
 )
 
@@ -39,7 +41,7 @@ func loadConfiguration() {
 	} else if err != nil {
 		log.Fatalf("[ERROR] Aborting due to previous error")
 	}
-	compileMessages(cfg.Profile.Email.Address)
+	messages.Compile(cfg.Profile.Email.Address)
 }
 
 func StartServer(addr string, configDir string) {
@@ -54,9 +56,9 @@ func StartServer(addr string, configDir string) {
 	_http.Handle("/favicon.ico", fs)
 	_http.Handle("/static/", http.StripPrefix("/static", fs))
 	_http.HandleFunc("/mail", sendMail)
-	_http.HandleFunc("/("+EndpointSuccess+"|"+EndpointFail+")", serveStatus)
+	_http.HandleFunc("/"+messages.GetRoutingRegexString(), serveStatus)
 	_http.HandleFunc("/"+content.GetRoutingRegexString(), serveContent)
-	_http.HandleFunc(".*", serveParamless)
+	_http.HandleFunc(".*", serveGeneric)
 
 	err := http.ListenAndServe(addr, _http)
 	if err != nil {
@@ -65,7 +67,7 @@ func StartServer(addr string, configDir string) {
 
 }
 
-func serveParamless(w http.ResponseWriter, r *http.Request) {
+func serveGeneric(w http.ResponseWriter, r *http.Request) {
 	htmlFile := "index"
 	if r.URL.Path != "/" {
 		htmlFile = filepath.Base(r.URL.Path)
@@ -86,25 +88,27 @@ func isContentEnabled(requestedContent string) bool {
 
 func serveContent(w http.ResponseWriter, r *http.Request) {
 
-	tplName := filepath.Base(r.URL.Path)
-	if !isContentEnabled(tplName) {
-		fail(w, r, MsgNotFound)
+	contentType := filepath.Base(r.URL.Path)
+	if !isContentEnabled(contentType) {
+		fail(w, r, messages.MsgNotFound)
 		return
 	}
 
-	content, err := content.GetRenderedContent(tplName)
+	content, err := content.GetRenderedContent(contentType)
 	if nil != err {
-		fail(w, r, MsgGeneric)
+		fail(w, r, messages.MsgGeneric)
 		return
 	}
+
 	data := &struct {
 		HTML []template.HTML
 		Kind string
 	}{
 		HTML: content,
-		Kind: cases.Title(language.English).String(tplName),
+		Kind: cases.Title(language.English).String(contentType),
 	}
 	sendTemplate(w, r, "cards", data, nil)
+
 }
 
 func sendMail(w http.ResponseWriter, r *http.Request) {
@@ -116,7 +120,7 @@ func sendMail(w http.ResponseWriter, r *http.Request) {
 
 	if err := r.ParseForm(); err != nil {
 		log.Printf("[ERROR] Could not parse contact form: %s\n", err)
-		fail(w, r, MsgContact)
+		fail(w, r, messages.MsgContact)
 		return
 	}
 
@@ -139,7 +143,7 @@ func sendMail(w http.ResponseWriter, r *http.Request) {
 
 	if addr, err = mail.ParseAddress(form["email"]); nil != err {
 		log.Println("[ERROR] Received invalid email address for contact form, will not send mail")
-		fail(w, r, MsgAddress)
+		fail(w, r, messages.MsgAddress)
 		return
 	}
 
@@ -149,22 +153,27 @@ func sendMail(w http.ResponseWriter, r *http.Request) {
 		form["name"],
 		form["message"])
 	if nil != err {
-		fail(w, r, MsgContact)
+		fail(w, r, messages.MsgContact)
 		return
 	}
 
 	log.Printf("[INFO] Sent contact email to %s\n", cfg.Profile.Email)
 
 	// redirect, so form gets cleared and a refresh does not trigger another send
-	success(w, r, MsgContact)
+	success(w, r, messages.MsgContact)
+
 }
 
 func serveStatus(w http.ResponseWriter, r *http.Request) {
+
 	vals := r.URL.Query()
 	kind := vals.Get("kind")
+
 	status := filepath.Base(r.URL.Path)
-	msg := getMessage(status, kind)
+	msg := messages.Get(status, kind)
+
 	sendTemplate(w, r, "status", msg, &msg.HttpStatus)
+
 }
 
 func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, data interface{}, status *int) {
@@ -174,14 +183,14 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 
 	// someone might enter /contact manually - make sure it is not returned if disabled
 	if !cfg.RenderContact && templateName == "contact" {
-		fail(w, r, MsgContact)
+		fail(w, r, messages.MsgContact)
 		return
 	}
 
 	htmlTpl := filepath.Join(templateDir, "html", templateName+".html")
 
 	if res, err := os.Stat(htmlTpl); os.IsNotExist(err) || res.IsDir() {
-		fail(w, r, MsgNotFound)
+		fail(w, r, messages.MsgNotFound)
 		return
 	}
 
@@ -191,7 +200,7 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 	}
 	if tpl, err = template.New(htmlTpl).Funcs(funcMap).ParseFiles(baseTpl, htmlTpl); nil != err {
 		log.Printf("[ERROR] Failed to parse template: %s with error %s\n", templateName, err)
-		fail(w, r, MsgGeneric)
+		fail(w, r, messages.MsgGeneric)
 		return
 	}
 
@@ -206,7 +215,7 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 	resp := bytes.Buffer{}
 	if err = tpl.ExecuteTemplate(&resp, "base", tplData); nil != err {
 		log.Printf("[ERROR] Failed to process template %s with error %s\n", tpl.Name(), err)
-		fail(w, r, MsgGeneric)
+		fail(w, r, messages.MsgGeneric)
 		return
 	}
 	if nil != status && 100 <= *status {
@@ -216,10 +225,10 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 
 }
 
-func fail(w http.ResponseWriter, r *http.Request, kind string) {
-	http.Redirect(w, r, "/"+EndpointFail+"?kind="+kind, http.StatusSeeOther)
+func fail(w http.ResponseWriter, r *http.Request, kind messages.MessageType) {
+	http.Redirect(w, r, fmt.Sprintf("/%s?kind=%s", messages.EndpointFail, kind), http.StatusSeeOther)
 }
 
-func success(w http.ResponseWriter, r *http.Request, kind string) {
-	http.Redirect(w, r, "/"+EndpointSuccess+"?kind="+kind, http.StatusSeeOther)
+func success(w http.ResponseWriter, r *http.Request, kind messages.MessageType) {
+	http.Redirect(w, r, fmt.Sprintf("/%s?kind=%s", messages.EndpointSuccess, kind), http.StatusSeeOther)
 }

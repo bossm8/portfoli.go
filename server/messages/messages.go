@@ -1,4 +1,4 @@
-package server
+package messages
 
 import (
 	"fmt"
@@ -17,26 +17,29 @@ type AlertMsg struct {
 	HttpStatus int
 }
 
-const (
-	EndpointSuccess = "success"
-	EndpointFail    = "fail"
+type MessageType string
+type MessageEndpoint string
 
-	MsgContact  = "contact"
-	MsgAddress  = "address"
-	MsgNotFound = "notfound"
-	MsgGeneric  = "generic"
+const (
+	EndpointSuccess MessageEndpoint = "success"
+	EndpointFail    MessageEndpoint = "fail"
+
+	MsgContact  MessageType = "contact"
+	MsgAddress  MessageType = "address"
+	MsgNotFound MessageType = "notfound"
+	MsgGeneric  MessageType = "generic"
 )
 
-var messages map[string]map[string]*AlertMsg
+var messages map[MessageEndpoint]map[MessageType]*AlertMsg
 
-func compileMessages(emailAddress *mail.Address) {
+func Compile(emailAddress *mail.Address) {
 	mailto := "<a href=\"mailto:%s\">%s</a>"
 	if nil == emailAddress {
 		mailto = ""
 	} else {
 		mailto = fmt.Sprintf(mailto, emailAddress.Address, emailAddress.Address)
 	}
-	messages = map[string]map[string]*AlertMsg{
+	messages = map[MessageEndpoint]map[MessageType]*AlertMsg{
 		EndpointSuccess: {
 			MsgContact: {
 				Title:      "Success",
@@ -79,11 +82,17 @@ func compileMessages(emailAddress *mail.Address) {
 	}
 }
 
-func getMessage(endpoint string, kind string) (msg *AlertMsg) {
+func Get(endpoint string, kind string) (msg *AlertMsg) {
 	var ok bool
-	if msg, ok = messages[endpoint][kind]; !ok {
+	ep := MessageEndpoint(endpoint)
+	message := MessageType(kind)
+	if msg, ok = messages[ep][message]; !ok {
 		log.Printf("[WARNING] Invalid message requested: %s/%s\n", endpoint, kind)
 		return messages[EndpointFail][MsgGeneric]
 	}
 	return
+}
+
+func GetRoutingRegexString() string {
+	return fmt.Sprintf("(%s|%s)", EndpointSuccess, EndpointFail)
 }
