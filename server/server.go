@@ -29,8 +29,6 @@ var (
 	baseTpl = filepath.Join(templateDir, "html", "base.html")
 
 	cfg *config.Config
-
-	messages map[string]map[string]*AlertMsg
 )
 
 func loadConfiguration() {
@@ -41,7 +39,7 @@ func loadConfiguration() {
 	} else if err != nil {
 		log.Fatalf("[ERROR] Aborting due to previous error")
 	}
-	messages = getMessages(cfg.Profile.Email.Address)
+	compileMessages(cfg.Profile.Email.Address)
 }
 
 func StartServer(addr string, configDir string) {
@@ -165,7 +163,7 @@ func serveStatus(w http.ResponseWriter, r *http.Request) {
 	vals := r.URL.Query()
 	kind := vals.Get("kind")
 	status := filepath.Base(r.URL.Path)
-	msg := messages[status][kind]
+	msg := getMessage(status, kind)
 	sendTemplate(w, r, "status", msg, &msg.HttpStatus)
 }
 

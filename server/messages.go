@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"net/mail"
 )
@@ -26,14 +27,16 @@ const (
 	MsgGeneric  = "generic"
 )
 
-func getMessages(emailAddress *mail.Address) map[string]map[string]*AlertMsg {
+var messages map[string]map[string]*AlertMsg
+
+func compileMessages(emailAddress *mail.Address) {
 	mailto := "<a href=\"mailto:%s\">%s</a>"
 	if nil == emailAddress {
 		mailto = ""
 	} else {
-		mailto = fmt.Sprintf(mailto, *emailAddress, *emailAddress)
+		mailto = fmt.Sprintf(mailto, emailAddress.Address, emailAddress.Address)
 	}
-	return map[string]map[string]*AlertMsg{
+	messages = map[string]map[string]*AlertMsg{
 		EndpointSuccess: {
 			MsgContact: {
 				Title:      "Success",
@@ -74,4 +77,13 @@ func getMessages(emailAddress *mail.Address) map[string]map[string]*AlertMsg {
 			},
 		},
 	}
+}
+
+func getMessage(endpoint string, kind string) (msg *AlertMsg) {
+	var ok bool
+	if msg, ok = messages[endpoint][kind]; !ok {
+		log.Printf("[WARNING] Invalid message requested: %s/%s\n", endpoint, kind)
+		return messages[EndpointFail][MsgGeneric]
+	}
+	return
 }
