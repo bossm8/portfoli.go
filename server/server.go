@@ -60,6 +60,7 @@ func StartServer(addr string, configDir string) {
 	_http.HandleFunc("/"+content.GetRoutingRegexString(), serveContent)
 	_http.HandleFunc(".*", serveGeneric)
 
+	log.Printf("[INFO] Listening on %s", addr)
 	err := http.ListenAndServe(addr, _http)
 	if err != nil {
 		log.Fatal(err)

@@ -45,9 +45,16 @@ func main() {
 		"configs",
 		"Path to the directory containing the yaml configurations",
 	)
+	verbose := flag.Bool(
+		"verbose",
+		false,
+		"Print more verbose logging information (filenames)",
+	)
 	flag.Parse()
 
-	log.SetFlags(log.Lshortfile)
+	if *verbose {
+		log.SetFlags(log.Lshortfile)
+	}
 
 	convertToAbsPath(configDir)
 	log.Printf("[INFO] using config path %s\n", *configDir)

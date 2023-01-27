@@ -22,3 +22,18 @@
   background-color: rgba(0,0,0,0.2);
   background-clip: content-box;
 }
+
+.h-30 {
+  height: 30%!important;
+}
+
+.h-20 {
+  height: 20%!important;
+}
+
+.h-80 {
+  height: 80%!important;
+}
+.content-card {
+  height: 550px;
+}

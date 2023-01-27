@@ -84,9 +84,7 @@ func Compile(emailAddress *mail.Address) {
 
 func Get(endpoint string, kind string) (msg *AlertMsg) {
 	var ok bool
-	ep := MessageEndpoint(endpoint)
-	message := MessageType(kind)
-	if msg, ok = messages[ep][message]; !ok {
+	if msg, ok = messages[MessageEndpoint(endpoint)][MessageType(kind)]; !ok {
 		log.Printf("[WARNING] Invalid message requested: %s/%s\n", endpoint, kind)
 		return messages[EndpointFail][MsgGeneric]
 	}

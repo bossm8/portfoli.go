@@ -4,7 +4,7 @@
 {{/* Use the default defined blocks and override the text content only */}}
 
 {{ define "content" }}
-<div class="card shadow" style="height: 500px;">
+<div class="card shadow content-card">
     {{ template "header" . }}
     {{ template "body" . }}
     {{ template "footer" . }}
@@ -13,8 +13,8 @@
 
 {{/* Default Header */}}
 {{ define "header" }}
-{{ $image := or .Image "/static/img/default" }}
-<div class="h-25 py-4 px-5 d-flex align-items-center justify-content-center">
+{{ $image := or .Image "/static/img/portfoli.go-yellow.svg" }}
+<div class="h-30 py-4 px-5 d-flex align-items-center justify-content-center">
     <img class="card-img-top mh-100 w-auto img-fluid" src="{{ $image }}" alt="Can't find no image ¯\_( ͡° ͜ʖ ͡°)_/¯"/>
 </div>
 <div class="card-header">
