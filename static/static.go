@@ -15,6 +15,8 @@ import (
 	"github.com/yosssi/gohtml"
 )
 
+// TODO: render error messages to their corresponding file
+
 var (
 	cfg *config.Config
 )
@@ -28,6 +30,7 @@ func Build(configDir string) {
 	messages.Compile(cfg.Profile.Email.Address)
 	buildGeneric()
 	buildContent()
+	buildErrors()
 }
 
 func buildGeneric() {
@@ -60,6 +63,10 @@ func buildContent() {
 			content,
 		)
 	}
+}
+
+func buildErrors() {
+	log.Println("WARNING :::: Error htmls need to be build")
 }
 
 func build(tplFileName string, outputFileName string, data interface{}) {
