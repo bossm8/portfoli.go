@@ -2,6 +2,7 @@ package static
 
 import (
 	"errors"
+	"fmt"
 	"io/fs"
 	"log"
 	"os"
@@ -14,8 +15,6 @@ import (
 	"bossm8.ch/portfolio/utils"
 	"github.com/yosssi/gohtml"
 )
-
-// TODO: render error messages to their corresponding file
 
 var (
 	cfg *config.Config
@@ -66,7 +65,12 @@ func buildContent() {
 }
 
 func buildErrors() {
-	log.Println("WARNING :::: Error htmls need to be build")
+	msg := messages.Get(string(messages.EndpointFail), string(messages.MsgNotFound))
+	build(
+		cfg.StatusTemplateName+".html",
+		fmt.Sprintf("%d.html", msg.HttpStatus),
+		msg,
+	)
 }
 
 func build(tplFileName string, outputFileName string, data interface{}) {
