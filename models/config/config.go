@@ -41,6 +41,7 @@ var ErrInvalidSMTPConfig = errors.New("invalid SMTP configuration")
 // be highlighted in the portfolio
 type ProfileConfig struct {
 	BrandName      string         `yaml:"brandname"`
+	BrandImage     *template.HTML `yaml:"brandimage"`
 	BannerImage    string         `yaml:"bannerimage"`
 	Avatar         string         `yaml:"avatar"`
 	FirstName      string         `yaml:"firstname"`
@@ -93,8 +94,14 @@ func (c *Config) DistDir() string {
 // GetConfig loads and returns the configuration from <config.dir>/config.yaml
 func GetConfig() (*Config, error) {
 	// Default values which well be used on first load when nothing is configured
+	defaultBrandImage := template.HTML(
+		"<img src='/static/img/portfoli.go-yellow.svg' style='width: 25px; margin-bottom: 4px;'/>",
+	)
 	cfg := &Config{
-		Profile:             &ProfileConfig{},
+		Profile: &ProfileConfig{
+			BrandName:  "Portfoli.go",
+			BrandImage: &defaultBrandImage,
+		},
 		BaseTemplatePath:    filepath.Join(templateDir, "html", baseTemplateName+".html"),
 		BaseTemplateName:    baseTemplateName,
 		HTMLTeplatesDir:     filepath.Join(templateDir, "html"),
