@@ -7,9 +7,9 @@ BOOTSTRAP=/tmp/portfoli.go-bootstrap.zip
 BOOTSTRAP_ICONS=/tmp/portfoli.go-bootstrap-icons.zip
 ANIME_JS=/tmp/portfoli.go-anime.zip
 
-wget https://github.com/twbs/bootstrap/releases/download/v5.0.2/bootstrap-5.0.2-dist.zip -O ${BOOTSTRAP}
-wget https://github.com/twbs/icons/releases/download/v1.10.3/bootstrap-icons-1.10.3.zip -O ${BOOTSTRAP_ICONS}
-wget https://github.com/juliangarnier/anime/archive/refs/tags/v3.2.1.zip -O ${ANIME_JS}
+wget -q https://github.com/twbs/bootstrap/releases/download/v5.0.2/bootstrap-5.0.2-dist.zip -O ${BOOTSTRAP}
+wget -q https://github.com/twbs/icons/releases/download/v1.10.3/bootstrap-icons-1.10.3.zip -O ${BOOTSTRAP_ICONS}
+wget -q https://github.com/juliangarnier/anime/archive/refs/tags/v3.2.1.zip -O ${ANIME_JS}
 
 for ZIP in ${BOOTSTRAP} ${BOOTSTRAP_ICONS} ${ANIME_JS}; do
     unzip ${ZIP} -d ${ZIP%.*}

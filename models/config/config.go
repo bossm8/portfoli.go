@@ -19,9 +19,11 @@ const (
 	configName          = "config.yml"
 	templateDir         = "templates"
 	staticDir           = "public"
+	distDir             = "dist"
 	baseTemplateName    = "base"
 	contentTemplateName = "content"
 	statusTemplateName  = "status"
+	contactTemplateName = "contact"
 	mailTemplate        = "mail.html"
 )
 
@@ -63,6 +65,7 @@ type Config struct {
 	HTMLTeplatesDir     string
 	StatusTemplateName  string
 	ContentTemplateName string
+	ContactTemplateName string
 	StaticDir           string
 	MailTemplatePath    string
 }
@@ -71,8 +74,18 @@ type Config struct {
 // which cannot be rendered on their own when building the static website
 func (c *Config) StaticIgnoreRegex() *regexp.Regexp {
 	return regexp.MustCompile(
-		fmt.Sprintf("(%s|%s|%s)", baseTemplateName, contentTemplateName, statusTemplateName),
+		fmt.Sprintf("(%s|%s|%s|%s)",
+			baseTemplateName,
+			contentTemplateName,
+			statusTemplateName,
+			contactTemplateName,
+		),
 	)
+}
+
+// DistDir returns the directory to render the static website into
+func (c *Config) DistDir() string {
+	return distDir
 }
 
 // GetConfig loads and returns the configuration from <config.dir>/config.yaml
@@ -85,6 +98,7 @@ func GetConfig() (*Config, error) {
 		HTMLTeplatesDir:     filepath.Join(templateDir, "html"),
 		StatusTemplateName:  statusTemplateName,
 		ContentTemplateName: contentTemplateName,
+		ContactTemplateName: contactTemplateName,
 		StaticDir:           staticDir,
 		MailTemplatePath:    filepath.Join(templateDir, "mail", mailTemplate+".html"),
 	}

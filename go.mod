@@ -12,6 +12,7 @@ require (
 require (
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/gorilla/css v1.0.0 // indirect
-	golang.org/x/net v0.0.0-20221002022538-bcab6841153b // indirect
+	github.com/yosssi/gohtml v0.0.0-20201013000340-ee4748c638f4 // indirect
+	golang.org/x/net v0.5.0 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 )

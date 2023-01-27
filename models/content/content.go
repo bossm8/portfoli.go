@@ -11,6 +11,8 @@ import (
 	"time"
 
 	"bossm8.ch/portfolio/models/utils"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 const (
@@ -28,8 +30,14 @@ var (
 		ContentTypes[typeProject]:       &ProjectConfig{},
 		ContentTypes[typeCertification]: &CertificationConfig{},
 	}
-	rex = regexp.MustCompile(fmt.Sprintf("(%s)", strings.Join(ContentTypes, "|")))
+	rex          = regexp.MustCompile(fmt.Sprintf("(%s)", strings.Join(ContentTypes, "|")))
+	templatesDir = filepath.Join("models", "content", "templates", "html")
 )
+
+type ContentTemplateData struct {
+	Type string
+	HTML []template.HTML
+}
 
 type ContentConfig interface {
 	GetElements() []Content
@@ -66,14 +74,10 @@ func (d *ContentDateRange) GetToDateAsStr() string {
 	return "now"
 }
 
-var (
-	templatesDir = filepath.Join("models", "content", "templates", "html")
-)
-
 // GetRenderedContent reads the content kind passed from its yaml configuration
 // and returns all configured elements as html to be placed in the main
 // template directly
-func GetRenderedContent(contentType string) ([]template.HTML, error) {
+func GetRenderedContent(contentType string) (*ContentTemplateData, error) {
 	// Get the correct object to load
 	// TODO validate so we do not have null values
 	obj := contentMappings[contentType]
@@ -95,7 +99,8 @@ func GetRenderedContent(contentType string) ([]template.HTML, error) {
 		}
 
 	}
-	return data, err
+	titledType := cases.Title(language.English).String(contentType)
+	return &ContentTemplateData{Type: titledType, HTML: data}, err
 }
 
 func GetRoutingRegexString() string {

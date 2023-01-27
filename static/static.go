@@ -2,12 +2,17 @@ package static
 
 import (
 	"errors"
-	"io/ioutil"
+	"io/fs"
 	"log"
+	"os"
+	"path/filepath"
 
 	"bossm8.ch/portfolio/messages"
+	"bossm8.ch/portfolio/models"
 	"bossm8.ch/portfolio/models/config"
+	"bossm8.ch/portfolio/models/content"
 	"bossm8.ch/portfolio/utils"
+	"github.com/yosssi/gohtml"
 )
 
 var (
@@ -21,11 +26,12 @@ func Build(configDir string) {
 		log.Fatalf("[ERROR] Loading configuration failed: %s\n", err)
 	}
 	messages.Compile(cfg.Profile.Email.Address)
-	build()
+	buildGeneric()
+	buildContent()
 }
 
-func build() {
-	templates, err := ioutil.ReadDir("templates/html")
+func buildGeneric() {
+	templates, err := os.ReadDir("templates/html")
 	if nil != err {
 		log.Fatalf("[ERROR] Could not read template directory: %s\n", err)
 	}
@@ -34,6 +40,58 @@ func build() {
 		if cfg.StaticIgnoreRegex().MatchString(tpl.Name()) {
 			continue
 		}
-		log.Println(tpl.Name())
+		build(
+			tpl.Name(),
+			tpl.Name(),
+			nil,
+		)
 	}
+}
+
+func buildContent() {
+	for _, contentType := range cfg.Profile.ContentKinds {
+		content, err := content.GetRenderedContent(contentType)
+		if nil != err {
+			log.Fatalf("[ERROR] Rendering content %s: %s\n", contentType, err)
+		}
+		build(
+			cfg.ContentTemplateName+".html",
+			contentType+".html",
+			content,
+		)
+	}
+}
+
+func build(tplFileName string, outputFileName string, data interface{}) {
+	log.Printf(
+		"[INFO] Rendering template %s to %s in %s\n",
+		tplFileName,
+		outputFileName,
+		cfg.DistDir(),
+	)
+
+	htmlTpl := filepath.Join(cfg.HTMLTeplatesDir, tplFileName)
+
+	tplData := &models.TemplateData{
+		Profile:       cfg.Profile,
+		RenderContact: false,
+		Data:          data,
+	}
+
+	resp, err := utils.RenderTemplate(
+		cfg.BaseTemplateName,
+		cfg.BaseTemplatePath,
+		htmlTpl,
+		tplData,
+	)
+	if nil != err {
+		log.Fatalf("[Error] Failed to render template: %s\n", err)
+	}
+
+	outputFile := filepath.Join(cfg.DistDir(), outputFileName)
+	prettyHTML := gohtml.FormatBytes(resp.Bytes())
+	if err := os.WriteFile(outputFile, prettyHTML, fs.ModePerm); nil != err {
+		log.Fatalf("[ERROR] Failed to write template: %s\n", err)
+	}
+
 }

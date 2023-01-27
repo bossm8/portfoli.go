@@ -1,18 +1,13 @@
 package server
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 	"net/mail"
 	"os"
 	"path/filepath"
-
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
 
 	"bossm8.ch/portfolio/handler"
 	"bossm8.ch/portfolio/messages"
@@ -85,19 +80,12 @@ func serveContent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	content, err := content.GetRenderedContent(contentType)
+	data, err := content.GetRenderedContent(contentType)
 	if nil != err {
 		fail(w, r, messages.MsgGeneric)
 		return
 	}
 
-	data := &struct {
-		HTML []template.HTML
-		Kind string
-	}{
-		HTML: content,
-		Kind: cases.Title(language.English).String(contentType),
-	}
 	sendTemplate(w, r, cfg.ContentTemplateName, data, nil)
 
 }
@@ -105,7 +93,7 @@ func serveContent(w http.ResponseWriter, r *http.Request) {
 func sendMail(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodPost {
-		http.Redirect(w, r, "/contact", http.StatusSeeOther)
+		http.Redirect(w, r, "/"+cfg.ContactTemplateName, http.StatusSeeOther)
 		return
 	}
 
@@ -169,11 +157,8 @@ func serveStatus(w http.ResponseWriter, r *http.Request) {
 
 func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, data interface{}, status *int) {
 
-	var tpl *template.Template
-	var err error
-
 	// someone might enter /contact manually - make sure it is not returned if disabled
-	if !cfg.RenderContact && templateName == "contact" {
+	if !cfg.RenderContact && templateName == cfg.ContactTemplateName {
 		fail(w, r, messages.MsgContact)
 		return
 	}
@@ -186,30 +171,18 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 		return
 	}
 
-	// Title is used in templates to title case content kind names
-	funcMap := template.FuncMap{
-		"Title": cases.Title(language.English).String,
-	}
-	if tpl, err = template.New(htmlTpl).Funcs(funcMap).ParseFiles(cfg.BaseTemplatePath, htmlTpl); nil != err {
-		log.Printf("[ERROR] Failed to parse template: %s with error %s\n", templateName, err)
-		fail(w, r, messages.MsgGeneric)
-		return
-	}
-
 	tplData := &models.TemplateData{
 		Data:          data,
 		Profile:       cfg.Profile,
 		RenderContact: cfg.RenderContact,
 	}
 
-	// We cannot pass w to ExecuteTemplate directly
-	// if the template fails we cannot redirect because there would be superfluous call to w.WriteHeader
-	resp := bytes.Buffer{}
-	if err = tpl.ExecuteTemplate(&resp, cfg.BaseTemplateName, tplData); nil != err {
-		log.Printf("[ERROR] Failed to process template %s with error %s\n", tpl.Name(), err)
+	resp, err := utils.RenderTemplate(cfg.BaseTemplateName, cfg.BaseTemplatePath, htmlTpl, tplData)
+	if nil != err {
 		fail(w, r, messages.MsgGeneric)
 		return
 	}
+
 	if nil != status && 100 <= *status {
 		w.WriteHeader(*status)
 	}

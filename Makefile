@@ -16,10 +16,12 @@ run: setup
 	go run portfoli.go -config.dir ${PWD}/configs
 
 static:
-	test -d ${PWD}/dist || mkdir ${PWD}/dist
+	test -d ${PWD}/dist && rm -rf ${PWD}/dist 
+	mkdir ${PWD}/dist
 	go run portfoli.go -config.dir ${PWD}/configs -static
-	/bin/bash .devcontainer/download.sh
-	cp -r ${PWD}/public/* ${PWD}/dist/
+	/bin/bash .devcontainer/download.sh > /dev/null
+	cp -r ${PWD}/public ${PWD}/dist/static
+	mv ${PWD}/dist/static/favicon.ico ${PWD}/dist
 	
 
 .PHONY: test dist setup run static
