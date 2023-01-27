@@ -3,7 +3,6 @@ package static
 import (
 	"errors"
 	"fmt"
-	"io/fs"
 	"log"
 	"os"
 	"path/filepath"
@@ -101,7 +100,7 @@ func build(tplFileName string, outputFileName string, data interface{}) {
 
 	outputFile := filepath.Join(cfg.DistDir(), outputFileName)
 	prettyHTML := gohtml.FormatBytes(resp.Bytes())
-	if err := os.WriteFile(outputFile, prettyHTML, fs.ModePerm); nil != err {
+	if err := os.WriteFile(outputFile, prettyHTML, 0664); nil != err {
 		log.Fatalf("[ERROR] Failed to write template: %s\n", err)
 	}
 
