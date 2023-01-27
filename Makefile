@@ -15,4 +15,7 @@ test:
 run: setup
 	go run portfoli.go -config.dir ${PWD}/configs
 
+static: setup
+	go run portfoli.go -config.dir ${PWD}/configs -static
+
 .PHONY: test dist setup run

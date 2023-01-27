@@ -62,13 +62,13 @@ func main() {
 		log.SetFlags(log.Lshortfile)
 	}
 
-	if *dist {
-		static.Build(*configDir)
-	}
-
 	convertToAbsPath(configDir)
 	log.Printf("[INFO] using config path %s\n", *configDir)
 
-	server.StartServer(fmt.Sprintf("%s:%d", *addr, *port), *configDir)
+	if *dist {
+		static.Build(*configDir)
+	} else {
+		server.StartServer(fmt.Sprintf("%s:%d", *addr, *port), *configDir)
+	}
 
 }

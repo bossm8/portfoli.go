@@ -15,41 +15,31 @@ import (
 	"golang.org/x/text/language"
 
 	"bossm8.ch/portfolio/handler"
+	"bossm8.ch/portfolio/messages"
 	"bossm8.ch/portfolio/models"
 	"bossm8.ch/portfolio/models/config"
 	"bossm8.ch/portfolio/models/content"
-	"bossm8.ch/portfolio/server/messages"
+	"bossm8.ch/portfolio/utils"
 	"github.com/microcosm-cc/bluemonday"
 )
 
-const (
-	templateDir = "templates"
-	staticDir   = "public"
-)
-
 var (
-	baseTpl = filepath.Join(templateDir, "html", "base.html")
-
 	cfg *config.Config
 )
 
-func loadConfiguration() {
+func StartServer(addr string, configDir string) {
+
 	var err error
-	cfg, err = config.GetConfig()
+	cfg, err = utils.LoadConfiguration(configDir)
 	if err != nil && errors.Is(err, config.ErrInvalidSMTPConfig) {
 		log.Printf("[WARNING]: No smtp configuration loaded, will not render contact form")
+		err = nil
 	} else if err != nil {
 		log.Fatalf("[ERROR] Aborting due to previous error")
 	}
 	messages.Compile(cfg.Profile.Email.Address)
-}
 
-func StartServer(addr string, configDir string) {
-
-	models.SetConfigDir(configDir)
-	loadConfiguration()
-
-	fs := http.FileServer(http.Dir(staticDir))
+	fs := http.FileServer(http.Dir(cfg.StaticDir))
 
 	_http := &handler.RegexHandler{}
 
@@ -61,7 +51,7 @@ func StartServer(addr string, configDir string) {
 	_http.HandleFunc(".*", serveGeneric)
 
 	log.Printf("[INFO] Listening on %s", addr)
-	err := http.ListenAndServe(addr, _http)
+	err = http.ListenAndServe(addr, _http)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -69,11 +59,11 @@ func StartServer(addr string, configDir string) {
 }
 
 func serveGeneric(w http.ResponseWriter, r *http.Request) {
-	htmlFile := "index"
+	tplName := "index"
 	if r.URL.Path != "/" {
-		htmlFile = filepath.Base(r.URL.Path)
+		tplName = filepath.Base(r.URL.Path)
 	}
-	sendTemplate(w, r, htmlFile, nil, nil)
+	sendTemplate(w, r, tplName, nil, nil)
 }
 
 func isContentEnabled(requestedContent string) bool {
@@ -108,7 +98,7 @@ func serveContent(w http.ResponseWriter, r *http.Request) {
 		HTML: content,
 		Kind: cases.Title(language.English).String(contentType),
 	}
-	sendTemplate(w, r, "cards", data, nil)
+	sendTemplate(w, r, cfg.ContentTemplateName, data, nil)
 
 }
 
@@ -173,7 +163,7 @@ func serveStatus(w http.ResponseWriter, r *http.Request) {
 	status := filepath.Base(r.URL.Path)
 	msg := messages.Get(status, kind)
 
-	sendTemplate(w, r, "status", msg, &msg.HttpStatus)
+	sendTemplate(w, r, cfg.StatusTemplateName, msg, &msg.HttpStatus)
 
 }
 
@@ -188,9 +178,10 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 		return
 	}
 
-	htmlTpl := filepath.Join(templateDir, "html", templateName+".html")
+	htmlTpl := filepath.Join(cfg.HTMLTeplatesDir, templateName+".html")
 
 	if res, err := os.Stat(htmlTpl); os.IsNotExist(err) || res.IsDir() {
+		log.Printf("[ERROR] Could not find or read from %s\n", htmlTpl)
 		fail(w, r, messages.MsgNotFound)
 		return
 	}
@@ -199,7 +190,7 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 	funcMap := template.FuncMap{
 		"Title": cases.Title(language.English).String,
 	}
-	if tpl, err = template.New(htmlTpl).Funcs(funcMap).ParseFiles(baseTpl, htmlTpl); nil != err {
+	if tpl, err = template.New(htmlTpl).Funcs(funcMap).ParseFiles(cfg.BaseTemplatePath, htmlTpl); nil != err {
 		log.Printf("[ERROR] Failed to parse template: %s with error %s\n", templateName, err)
 		fail(w, r, messages.MsgGeneric)
 		return
@@ -214,7 +205,7 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 	// We cannot pass w to ExecuteTemplate directly
 	// if the template fails we cannot redirect because there would be superfluous call to w.WriteHeader
 	resp := bytes.Buffer{}
-	if err = tpl.ExecuteTemplate(&resp, "base", tplData); nil != err {
+	if err = tpl.ExecuteTemplate(&resp, cfg.BaseTemplateName, tplData); nil != err {
 		log.Printf("[ERROR] Failed to process template %s with error %s\n", tpl.Name(), err)
 		fail(w, r, messages.MsgGeneric)
 		return
