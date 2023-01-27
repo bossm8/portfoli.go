@@ -43,7 +43,9 @@
     </div>
     <div class="col-12 col-lg-7 col-xl-auto mb-2 mb-lg-0">
         <div class="text-center text-lg-start">
+            {{ if .Profile.Me }}
             <a class="btn btn-outline-primary mb-2 mb-lg-0" href="/me">Bio'n'Skills</a>
+            {{ end }}
             {{ range $content := .Profile.ContentKinds }}
             <a class="btn btn-outline-primary mb-2 mb-lg-0" href="/{{ $content }}">{{ $content | Title }}</a>
             {{ end }}
