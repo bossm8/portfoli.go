@@ -5,3 +5,4 @@ _build
 .installed
 **/img/*
 !**/img/portfoli.go*.*
+dist

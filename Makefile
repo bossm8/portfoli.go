@@ -15,7 +15,11 @@ test:
 run: setup
 	go run portfoli.go -config.dir ${PWD}/configs
 
-static: setup
+static:
+	test -d ${PWD}/dist || mkdir ${PWD}/dist
 	go run portfoli.go -config.dir ${PWD}/configs -static
+	/bin/bash .devcontainer/download.sh
+	cp -r ${PWD}/public/* ${PWD}/dist/
+	
 
-.PHONY: test dist setup run
+.PHONY: test dist setup run static

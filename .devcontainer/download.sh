@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu
 
-OUTPUT_DIR=$(dirname "$0")/../static/
+OUTPUT_DIR=${1:-$(dirname "$0")/../public/}
 
 BOOTSTRAP=/tmp/portfoli.go-bootstrap.zip
 BOOTSTRAP_ICONS=/tmp/portfoli.go-bootstrap-icons.zip
