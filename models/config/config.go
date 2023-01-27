@@ -24,6 +24,7 @@ const (
 	contentTemplateName = "content"
 	statusTemplateName  = "status"
 	contactTemplateName = "contact"
+	aboutMeTemplateName = "me"
 	mailTemplate        = "mail.html"
 )
 
@@ -66,6 +67,7 @@ type Config struct {
 	StatusTemplateName  string
 	ContentTemplateName string
 	ContactTemplateName string
+	AboutMeTemplateName string
 	StaticDir           string
 	MailTemplatePath    string
 }
@@ -99,6 +101,7 @@ func GetConfig() (*Config, error) {
 		StatusTemplateName:  statusTemplateName,
 		ContentTemplateName: contentTemplateName,
 		ContactTemplateName: contactTemplateName,
+		AboutMeTemplateName: aboutMeTemplateName,
 		StaticDir:           staticDir,
 		MailTemplatePath:    filepath.Join(templateDir, "mail", mailTemplate+".html"),
 	}

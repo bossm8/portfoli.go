@@ -158,7 +158,8 @@ func serveStatus(w http.ResponseWriter, r *http.Request) {
 func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, data interface{}, status *int) {
 
 	// someone might enter /contact manually - make sure it is not returned if disabled
-	if !cfg.RenderContact && templateName == cfg.ContactTemplateName {
+	if !cfg.RenderContact && templateName == cfg.ContactTemplateName ||
+		cfg.Profile.Me == nil && templateName == cfg.AboutMeTemplateName {
 		fail(w, r, messages.MsgContact)
 		return
 	}

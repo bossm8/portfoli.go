@@ -38,9 +38,11 @@ func buildGeneric() {
 	}
 
 	for _, tpl := range templates {
-		if cfg.StaticIgnoreRegex().MatchString(tpl.Name()) {
+		if cfg.StaticIgnoreRegex().MatchString(tpl.Name()) ||
+			cfg.Profile.Me == nil && tpl.Name() == cfg.AboutMeTemplateName+".html" {
 			continue
 		}
+
 		build(
 			tpl.Name(),
 			tpl.Name(),
