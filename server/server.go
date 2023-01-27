@@ -24,7 +24,7 @@ import (
 
 const (
 	templateDir = "templates"
-	staticDir   = "static"
+	staticDir   = "public"
 )
 
 var (

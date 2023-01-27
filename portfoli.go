@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 
 	"bossm8.ch/portfolio/server"
+	"bossm8.ch/portfolio/static"
 )
 
 // convertToAbsPath takes the path of the directory
@@ -50,10 +51,19 @@ func main() {
 		false,
 		"Print more verbose logging information (filenames)",
 	)
+	dist := flag.Bool(
+		"static",
+		false,
+		"Create a static website build to e.g. host on GitLab pages",
+	)
 	flag.Parse()
 
 	if *verbose {
 		log.SetFlags(log.Lshortfile)
+	}
+
+	if *dist {
+		static.Build(*configDir)
 	}
 
 	convertToAbsPath(configDir)

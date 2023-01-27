@@ -1,7 +1,6 @@
 {{ define "title" }}Welcome{{ end }}
 {{ define "content-header" }}
-{{ $avatar := or .Profile.Avatar "/static/img/avatar.jpg" }}
-{{ $banner := or .Profile.BannerImage "/static/img/banner.webp" }}
+{{ $banner := or .Profile.BannerImage "/static/img/portfoli.go-banner.webp" }}
 <!-- Default image from https://unsplash.com/photos/xC7Ho08RYF4 thx!-->
 <div class="text-center bg-image"
      style="background-image: url('{{ $banner }}'); background-size: cover;">
@@ -18,7 +17,11 @@
                         <a class="mt-2 btn btn-outline-light btn-lg shadow-lg" href="{{ $href }}" role="button">Let's get in Touch!</a>
                     </div>
                     <div class="col-8 col-md-6 col-lg-5 col-xl-3 align-items-center p-5">
-                       <div class="square rounded-circle shadow-lg" style="background-image: url('{{ $avatar }}');"></div> 
+                        {{ if .Profile.Avatar }}
+                            <div class="square rounded-circle shadow-lg" style="background-image: url('{{ .Profile.Avatar }}');"></div> 
+                        {{ else }}
+                            <div class="square default-avatar"></div>
+                        {{ end }}
                     </div>
                 </div>
             </div>

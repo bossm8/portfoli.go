@@ -3,3 +3,5 @@ _build
 *bootstrap*
 *anime*.js
 .installed
+**/img/*
+!**/img/portfoli.go*.*
