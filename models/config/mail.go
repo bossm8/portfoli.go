@@ -10,6 +10,7 @@ import (
 )
 
 const (
+	// Subject which will be used in the contact emails
 	subject = "[Portfolio] New message from %s"
 )
 

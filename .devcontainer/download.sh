@@ -17,7 +17,7 @@ for ZIP in ${BOOTSTRAP} ${BOOTSTRAP_ICONS} ${ANIME_JS}; do
 done
 
 test -d ${OUTPUT_DIR}/css/fonts || mkdir ${OUTPUT_DIR}/css/fonts
-cp ${BOOTSTRAP%.*}/css/bootstrap.min.css ${OUTPUT_DIR}/css/
+cp ${BOOTSTRAP%.*}/css/bootstrap.min.{css,css.map} ${OUTPUT_DIR}/css/
 cp ${BOOTSTRAP%.*}/js/bootstrap.min.{js,js.map} ${OUTPUT_DIR}/js/
 cp ${BOOTSTRAP_ICONS%.*}/bootstrap-icons.css ${OUTPUT_DIR}/css/
 cp ${BOOTSTRAP_ICONS%.*}/fonts/bootstrap-icons.woff* ${OUTPUT_DIR}/css/fonts/

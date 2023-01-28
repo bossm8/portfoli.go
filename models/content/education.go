@@ -12,10 +12,10 @@ func (ec *EducationConfig) GetElements() []Content {
 }
 
 func (ec *EducationConfig) GetConfigName() string {
-	return ec.GetContentKind() + ".yml"
+	return ec.GetContentType() + ".yml"
 }
 
-func (ec *EducationConfig) GetContentKind() string {
+func (ec *EducationConfig) GetContentType() string {
 	return ContentTypes[typeEducation]
 }
 

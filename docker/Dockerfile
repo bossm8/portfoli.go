@@ -6,4 +6,6 @@ RUN make build
 
 FROM alpine:latest
 
-COPY --from=0 portfoli.go/_build/portfoli.go 
+COPY --from=0 portfoli.go/_build/portfoli.go \
+    public/ \
+    templates \

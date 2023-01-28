@@ -12,10 +12,10 @@ func (ed *ExperienceConfig) GetElements() []Content {
 }
 
 func (ed *ExperienceConfig) GetConfigName() string {
-	return ed.GetContentKind() + ".yml"
+	return ed.GetContentType() + ".yml"
 }
 
-func (ed *ExperienceConfig) GetContentKind() string {
+func (ed *ExperienceConfig) GetContentType() string {
 	return ContentTypes[typeExperience]
 }
 

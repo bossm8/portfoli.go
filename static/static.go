@@ -7,11 +7,14 @@ import (
 	"os"
 	"path/filepath"
 
+	appconfig "bossm8.ch/portfolio/config"
+
 	"bossm8.ch/portfolio/messages"
 	"bossm8.ch/portfolio/models"
 	"bossm8.ch/portfolio/models/config"
 	"bossm8.ch/portfolio/models/content"
 	"bossm8.ch/portfolio/utils"
+
 	"github.com/yosssi/gohtml"
 )
 
@@ -38,8 +41,8 @@ func buildGeneric() {
 	}
 
 	for _, tpl := range templates {
-		if cfg.StaticIgnoreRegex().MatchString(tpl.Name()) ||
-			cfg.Profile.Me == nil && tpl.Name() == cfg.AboutMeTemplateName+".html" {
+		if appconfig.StaticIgnoreRegex().MatchString(tpl.Name()) ||
+			cfg.Profile.Me == nil && tpl.Name() == appconfig.AboutMeTemplateName+".html" {
 			continue
 		}
 
@@ -52,13 +55,13 @@ func buildGeneric() {
 }
 
 func buildContent() {
-	for _, contentType := range cfg.Profile.ContentKinds {
+	for _, contentType := range cfg.Profile.ContentTypes {
 		content, err := content.GetRenderedContent(contentType)
 		if nil != err {
 			log.Fatalf("[ERROR] Rendering content %s: %s\n", contentType, err)
 		}
 		build(
-			cfg.ContentTemplateName+".html",
+			appconfig.ContentTemplateName+".html",
 			contentType+".html",
 			content,
 		)
@@ -68,7 +71,7 @@ func buildContent() {
 func buildErrors() {
 	msg := messages.Get(string(messages.EndpointFail), string(messages.MsgNotFound))
 	build(
-		cfg.StatusTemplateName+".html",
+		appconfig.StatusTemplateName+".html",
 		fmt.Sprintf("%d.html", msg.HttpStatus),
 		msg,
 	)
@@ -79,10 +82,10 @@ func build(tplFileName string, outputFileName string, data interface{}) {
 		"[INFO] Rendering template %s to %s in %s\n",
 		tplFileName,
 		outputFileName,
-		cfg.DistDir(),
+		appconfig.DistDir(),
 	)
 
-	htmlTpl := filepath.Join(cfg.HTMLTeplatesDir, tplFileName)
+	htmlTpl := filepath.Join(appconfig.HTMLTeplatesPath(), tplFileName)
 
 	tplData := &models.TemplateData{
 		Profile:       cfg.Profile,
@@ -91,8 +94,8 @@ func build(tplFileName string, outputFileName string, data interface{}) {
 	}
 
 	resp, err := utils.RenderTemplate(
-		cfg.BaseTemplateName,
-		cfg.BaseTemplatePath,
+		appconfig.BaseTemplateName,
+		appconfig.BaseTemplatePath(),
 		htmlTpl,
 		tplData,
 	)
@@ -100,7 +103,7 @@ func build(tplFileName string, outputFileName string, data interface{}) {
 		log.Fatalf("[Error] Failed to render template: %s\n", err)
 	}
 
-	outputFile := filepath.Join(cfg.DistDir(), outputFileName)
+	outputFile := filepath.Join(appconfig.DistDir(), outputFileName)
 	prettyHTML := gohtml.FormatBytes(resp.Bytes())
 	if err := os.WriteFile(outputFile, prettyHTML, 0664); nil != err {
 		log.Fatalf("[ERROR] Failed to write template: %s\n", err)

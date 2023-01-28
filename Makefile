@@ -1,30 +1,34 @@
-.devcontainer/.installed:
-	/bin/bash .devcontainer/download.sh
-	touch .devcontainer/.installed
+PATHARGS=\
+	-config.dir ${PWD}/configs \
+	-static.dir ${PWD}/public \
+	-templates.dir ${PWD}/templates
+ 
+build: _build/portfoligo
+
+_build/portfoligo: portfoli.go
+	test -d _build || mkdir _build
+	go build -o _build/portfoligo portfoli.go
 
 setup: .devcontainer/.installed
 
-build: setup
-	test -d ${PWD}/_build || mkdir ${PWD}/_build
-	go build -o ${PWD}/_build/portfoli.go portfoli.go
+.devcontainer/.installed: .devcontainer/download.sh
+	/bin/bash .devcontainer/download.sh > /dev/null
+	touch .devcontainer/.installed
 
 test:
 	staticcheck ./...
 	go test ./...
 
 run: setup
-	go run portfoli.go -config.dir ${PWD}/configs
+	go run portfoli.go $(PATHARGS)
 
-dist:
-	test -d ${PWD}/dist && rm -rf ${PWD}/dist 
-	mkdir ${PWD}/dist
-	go run portfoli.go -config.dir ${PWD}/configs -static
-	/bin/bash .devcontainer/download.sh > /dev/null
-	cp -r ${PWD}/public ${PWD}/dist/static
-	mv ${PWD}/dist/static/favicon.ico ${PWD}/dist
+dist: setup
+	(rm -rf dist || true) && mkdir dist
+	go run portfoli.go -dist -dist.dir ${PWD}/dist $(PATHARGS)
+	cp -r public dist/static
+	mv dist/static/favicon.ico dist
 
 clean:
-	rm -rf ${PWD}/.devcontainer/.installed ${PWD}/dist ${PWD}/_build
-	
+	rm -rf .devcontainer/.installed dist _build
 
 .PHONY: test setup run build dist clean

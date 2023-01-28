@@ -12,10 +12,10 @@ func (pc *ProjectConfig) GetElements() []Content {
 }
 
 func (pc *ProjectConfig) GetConfigName() string {
-	return pc.GetContentKind() + ".yml"
+	return pc.GetContentType() + ".yml"
 }
 
-func (pc *ProjectConfig) GetContentKind() string {
+func (pc *ProjectConfig) GetContentType() string {
 	return ContentTypes[typeProject]
 }
 

@@ -14,8 +14,8 @@
 {{/* Default Header */}}
 {{ define "header" }}
 {{ $image := or .Image "/static/img/portfoli.go-yellow.svg" }}
-<div class="h-30 py-4 px-5 d-flex align-items-center justify-content-center">
-    <img class="card-img-top mh-100 w-auto img-fluid" src="{{ $image }}" alt="Can't find no image ¯\_( ͡° ͜ʖ ͡°)_/¯"/>
+<div class="h-30 py-4 px-5 d-flex flex-column align-items-center justify-content-center">
+    <img class="card-img-top mh-100 w-auto img-fluid" src="{{ $image }}" alt="Can't find no image ¯\_( ͡° ͜ʖ ͡°)_/¯" onerror="setDefaultImage(this)"/>
 </div>
 <div class="card-header">
     <div class="row">

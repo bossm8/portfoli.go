@@ -9,12 +9,15 @@ import (
 	"os"
 	"path/filepath"
 
+	appconfig "bossm8.ch/portfolio/config"
+
 	"bossm8.ch/portfolio/handler"
 	"bossm8.ch/portfolio/messages"
 	"bossm8.ch/portfolio/models"
 	"bossm8.ch/portfolio/models/config"
 	"bossm8.ch/portfolio/models/content"
 	"bossm8.ch/portfolio/utils"
+
 	"github.com/microcosm-cc/bluemonday"
 )
 
@@ -34,7 +37,7 @@ func StartServer(addr string, configDir string) {
 	}
 	messages.Compile(cfg.Profile.Email.Address)
 
-	fs := http.FileServer(http.Dir(cfg.StaticDir))
+	fs := http.FileServer(http.Dir(appconfig.StaticContentPath()))
 
 	_http := &handler.RegexHandler{}
 
@@ -63,7 +66,7 @@ func serveGeneric(w http.ResponseWriter, r *http.Request) {
 
 func isContentEnabled(requestedContent string) bool {
 	enabled := false
-	for _, configuredContent := range cfg.Profile.ContentKinds {
+	for _, configuredContent := range cfg.Profile.ContentTypes {
 		if configuredContent == requestedContent {
 			enabled = true
 			break
@@ -86,14 +89,14 @@ func serveContent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sendTemplate(w, r, cfg.ContentTemplateName, data, nil)
+	sendTemplate(w, r, appconfig.ContentTemplateName, data, nil)
 
 }
 
 func sendMail(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodPost {
-		http.Redirect(w, r, "/"+cfg.ContactTemplateName, http.StatusSeeOther)
+		http.Redirect(w, r, "/"+appconfig.ContactTemplateName, http.StatusSeeOther)
 		return
 	}
 
@@ -151,20 +154,20 @@ func serveStatus(w http.ResponseWriter, r *http.Request) {
 	status := filepath.Base(r.URL.Path)
 	msg := messages.Get(status, kind)
 
-	sendTemplate(w, r, cfg.StatusTemplateName, msg, &msg.HttpStatus)
+	sendTemplate(w, r, appconfig.StatusTemplateName, msg, &msg.HttpStatus)
 
 }
 
 func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, data interface{}, status *int) {
 
 	// someone might enter /contact manually - make sure it is not returned if disabled
-	if !cfg.RenderContact && templateName == cfg.ContactTemplateName ||
-		cfg.Profile.Me == nil && templateName == cfg.AboutMeTemplateName {
+	if !cfg.RenderContact && templateName == appconfig.ContactTemplateName ||
+		cfg.Profile.Me == nil && templateName == appconfig.AboutMeTemplateName {
 		fail(w, r, messages.MsgContact)
 		return
 	}
 
-	htmlTpl := filepath.Join(cfg.HTMLTeplatesDir, templateName+".html")
+	htmlTpl := filepath.Join(appconfig.HTMLTeplatesPath(), templateName+".html")
 
 	if res, err := os.Stat(htmlTpl); os.IsNotExist(err) || res.IsDir() {
 		log.Printf("[ERROR] Could not find or read from %s\n", htmlTpl)
@@ -178,7 +181,7 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 		RenderContact: cfg.RenderContact,
 	}
 
-	resp, err := utils.RenderTemplate(cfg.BaseTemplateName, cfg.BaseTemplatePath, htmlTpl, tplData)
+	resp, err := utils.RenderTemplate(appconfig.BaseTemplateName, appconfig.BaseTemplatePath(), htmlTpl, tplData)
 	if nil != err {
 		fail(w, r, messages.MsgGeneric)
 		return

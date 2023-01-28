@@ -12,10 +12,10 @@ func (cc *CertificationConfig) GetElements() []Content {
 }
 
 func (cc *CertificationConfig) GetConfigName() string {
-	return cc.GetContentKind() + ".yml"
+	return cc.GetContentType() + ".yml"
 }
 
-func (cc *CertificationConfig) GetContentKind() string {
+func (cc *CertificationConfig) GetContentType() string {
 	return ContentTypes[typeCertification]
 }
 

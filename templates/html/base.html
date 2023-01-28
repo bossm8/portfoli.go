@@ -36,7 +36,7 @@
                                 <a class="nav-link" href="/me">About Me</a>
                             </li>
                             {{ end }}
-                            {{ range $content := .Profile.ContentKinds }}
+                            {{ range $content := .Profile.ContentTypes }}
                                 <li class="nav-item">
                                     <a class="nav-link" href="/{{ $content }}">{{ $content | Title }}</a>
                                 </li>
@@ -87,6 +87,16 @@
             </div>
         </footer>
         <script src="/static/js/bootstrap.min.js"></script>
+        {{/* Function which can be used by img elements with the onerror event to set the default image */}}
+        <script>
+            function setDefaultImage(elem) {
+                elem.src = '/static/img/portfoli.go-yellow.svg';
+                txt = document.createElement('div');
+                txt.classList.add('img-load-error', 'text-muted');
+                txt.innerHTML = "Could not load the specified image";
+                elem.parentNode.appendChild(txt);
+            }
+        </script>
         {{ template "scripts" . }}
     </body>
 </html>
