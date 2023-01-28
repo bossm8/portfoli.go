@@ -1,4 +1,4 @@
-module bossm8.ch/portfolio
+module github.com/bossm8/portfoli.go
 
 go 1.19
 

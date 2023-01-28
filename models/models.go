@@ -3,8 +3,8 @@
 package models
 
 import (
-	"bossm8.ch/portfolio/models/config"
-	"bossm8.ch/portfolio/models/utils"
+	"github.com/bossm8/portfoli.go/models/config"
+	"github.com/bossm8/portfoli.go/models/utils"
 )
 
 // TemplateData is the object passed to all of the html template renderings

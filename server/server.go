@@ -11,14 +11,14 @@ import (
 	"os"
 	"path/filepath"
 
-	appconfig "bossm8.ch/portfolio/config"
+	appconfig "github.com/bossm8/portfoli.go/config"
 
-	"bossm8.ch/portfolio/handler"
-	"bossm8.ch/portfolio/messages"
-	"bossm8.ch/portfolio/models"
-	"bossm8.ch/portfolio/models/config"
-	"bossm8.ch/portfolio/models/content"
-	"bossm8.ch/portfolio/utils"
+	"github.com/bossm8/portfoli.go/handler"
+	"github.com/bossm8/portfoli.go/messages"
+	"github.com/bossm8/portfoli.go/models"
+	"github.com/bossm8/portfoli.go/models/config"
+	"github.com/bossm8/portfoli.go/models/content"
+	"github.com/bossm8/portfoli.go/utils"
 
 	"github.com/microcosm-cc/bluemonday"
 )

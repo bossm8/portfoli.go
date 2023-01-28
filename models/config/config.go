@@ -7,8 +7,8 @@ import (
 	"reflect"
 	"strings"
 
-	"bossm8.ch/portfolio/models/content"
-	"bossm8.ch/portfolio/models/utils"
+	"github.com/bossm8/portfoli.go/models/content"
+	"github.com/bossm8/portfoli.go/models/utils"
 )
 
 const (

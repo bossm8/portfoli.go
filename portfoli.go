@@ -8,9 +8,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"bossm8.ch/portfolio/config"
-	"bossm8.ch/portfolio/server"
-	"bossm8.ch/portfolio/static"
+	"github.com/bossm8/portfoli.go/config"
+	"github.com/bossm8/portfoli.go/server"
+	"github.com/bossm8/portfoli.go/static"
 )
 
 func main() {

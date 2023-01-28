@@ -9,10 +9,10 @@ import (
 	"strings"
 	"time"
 
-	apputils "bossm8.ch/portfolio/utils"
+	apputils "github.com/bossm8/portfoli.go/utils"
 
-	"bossm8.ch/portfolio/config"
-	"bossm8.ch/portfolio/models/utils"
+	"github.com/bossm8/portfoli.go/config"
+	"github.com/bossm8/portfoli.go/models/utils"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
