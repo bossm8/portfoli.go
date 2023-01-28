@@ -1,0 +1,52 @@
+name: Build Pages
+
+on:
+  push:
+    branches:
+      - "main"
+    
+jobs:
+  build-pages:
+    runs-on: ubuntu-latest
+    environment:
+      MOUNT_DIR: /var/www/portfoli.go/workspace/configs
+      CONFIGS_DIR: configs
+      CUSTOM_CONTENT_DIR: custom
+      BASE_PATH: /${{ github.event.repository.name }}
+
+    steps:
+
+      - name: Checkout Configs
+        uses: actions/checkout@v3
+
+      - name: Build Pages
+        uses: addnab/docker-run-action@v3
+        with: 
+          image: ghcr.io/bossm8/portfoli-go:latest
+          options: -v ${{ github.workspace }}:${{ MOUNT_DIR }} --entrypoint /bin/sh
+          run: |
+            mkdir ${{ MOUNT_DIR }}/public
+            cp -r /var/www/portfoli.go/public ${{ MOUT_DIR }}/public/static
+            cp -r ${{ MOUNT_DIR }}/${{ CUSTOM_CONTENT_DIR }} ${{ MOUNT_DIR }}/public/static/img/custom
+            mv ${{ MOUNT_DIR }}/public/static/favicon.ico ${{ MOUNT_DIR }}/public
+            portfoli-go -config.dir ${{ MOUNT_DIR }}/${{ CONFIGS_DIR }} -dist -dist.dir ${{ MOUNT_DIR }}/public -srv.base ${{ BASE_PATH }}
+      
+      - name: Build Artifact
+        uses: actions/upload-pages-artifact
+        with:
+          path: ${{ github.workspace }}/public
+
+  deploy:
+    needs: build-pages
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+      environment:
+        name: github-pages
+        url: ${{ steps.deployment.outputs.page_url }}
+      steps:
+
+        - name: Deploy to GitHub Pages
+          id: deployment
+          uses: actions/deploy-pages@v1

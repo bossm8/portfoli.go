@@ -1,5 +1,7 @@
 *.yml
 !.gitlab-ci.yml
+!examples/**/*.yml
+!.github/**/*.yml
 _build
 *bootstrap*
 *anime*.js
