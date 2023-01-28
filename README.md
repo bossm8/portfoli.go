@@ -7,7 +7,8 @@
 The simple and flexible portfolio template written witgh [Go](https://golang.org) and [Bootstrap](https://getbootstrap.com)
 Build your portfolio with simple yaml files!
 
-This template can be used for either hosting a static webpage with e.g. GitLab / GitHub pages. Or if you
+This template can be used for either hosting a static webpage with e.g. 
+[GitLab](https://docs.gitlab.com/ee/user/project/pages/) / [GitHub](https://pages.github.com) pages. Or if you
 like, with a server written in go, this server brings benefits like a contact form to send emails directly
 to you via the portfolio page.
 
@@ -55,7 +56,8 @@ portfoli-go -help
 
 ### Docker
 
-There exists a pre-build Docker image which you can use to host the portfolio website just mount your custom content and configurations to use:
+There exists a pre-build Docker image which you can use to host the portfolio website 
+just mount your custom content and configurations to use:
 
 ```bash
 docker run -it --rm \
@@ -71,7 +73,8 @@ There is also an example `docker-compose.yml` in the `examples` directory.
 ### Static Build
 
 As stated earlier, you are able to build the portfolio for being hosted as a static website.
-The static build can be used on e.g. [GitLab]() or [GitHub]() pages.
+The static build can be used on e.g. [GitLab](https://docs.gitlab.com/ee/user/project/pages/) 
+or [GitHub](https://pages.github.com) pages.
 
 It can be built by using the `-dist flag` with the binary or locally with `make dist`, this will output
 the content for being served with a static file server in the specified output directory.
@@ -90,8 +93,8 @@ Just copy one them over to your repository containing configuration files and cu
 
 #### Local
 
-For running locally, there is an example [nginx]() configuration which shows how the dist build may be used.
-The command below starts this configuration with the nginx [Docker container]() - 
+For running locally, there is an example [nginx](https://nginx.com) configuration which shows how the dist build may be used.
+The command below starts this configuration with the nginx [Docker container](https://hub.docker.com/_/nginx) - 
 it assumes you have run `make dist` before and that you have copied your custom content into the `dist` directory.
 
 ```bash
