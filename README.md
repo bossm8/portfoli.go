@@ -13,6 +13,6 @@ The simple and flexible portfolio template written witgh [Go](https://golang.org
 docker run -it --rm -p 8080:80 \
            --name porfoli.go \
            -v ${PWD}/dist:/usr/share/nginx/html:ro \
-           -v ${PWD}/nginx.conf:/etc/nginx/conf.d/default.conf:ro \
+           -v ${PWD}/examples/nginx.conf:/etc/nginx/conf.d/default.conf:ro \
            nginx:latest
 ```

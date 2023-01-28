@@ -75,6 +75,7 @@ func main() {
 		config.SetPaths(templatesDir, staticDir, distDir)
 		static.Build(*configDir)
 	} else {
+		// Do not log the dist dir path by using nil
 		config.SetPaths(templatesDir, staticDir, nil)
 		server.StartServer(fmt.Sprintf("%s:%d", *addr, *port), *configDir)
 	}
