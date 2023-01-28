@@ -30,8 +30,8 @@ Each of them might support a different configuration, for possible values and ex
 
 I recommend putting your custom content into a subdirectory of `public/img` (e.g. `custom`), and referncing
 this directory then specifying images in the `yaml` configurations. This makes it easier for the usage with e.g. Docker. 
-You are able to use a relative path starting with `/static` i.e. `/static/img/custom/avatar.jpg` the renderinh process will 
-make sure that any base path (`-srv.base`) of your server is prepended to this path (e.g. when hosing on GitLab pages).
+You are able to use a relative path starting with `/static` i.e. `/static/img/custom/avatar.jpg` the rendering process will 
+make sure that any base path (specified with `-srv.base`) of your server is prepended to this path (e.g. when hosing on GitLab pages).
 
 
 ## Usage
@@ -50,7 +50,7 @@ Pull this repository and build the portfoli-go binary with `make build`, then us
 the help message to see available options:
 
 ```bash
-portfoli-go --help
+portfoli-go -help
 ```
 
 ### Docker
@@ -63,7 +63,7 @@ docker run -it --rm \
            -p 127.0.0.1:8080:8080 \
            -v ${PWD}/configs:/var/www/portfoli.go/configs:ro \
            -v ${PWD}/content:/var/www/portfoli.go/public/img/custom:ro \
-           ghcr.io/bossm8/portfoligo:latest
+           ghcr.io/bossm8/portfoli-go:latest
 ```
 
 There is also an example `docker-compose.yml` in the `examples` directory.
@@ -76,7 +76,8 @@ The static build can be used on e.g. [GitLab]() or [GitHub]() pages.
 It can be built by using the `-dist flag` with the binary or locally with `make dist`, this will output
 the content for being served with a static file server in the specified output directory.
 However, when using the binary you need to make sure to also copy over the contents of the directory
-`public` into the dist path (see for example the `script` in `examples/.gitlab-ci.yml`). As described in the [config](#recommendations) section, I recommend putting 
+`public` into the dist path (see for example the `script` in `examples/.gitlab-ci.yml`). 
+As described in the [config](#recommendations) section, I recommend putting 
 custom images into a subdirectory of `public/img` and specifying the corresponding path in the yaml configs.
 
 #### GitLab / GitHub Pages
@@ -110,3 +111,7 @@ open the devcontainer with [VSCode](https://code.visualstudio.com/) and run `mak
 ## Authors
 
 * [bossm8](https://github.com/bossm8)
+
+## TODO
+
+* Write tests

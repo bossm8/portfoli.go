@@ -1,10 +1,10 @@
 image: 
-  name: ghcr.io/bossm8/portfoli.go
+  name: ghcr.io/bossm8/portfoli-go:latest
   entrypoint: /bin/sh
 
 variables:
   CONFIGS_DIR: ./configs
-  CUSTOM_CONTENT_DIR: custom
+  CUSTOM_CONTENT_DIR: ./custom
   # https://docs.gitlab.com/ee/user/project/pages/getting_started_part_one.html#gitlab-pages-default-domain-names
   # https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
   BASE_PATH: /${CI_PROJECT_NAME}
@@ -20,3 +20,6 @@ pages:
   artifacts:
     paths:
       - public
+  only:
+    refs:
+      - main
