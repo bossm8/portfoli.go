@@ -72,12 +72,12 @@ func StaticIgnoreRegex() *regexp.Regexp {
 	)
 }
 
-func HTMLTeplatesPath() string {
+func HTMLTemplatesPath() string {
 	return filepath.Join(templatesDir, "html")
 }
 
 func BaseTemplatePath() string {
-	return filepath.Join(HTMLTeplatesPath(), BaseTemplateName+".html")
+	return filepath.Join(HTMLTemplatesPath(), BaseTemplateName+".html")
 }
 
 func MailTemplatePath() string {
@@ -85,7 +85,11 @@ func MailTemplatePath() string {
 }
 
 func ContentTemplatesPath() string {
-	return filepath.Join(HTMLTeplatesPath(), "content")
+	return filepath.Join(HTMLTemplatesPath(), "content")
+}
+
+func TemplatesPath() string {
+	return templatesDir
 }
 
 func StaticContentPath() string {

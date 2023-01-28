@@ -28,7 +28,10 @@ dist: setup
 	cp -r public dist/static
 	mv dist/static/favicon.ico dist
 
+docker:
+	docker build . -t portfoligo:latest -f docker/Dockerfile
+
 clean:
 	rm -rf .devcontainer/.installed dist _build
 
-.PHONY: test setup run build dist clean
+.PHONY: test setup run build dist docker clean

@@ -44,7 +44,7 @@ func main() {
 	)
 	templatesDir := flag.String(
 		"templates.dir",
-		config.ContentTemplatesPath(),
+		config.TemplatesPath(),
 		"Path to the directory containing the html templates",
 	)
 	distDir := flag.String(

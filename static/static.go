@@ -1,3 +1,4 @@
+// Package static is used to build a static version of this template
 package static
 
 import (
@@ -22,6 +23,7 @@ var (
 	cfg *config.Config
 )
 
+// Build builds the static website by using the configs found in configDir
 func Build(configDir string) {
 	var err error
 	cfg, err = utils.LoadConfiguration(configDir)
@@ -34,6 +36,7 @@ func Build(configDir string) {
 	buildErrors()
 }
 
+// buildGeneric builds every page except contents and error
 func buildGeneric() {
 	templates, err := os.ReadDir("templates/html")
 	if nil != err {
@@ -54,6 +57,7 @@ func buildGeneric() {
 	}
 }
 
+// buildContent builds the content pages
 func buildContent() {
 	for _, contentType := range cfg.Profile.ContentTypes {
 		content, err := content.GetRenderedContent(contentType)
@@ -68,6 +72,7 @@ func buildContent() {
 	}
 }
 
+// buildError builds the error pages (which in case of static is 404 only)
 func buildErrors() {
 	msg := messages.Get(string(messages.EndpointFail), string(messages.MsgNotFound))
 	build(
@@ -77,6 +82,8 @@ func buildErrors() {
 	)
 }
 
+// build - generic method to build the template tplFileName to outputFileName
+// with data
 func build(tplFileName string, outputFileName string, data interface{}) {
 	log.Printf(
 		"[INFO] Rendering template %s to %s in %s\n",
@@ -85,7 +92,7 @@ func build(tplFileName string, outputFileName string, data interface{}) {
 		appconfig.DistDir(),
 	)
 
-	htmlTpl := filepath.Join(appconfig.HTMLTeplatesPath(), tplFileName)
+	htmlTpl := filepath.Join(appconfig.HTMLTemplatesPath(), tplFileName)
 
 	tplData := &models.TemplateData{
 		Profile:       cfg.Profile,

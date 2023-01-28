@@ -1,3 +1,5 @@
+// Package server contains the implementation of the dynamic server which has a
+// contact form rendered (if configured)
 package server
 
 import (
@@ -25,15 +27,16 @@ var (
 	cfg *config.Config
 )
 
+// StartServer will attempt to start and listen the server on the specified address
 func StartServer(addr string, configDir string) {
 
 	var err error
 	cfg, err = utils.LoadConfiguration(configDir)
 	if err != nil && errors.Is(err, config.ErrInvalidSMTPConfig) {
-		log.Printf("[WARNING]: No smtp configuration loaded, will not render contact form")
+		log.Printf("[WARNING] No smtp configuration loaded, will not render contact form")
 		err = nil
 	} else if err != nil {
-		log.Fatalf("[ERROR] Aborting due to previous error")
+		log.Fatalf("[WARNING] Aborting due to previous error")
 	}
 	messages.Compile(cfg.Profile.Email.Address)
 
@@ -163,15 +166,23 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 	// someone might enter /contact manually - make sure it is not returned if disabled
 	if !cfg.RenderContact && templateName == appconfig.ContactTemplateName ||
 		cfg.Profile.Me == nil && templateName == appconfig.AboutMeTemplateName {
-		fail(w, r, messages.MsgContact)
+		fail(w, r, messages.MsgNotFound)
 		return
 	}
 
-	htmlTpl := filepath.Join(appconfig.HTMLTeplatesPath(), templateName+".html")
+	htmlTpl := filepath.Join(appconfig.HTMLTemplatesPath(), templateName+".html")
 
 	if res, err := os.Stat(htmlTpl); os.IsNotExist(err) || res.IsDir() {
 		log.Printf("[ERROR] Could not find or read from %s\n", htmlTpl)
-		fail(w, r, messages.MsgNotFound)
+		if templateName == appconfig.StatusTemplateName {
+			// This catches the case when the server cant find our error template
+			// if this check is not made we end up having an infinite amount of requests
+			// because we would again be redirected to the status template
+			log.Printf("[WARNING] not found template is status template, aborting with 404")
+			w.WriteHeader(404)
+		} else {
+			fail(w, r, messages.MsgNotFound)
+		}
 		return
 	}
 

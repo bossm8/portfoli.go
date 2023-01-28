@@ -1,3 +1,4 @@
+// Package hanlder contains the implementation of a simple regex handler
 package handler
 
 import (

@@ -1,3 +1,4 @@
+// package utils contains utility functions for static and dynamic builds
 package utils
 
 import (
@@ -11,6 +12,8 @@ import (
 	"golang.org/x/text/language"
 )
 
+// RenderTemplate renders the baseTemplate containing a childTemplate with the data
+// passed. (name) is passed to ExecuteTemplate
 func RenderTemplate(name string, baseTemplate string, childTemplate string, data *models.TemplateData) (*bytes.Buffer, error) {
 
 	var tpl *template.Template
@@ -34,6 +37,7 @@ func RenderTemplate(name string, baseTemplate string, childTemplate string, data
 	return resp, nil
 }
 
+// LoadConfiguration loads the static configuration from configDir
 func LoadConfiguration(configDir string) (cfg *config.Config, err error) {
 	models.SetConfigDir(configDir)
 	cfg, err = config.GetConfig()

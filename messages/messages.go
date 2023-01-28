@@ -1,3 +1,5 @@
+// Package messages contains messages which can be displayed on either success
+// or failure pages
 package messages
 
 import (
