@@ -1,0 +1,19 @@
+image: 
+  name: ghcr.io/bossm8/portfoli.go
+  entrypoint: /bin/sh
+
+variables:
+  CONFIGS_DIR: ./configs
+  CUSTOM_CONTENT_DIR: custom
+
+pages:
+  stage: dist
+  script:
+    - mkdir public
+    - cp -r ${CUSTOM_CONTENT_DIR} public/img/custom
+    - cp -r /var/www/portfoli.go/public public/static
+    - mv public/static/favicon.ico public
+    - portfoli-go -config.dir ${CONFIGS_DIR} -dist -dist.dir ${PWD}/public
+  artifacts:
+    paths:
+      - public

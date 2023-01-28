@@ -1,3 +1,4 @@
+// Package config contains the application configuration
 package config
 
 import (
@@ -72,30 +73,39 @@ func StaticIgnoreRegex() *regexp.Regexp {
 	)
 }
 
+// HTMLTemplatesPath returns the path where the html templates are located
 func HTMLTemplatesPath() string {
 	return filepath.Join(templatesDir, "html")
 }
 
+// BaseTeplatePath returns the complete path to the base html template
 func BaseTemplatePath() string {
 	return filepath.Join(HTMLTemplatesPath(), BaseTemplateName+".html")
 }
 
+// MailTemplatePath returns the complete path to the mail html template
 func MailTemplatePath() string {
 	return filepath.Join(templatesDir, "mail", MailTemplate)
 }
 
+// ContentTemplatesPath returns the path to the directory containg the content
+// html templates
 func ContentTemplatesPath() string {
 	return filepath.Join(HTMLTemplatesPath(), "content")
 }
 
+// TemplatesPath returns the path to the directory containing all templates
 func TemplatesPath() string {
 	return templatesDir
 }
 
+// StaticContentPath returns the path to the directory containing static
+// content, such as js, css, and images
 func StaticContentPath() string {
 	return staticDir
 }
 
+// DistDir returns the path to where the dist build should be output
 func DistDir() string {
 	return distDir
 }
