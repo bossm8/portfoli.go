@@ -1,26 +1,29 @@
 {{ define "title" }}Welcome{{ end }}
 {{ define "content-header" }}
-{{ $banner := or .Profile.BannerImage "/static/img/portfoli.go-banner.webp" }}
+{{ $banner := or .Profile.BannerImage ( print .BasePath "static/img/portfoli.go-banner.webp") }}
 <!-- Default image from https://unsplash.com/photos/xC7Ho08RYF4 thx!-->
 <div class="text-center bg-image"
-     style="background-image: url('{{ $banner }}'); background-size: cover;">
+     style="background-image: url('{{ $banner | Assemble }}'); background-size: cover;">
       <div class="mask d-flex" style="background-color: rgba(0, 0, 0, 0.4);">
             <div class="container-fluid">
                 <div class="row d-flex justify-content-center align-items-center pt-5">
                     <div class="col-12 col-md-6 text-white p-5">
                         <h1 class="mb-3" id="my-name">Hey, I'm <strong>{{ .Profile.FirstName }}</strong></h1>
                         <h4 class="mb-5">{{ .Profile.Slogan }}</h4>
-                        {{ $href := "/contact" }}
-                        {{ if not .RenderContact }}
-                           {{ $href = (printf "mailto:%s" .Profile.Email) }}
+                        {{ $href := "" }}
+                        {{ if .RenderContact }}
+                            {{ $href = ( "contact" | Assemble ) }}
+                        {{ else }}
+                            {{ $href = ( print "mailto:" .Profile.Email ) }}
                         {{ end }}
                         <a class="mt-2 btn btn-outline-light btn-lg shadow-lg" href="{{ $href }}" role="button">Let's get in Touch!</a>
                     </div>
                     <div class="col-8 col-md-6 col-lg-5 col-xl-3 align-items-center p-5">
                         {{ if .Profile.Avatar }}
-                            <div class="square rounded-circle shadow-lg" style="background-image: url('{{ .Profile.Avatar }}');"></div> 
+                            <div class="square rounded-circle shadow-lg" style="background-image: url('{{ .Profile.Avatar | Assemble }}');"></div> 
                         {{ else }}
-                            <div class="square default-avatar"></div>
+                            {{ $img := "/static/img/portfoli.go-yellow.svg"}}
+                            <div class="square default-avatar" style="background-image: url('{{ $img | Assemble }}');"></div>
                         {{ end }}
                     </div>
                 </div>
@@ -44,10 +47,10 @@
     <div class="col-12 col-lg-7 col-xl-auto mb-2 mb-lg-0">
         <div class="text-center text-lg-start">
             {{ if .Profile.Me }}
-            <a class="btn btn-outline-primary mb-2 mb-lg-0" href="/me">Bio'n'Skills</a>
+                <a class="btn btn-outline-primary mb-2 mb-lg-0" href='{{ "me" | Assemble }}'>Bio'n'Skills</a>
             {{ end }}
             {{ range $content := .Profile.ContentTypes }}
-            <a class="btn btn-outline-primary mb-2 mb-lg-0" href="/{{ $content }}">{{ $content | Title }}</a>
+                <a class="btn btn-outline-primary mb-2 mb-lg-0" href="{{ $content | Assemble }}">{{ $content | Title }}</a>
             {{ end }}
         </div>
     </div>
@@ -63,5 +66,5 @@
 </div>
 {{ end }}
 {{ define "scripts" }}
-<script type="text/javascript" src="/static/js/index.js"></script>
+<script type="text/javascript" src='{{ "static/js/index.js" | Assemble }}'></script>
 {{ end }}

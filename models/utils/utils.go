@@ -11,12 +11,13 @@ import (
 // The directory where all (static and dynamic) configuration files are read from
 var yamlDir string
 
-// SetConfigDir sets the configuration directory where dynamic and static configurations
+// SetYAMLDir sets the configuration directory where dynamic and static configurations
 // should be read from
 func SetYAMLDir(dir string) {
 	yamlDir = dir
 }
 
+// LoadFromYAMLFile loads the file with filename into obj
 func LoadFromYAMLFile(filename string, obj interface{}) (err error) {
 	// log.Printf("[INFO] Loading yaml file '%s' from directory '%s'\n", filename, configDir)
 	var yamlFile []byte

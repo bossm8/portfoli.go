@@ -4,7 +4,6 @@ package config
 import (
 	"fmt"
 	"log"
-	"os"
 	"path/filepath"
 	"regexp"
 )
@@ -29,17 +28,11 @@ var (
 // ConvertToAbsPath takes the path of a directory
 // (either relative or absolute) and converts it to an absolute path
 func ConvertToAbsPath(path *string) string {
-	if filepath.IsAbs(*path) {
-		return *path
-	}
-	exe, err := os.Executable()
+	abs, err := filepath.Abs(*path)
 	if err != nil {
 		log.Fatalf("[ERROR] parsing configuration directory: %s\n", err)
 	}
-	return filepath.Join(
-		filepath.Dir(exe),
-		*path,
-	)
+	return abs
 }
 
 // SetPaths sets the paths used by the application

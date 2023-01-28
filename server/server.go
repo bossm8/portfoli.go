@@ -24,25 +24,31 @@ import (
 )
 
 var (
-	cfg *config.Config
+	cfg         *config.Config
+	srvBasePath string
 )
 
 // StartServer will attempt to start and listen the server on the specified address
-func StartServer(addr string, configDir string) {
+func StartServer(addr string, basePath string, configDir string) {
 
 	var err error
-	cfg, err = utils.LoadConfiguration(configDir)
+	cfg, err = models.LoadConfiguration(configDir)
 	if err != nil && errors.Is(err, config.ErrInvalidSMTPConfig) {
 		log.Printf("[WARNING] No smtp configuration loaded, will not render contact form")
 		err = nil
 	} else if err != nil {
 		log.Fatalf("[WARNING] Aborting due to previous error")
 	}
+
+	srvBasePath = basePath
+	utils.Init(basePath)
+
 	messages.Compile(cfg.Profile.Email.Address)
 
 	fs := http.FileServer(http.Dir(appconfig.StaticContentPath()))
 
 	_http := &handler.RegexHandler{}
+	_http.SetBasePath(basePath)
 
 	_http.Handle("/favicon.ico", fs)
 	_http.Handle("/static/", http.StripPrefix("/static", fs))
@@ -61,7 +67,7 @@ func StartServer(addr string, configDir string) {
 
 func serveGeneric(w http.ResponseWriter, r *http.Request) {
 	tplName := "index"
-	if r.URL.Path != "/" {
+	if r.URL.Path != "/" && r.URL.Path != "" {
 		tplName = filepath.Base(r.URL.Path)
 	}
 	sendTemplate(w, r, tplName, nil, nil)
@@ -161,6 +167,21 @@ func serveStatus(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func abortWithStatusTplCheck(templateName string, w http.ResponseWriter, r *http.Request) {
+	if templateName == appconfig.StatusTemplateName {
+		// This catches the case when the server cant find or has an error with the status template
+		// if this check is not made we end up having an infinite amount of requests
+		// because we would again be redirected to the status template
+		log.Printf(
+			"[WARNING] The template failed is the status template, aborting with %d\n",
+			http.StatusInternalServerError,
+		)
+		w.WriteHeader(http.StatusInternalServerError)
+	} else {
+		fail(w, r, messages.MsgGeneric)
+	}
+}
+
 func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, data interface{}, status *int) {
 
 	// someone might enter /contact manually - make sure it is not returned if disabled
@@ -174,15 +195,7 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 
 	if res, err := os.Stat(htmlTpl); os.IsNotExist(err) || res.IsDir() {
 		log.Printf("[ERROR] Could not find or read from %s\n", htmlTpl)
-		if templateName == appconfig.StatusTemplateName {
-			// This catches the case when the server cant find our error template
-			// if this check is not made we end up having an infinite amount of requests
-			// because we would again be redirected to the status template
-			log.Printf("[WARNING] not found template is status template, aborting with 404")
-			w.WriteHeader(404)
-		} else {
-			fail(w, r, messages.MsgNotFound)
-		}
+		abortWithStatusTplCheck(templateName, w, r)
 		return
 	}
 
@@ -194,8 +207,7 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 
 	resp, err := utils.RenderTemplate(appconfig.BaseTemplateName, appconfig.BaseTemplatePath(), htmlTpl, tplData)
 	if nil != err {
-		fail(w, r, messages.MsgGeneric)
-		return
+		abortWithStatusTplCheck(templateName, w, r)
 	}
 
 	if nil != status && 100 <= *status {
@@ -206,9 +218,9 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 }
 
 func fail(w http.ResponseWriter, r *http.Request, kind messages.MessageType) {
-	http.Redirect(w, r, fmt.Sprintf("/%s?kind=%s", messages.EndpointFail, kind), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("%s%s?kind=%s", srvBasePath, messages.EndpointFail, kind), http.StatusSeeOther)
 }
 
 func success(w http.ResponseWriter, r *http.Request, kind messages.MessageType) {
-	http.Redirect(w, r, fmt.Sprintf("/%s?kind=%s", messages.EndpointSuccess, kind), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("%s%s?kind=%s", srvBasePath, messages.EndpointSuccess, kind), http.StatusSeeOther)
 }

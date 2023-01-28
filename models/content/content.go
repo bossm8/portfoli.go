@@ -1,7 +1,6 @@
 package content
 
 import (
-	"bytes"
 	"fmt"
 	"html/template"
 	"log"
@@ -10,6 +9,9 @@ import (
 	"strings"
 	"time"
 
+	apputils "bossm8.ch/portfolio/utils"
+
+	"bossm8.ch/portfolio/config"
 	"bossm8.ch/portfolio/models/utils"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -32,8 +34,8 @@ var (
 		ContentTypes[typeProject]:       &ProjectConfig{},
 		ContentTypes[typeCertification]: &CertificationConfig{},
 	}
-	rex          = regexp.MustCompile(fmt.Sprintf("(%s)", strings.Join(ContentTypes, "|")))
-	templatesDir = filepath.Join("templates", "html", "content")
+	// Regex which contains all possible content types
+	rex = regexp.MustCompile(fmt.Sprintf("(%s)", strings.Join(ContentTypes, "|")))
 )
 
 // ContentTemplateData the data which must be passed to the content html templates
@@ -131,16 +133,13 @@ func GetRoutingRegexString() string {
 
 // renderContent renders the passed content as html from its template
 func renderContent(content Content) (template.HTML, error) {
-	contentBaseTpl := filepath.Join(templatesDir, "base.html")
-	htmlTpl := filepath.Join(templatesDir, content.GetTemplateName())
-	tpl, err := template.ParseFiles(contentBaseTpl, htmlTpl)
+
+	contentBaseTpl := filepath.Join(config.ContentTemplatesPath(), "base.html")
+	htmlTpl := filepath.Join(config.ContentTemplatesPath(), content.GetTemplateName())
+
+	rendered, err := apputils.RenderTemplate("content", contentBaseTpl, htmlTpl, content)
 	if nil != err {
 		log.Printf("[ERROR] Failed to parse template '%s': %s\n", htmlTpl, err)
-		return "", err
-	}
-	rendered := bytes.Buffer{}
-	if err := tpl.ExecuteTemplate(&rendered, "content", content); nil != err {
-		log.Printf("[ERROR] Failed to process template %s with error %s\n", tpl.Name(), err)
 		return "", err
 	}
 

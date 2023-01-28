@@ -1,13 +1,13 @@
 PATHARGS=\
-	-config.dir ${PWD}/configs \
+	-config.dir ${PWD}/examples/configs \
 	-static.dir ${PWD}/public \
 	-templates.dir ${PWD}/templates
  
-build: _build/portfoligo
+build: setup _build/portfoli-go
 
-_build/portfoligo: portfoli.go
+_build/portfoli-go: **/*.go
 	test -d _build || mkdir _build
-	go build -o _build/portfoligo portfoli.go
+	go build -o _build/portfoli-go portfoli.go
 
 setup: .devcontainer/.installed
 
@@ -20,11 +20,11 @@ test:
 	go test ./...
 
 run: setup
-	go run portfoli.go $(PATHARGS)
+	go run portfoli.go -verbose $(PATHARGS)
 
 dist: setup
 	(rm -rf dist || true) && mkdir dist
-	go run portfoli.go -dist -dist.dir ${PWD}/dist $(PATHARGS)
+	go run portfoli.go -verbose -dist -dist.dir ${PWD}/dist $(PATHARGS)
 	cp -r public dist/static
 	mv dist/static/favicon.ico dist
 

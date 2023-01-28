@@ -24,13 +24,17 @@ var (
 )
 
 // Build builds the static website by using the configs found in configDir
-func Build(configDir string) {
+func Build(srvBasePath string, configDir string) {
+
 	var err error
-	cfg, err = utils.LoadConfiguration(configDir)
+	cfg, err = models.LoadConfiguration(configDir)
 	if nil != err && !errors.Is(err, config.ErrInvalidSMTPConfig) {
 		log.Fatalf("[ERROR] Loading configuration failed: %s\n", err)
 	}
+
+	utils.Init(srvBasePath)
 	messages.Compile(cfg.Profile.Email.Address)
+
 	buildGeneric()
 	buildContent()
 	buildErrors()
@@ -95,9 +99,9 @@ func build(tplFileName string, outputFileName string, data interface{}) {
 	htmlTpl := filepath.Join(appconfig.HTMLTemplatesPath(), tplFileName)
 
 	tplData := &models.TemplateData{
+		Data:          data,
 		Profile:       cfg.Profile,
 		RenderContact: false,
-		Data:          data,
 	}
 
 	resp, err := utils.RenderTemplate(

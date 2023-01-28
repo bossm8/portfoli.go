@@ -32,6 +32,11 @@ func main() {
 		8080,
 		"Listen port for the portfolio server",
 	)
+	basePath := flag.String(
+		"srv.base",
+		"/",
+		"The base path to serve content on",
+	)
 	configDir := flag.String(
 		"config.dir",
 		filepath.Join(cfgDir, "portfoli.go", "configs"),
@@ -73,11 +78,11 @@ func main() {
 
 	if *dist {
 		config.SetPaths(templatesDir, staticDir, distDir)
-		static.Build(*configDir)
+		static.Build(*basePath, *configDir)
 	} else {
 		// Do not log the dist dir path by using nil
 		config.SetPaths(templatesDir, staticDir, nil)
-		server.StartServer(fmt.Sprintf("%s:%d", *addr, *port), *configDir)
+		server.StartServer(fmt.Sprintf("%s:%d", *addr, *port), *basePath, *configDir)
 	}
 
 }

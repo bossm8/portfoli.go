@@ -10,6 +10,7 @@ import (
 	"net/mail"
 )
 
+// AlertMsg is the object which can be passed down to the status template
 type AlertMsg struct {
 	Title      string
 	Image      string

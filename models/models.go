@@ -12,8 +12,17 @@ type TemplateData struct {
 	RenderContact bool
 	Data          interface{}
 	Profile       *config.ProfileConfig
+	BasePath      string
 }
 
-func SetConfigDir(dir string) {
+// SetConfigDir sets the directory to search for yaml configurations to dir
+func setConfigDir(dir string) {
 	utils.SetYAMLDir(dir)
+}
+
+// LoadConfiguration loads the static configuration from configDir
+func LoadConfiguration(configDir string) (cfg *config.Config, err error) {
+	setConfigDir(configDir)
+	cfg, err = config.GetConfig()
+	return
 }

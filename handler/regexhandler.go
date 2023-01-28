@@ -4,6 +4,7 @@ package handler
 import (
 	"net/http"
 	"regexp"
+	"strings"
 )
 
 type route struct {
@@ -12,10 +13,15 @@ type route struct {
 }
 
 type RegexHandler struct {
-	routes []*route
+	routes   []*route
+	basePath string
 }
 
 var _ http.Handler = &RegexHandler{}
+
+func (h *RegexHandler) SetBasePath(path string) {
+	h.basePath = strings.TrimSuffix(path, "/")
+}
 
 func (h *RegexHandler) Handle(
 	pattern string,
@@ -23,7 +29,7 @@ func (h *RegexHandler) Handle(
 ) {
 	h.routes = append(h.routes, &route{
 		pattern: regexp.MustCompile(pattern),
-		handler: handler,
+		handler: http.StripPrefix(h.basePath, handler),
 	})
 }
 
@@ -33,7 +39,7 @@ func (h *RegexHandler) HandleFunc(
 ) {
 	h.routes = append(h.routes, &route{
 		pattern: regexp.MustCompile(pattern),
-		handler: http.HandlerFunc(handler),
+		handler: http.StripPrefix(h.basePath, http.HandlerFunc(handler)),
 	})
 }
 

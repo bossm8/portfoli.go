@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run Server",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/portfoli.go",
+            "args": [
+                "-config.dir", "configs",
+                "-templates.dir", "templates",
+                "-static.dir", "public"
+            ]
+        }
+    ]
+}

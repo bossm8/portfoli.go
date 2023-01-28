@@ -101,7 +101,7 @@ func GetConfig() (*Config, error) {
 	for i := 0; i < val.NumField(); i++ {
 		if v := val.Field(i); v.IsZero() {
 			log.Printf(
-				"[ERROR]: SMTP config lacking a correct value for '%s'\n",
+				"[ERROR] SMTP config lacking a correct value for '%s'\n",
 				strings.ToLower(val.Type().Field(i).Name),
 			)
 			cfg.RenderContact = false
