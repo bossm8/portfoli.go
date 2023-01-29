@@ -17,8 +17,9 @@ RUN mkdir -p www/ && \
     mv templates www/templates && \
     mv examples/configs www/configs
 
-RUN go build -o portfoligo portfoli.go && \
-    chmod +x portfoligo && ./portfoligo --help
+RUN go build -o portfoli-go portfoli.go && \
+    chmod +x portfoli-go && ./portfoli-go --help && \
+    chmod +x docker/static.sh
 
 # ---------------------------------package------------------------------------ #
 FROM alpine:latest
@@ -30,8 +31,9 @@ RUN mkdir -p /var/www/portfoli.go && \
             --ingroup www-data \
             portfoligo
 
-COPY --from=0 /home/portfoli.go/portfoligo /usr/sbin/portfoligo
+COPY --from=0 /home/portfoli.go/portfoli-go /usr/sbin/portfoli-go
 COPY --from=0 /home/portfoli.go/www /var/www/portfoli.go
+COPY --from=0 /home/portfoli.go/docker/static.sh /usr/sbin/portfoli-go-static.sh
 
 RUN chown -R portfoligo:www-data /var/www/portfoli.go
 
@@ -41,6 +43,6 @@ WORKDIR /var/www/portfoli.go
 
 EXPOSE "8080"
 
-ENTRYPOINT ["portfoligo"]
+ENTRYPOINT ["portfoli-go"]
 
 CMD ["-srv.address", "0.0.0.0", "-config.dir", "/var/www/portfoli.go/configs"]

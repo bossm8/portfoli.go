@@ -14,6 +14,48 @@ This template can be used for either hosting a static webpage with e.g.
 like, with a server written in go, this server brings benefits like a contact form to send emails directly
 to you via the portfolio page.
 
+## Getting Started
+
+(For more detailed information see below)
+
+### Dynamic
+
+1. Create a directory containing two folders: `configs` and `custom`
+2. Add custom images into the directory `custom`
+3. Copy the example yaml configurations into the `configs` directory and adjust them (for images use `/static/img/custom/<your-image>`)
+4. Use the prebuilt docker container to host the portfolio (the command is being run in the directory containing the two folders):
+   ```bash
+   docker run -it --rm \
+            --name portfoli.go \
+            -p 127.0.0.1:8080:8080 \
+            -v ${PWD}/configs:/var/www/portfoli.go/configs:ro \
+            -v ${PWD}/content:/var/www/portfoli.go/public/img/custom:ro \
+            ghcr.io/bossm8/portfoli-go:latest
+   ```
+5. This command will mount your configs and custom images in the expected location inside the docker container and start the portfolio with your content.
+
+### Static
+
+1. Do steps 1-2 of the [dynamic](#dynamic) approach
+2. Run the following commands to build your static webpage with the prebuilt docker container:
+   ```bash
+   # create the directory for the static build
+   mkdir dist
+   # render the html content
+   docker run -it --rm \
+            --name portfoli.go \
+            -v ${PWD}/configs:/var/www/portfoli.go/configs:ro \
+            -v ${PWD}/dist:/var/www/portfoli.go/dist \
+            -e DIST_PATH=/var/www/portfoli.go/dist \
+            -e CONF_PATH=/var/www/portfoli.go/configs \
+            --entrypoint portfoli-go-static.sh \
+            ghcr.io/bossm8/porfoli-go:latest \
+    # move your custom images into the static build
+    mv ${PWD}/custom dist/static/img/custom
+    ```
+3. Host the build with any fileserver of your choice (see for example the nginx configuration [below](#local))
+
+
 ## Configuration
 
 The portfolio template expects its content to come from yaml configuration files.
@@ -28,7 +70,7 @@ The following content types are currently supported:
 * education
 * projects
 * certifications
-* about
+* bio
 
 Each of them might support a different configuration, for possible values and explanaiton see `examples/configs`.
 
@@ -63,7 +105,10 @@ There are different approaches on how to use this template, select the one which
 
 ### Build from Source 
 
-Pull this repository and build the portfoli-go binary with `make build`, then use
+Get started easily by pulling this repository and running `make run`, this will
+start the portfolio with the example configuration (go is required).
+
+The portfoli-go binary can be built with `make build`, then use
 the help message to see available options:
 
 ```bash
@@ -84,7 +129,7 @@ docker run -it --rm \
            ghcr.io/bossm8/portfoli-go:latest
 ```
 
-There is also an example `docker-compose.yml` in the `examples` directory.
+There is also a sample `docker-compose.yml` in the `examples` directory.
 
 ### Static Build
 
