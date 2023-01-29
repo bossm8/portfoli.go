@@ -22,8 +22,8 @@ projects:
         <strong>The simple and flexible portfolio written in Go and Bootstrap.</strong>
       </div>
       <div class="mt-3">
-        There could be written a lot about it, but describing this part.
-        However almost anything is written in the source code repository on GitHub:
+        There could be written a lot about it.
+        However most information is written in the source code repository on GitHub:
       </div>
       <div class="mt-4">
         <a href="https://github.com/bossm8/portfoli.go" target="_blank" class="btn btn-primary">

@@ -17,12 +17,12 @@ profile:
   avatar: /static/img/portfoli.go-ico.svg
   # A heading text which will be displayed on index (may contain HTML)
   heading: |
-    This is where your inspirational text belongs
+    This is where your text will be
   # A subheading text which will be displayed on index (may contain HTML)
   subheading: |
-    Or maybe here some too?
+    And even more space for your text!
   # Slogan displayed on index (no HTML)
-  slogan: An inspiring message to the world
+  slogan: The simple and flexible portfolio template!
   # Heading displayed on the contact page (no HTML)
   contactheading: Wow, this is customizable too
   # Content types which the application should render the ones below are all possible values
