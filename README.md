@@ -24,6 +24,7 @@ to you via the portfolio page.
 2. Add your own images into the directory `custom`
 3. Copy the example yaml configurations into the `configs` directory and adjust them (for images use the path `/static/img/custom/<your-image>`)
 4. Use the prebuilt docker container to host the portfolio (the command is being run in the directory containing the two folders):
+   (make sure the files have the right permissions (container uses 100:82) or run the container as a different user)
    ```bash
    docker run -it --rm \
             --name portfoli.go \
@@ -119,6 +120,7 @@ portfoli-go -help
 
 There exists a pre-build Docker image which you can use to host the portfolio website 
 just mount your custom content and configurations to use:
+(make sure the files have the right permissions (container uses 100:82) or run the container as a different user)
 
 ```bash
 docker run -it --rm \
