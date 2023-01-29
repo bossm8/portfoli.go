@@ -12,6 +12,12 @@ on:
   push:
     branches:
       - "main"
+    paths:
+      - '**/*.go'
+      - '**/*.sh'
+      - 'public/**'
+      - '.github/workflows/latest.yaml'
+      - 'go.*'
 
 env:
   REGISTRY: ghcr.io

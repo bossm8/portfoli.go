@@ -4,7 +4,7 @@
     <img src="./public/img/portfoli.go-yellow.svg" style="width: 200px" />
 </p>
 
-The simple and flexible portfolio template written witgh [Go](https://golang.org) and [Bootstrap](https://getbootstrap.com)
+The simple and flexible portfolio template written with [Go](https://golang.org) and [Bootstrap](https://getbootstrap.com)
 Build your portfolio with simple yaml files!
 
 **See the live example on [bossm8.ch](https://bossm8.ch)** 
@@ -21,8 +21,8 @@ to you via the portfolio page.
 ### Dynamic
 
 1. Create a directory containing two folders: `configs` and `custom`
-2. Add custom images into the directory `custom`
-3. Copy the example yaml configurations into the `configs` directory and adjust them (for images use `/static/img/custom/<your-image>`)
+2. Add your own images into the directory `custom`
+3. Copy the example yaml configurations into the `configs` directory and adjust them (for images use the path `/static/img/custom/<your-image>`)
 4. Use the prebuilt docker container to host the portfolio (the command is being run in the directory containing the two folders):
    ```bash
    docker run -it --rm \
