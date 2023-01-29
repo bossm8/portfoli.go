@@ -61,8 +61,12 @@ const (
 	MsgGeneric  MessageType = "generic"
 )
 
-var messages map[MessageEndpoint]map[MessageType]*AlertMsg
+var (
+	messages map[MessageEndpoint]map[MessageType]*AlertMsg
+	compiled = false
+)
 
+// Compile compiles the messages for the application with the email address provided
 func Compile(emailAddress *mail.Address) {
 	mailto := "<a href=\"mailto:%s\">%s</a>"
 	if nil == emailAddress {
@@ -116,9 +120,15 @@ func Compile(emailAddress *mail.Address) {
 			},
 		},
 	}
+	compiled = true
 }
 
+// Get returns the message of kind for the specified endpoint
+// If it cannot find the specified combination, it returns fail/generic
 func Get(endpoint string, kind string) (msg *AlertMsg) {
+	if !compiled {
+		log.Fatal("[ERROR] Please call Compile before requesting a message")
+	}
 	var ok bool
 	if msg, ok = messages[MessageEndpoint(endpoint)][MessageType(kind)]; !ok {
 		log.Printf("[WARNING] Invalid message requested: %s/%s\n", endpoint, kind)
@@ -127,6 +137,7 @@ func Get(endpoint string, kind string) (msg *AlertMsg) {
 	return
 }
 
-func GetRoutingRegexString() string {
+// RoutingRegexString returns the regular expression to match for status endoints
+func RoutingRegexString() string {
 	return fmt.Sprintf("(%s|%s)", EndpointSuccess, EndpointFail)
 }

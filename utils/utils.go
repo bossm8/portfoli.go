@@ -80,6 +80,16 @@ func Init(serverBasePath string) {
 	}
 }
 
+// checkFuncsInitializedOrAbort makes sure that the function maps were initialized
+// by calling Init, if not is will abort the program, as it is a programmer error
+func checkFuncsInitializedOrAbort() {
+	if funcMap == nil {
+		log.Fatal(
+			"[ERROR] Please call util.Init at least once before rendering a template",
+		)
+	}
+}
+
 // RenderTemplate renders the baseTemplate containing an optional childTemplate with the data
 // passed. (name) is passed to ExecuteTemplate
 func RenderTemplate(
@@ -87,12 +97,7 @@ func RenderTemplate(
 	data interface{},
 	templates ...string,
 ) ([]byte, error) {
-
-	if funcMap == nil {
-		log.Fatal(
-			"[ERROR] Please call util.Init at least once before rendering a template",
-		)
-	}
+	checkFuncsInitializedOrAbort()
 
 	var tpl *template.Template
 	var err error
@@ -111,4 +116,24 @@ func RenderTemplate(
 	pretty := gohtml.FormatBytes(resp.Bytes())
 
 	return pretty, nil
+}
+
+// ProcessHTMLContent takes a html template which could contain some template
+// pipelines and passes them through template.Execute.
+// This makes it possible to have e.g. Assemble in the content configs.
+func ProcessHTMLContent(html *template.HTML) (*template.HTML, error) {
+	checkFuncsInitializedOrAbort()
+	tpl, err := template.New("html").Funcs(funcMap).Parse(string(*html))
+	if err != nil {
+		log.Printf("[ERROR Parsing html content %s\n", err)
+		return nil, err
+	}
+
+	res := &bytes.Buffer{}
+	if err := tpl.Execute(res, nil); err != nil {
+		log.Printf("[ERROR] Executing template on html failed: %s\n", err)
+		return nil, err
+	}
+	newHTML := template.HTML(res.String())
+	return &newHTML, nil
 }

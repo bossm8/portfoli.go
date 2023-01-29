@@ -40,13 +40,17 @@ type route struct {
 	handler http.Handler
 }
 
+// RegexHandler implements a http handler with regex pattern matching
 type RegexHandler struct {
 	routes   []*route
 	basePath string
 }
 
+// Make sure the Handler interface is implemented
 var _ http.Handler = &RegexHandler{}
 
+// SetBasePath sets the base path of the server to path
+// This path will be stripped before the request is passed to any handler
 func (h *RegexHandler) SetBasePath(path string) {
 	h.basePath = strings.TrimSuffix(path, "/")
 }

@@ -37,10 +37,6 @@ import (
 	apputils "github.com/bossm8/portfoli.go/utils"
 )
 
-const (
-	meTpl = "about.html"
-)
-
 type AboutMeConfig struct {
 	AboutMe template.HTML `yaml:"me"`
 }
@@ -61,8 +57,8 @@ func (a *AboutMeConfig) Title() string {
 }
 
 func (a *AboutMeConfig) Render() (*template.HTML, error) {
-	baseTpl := filepath.Join(config.ContentTemplatesPath(), meTpl)
-	result, err := apputils.RenderTemplate("about", a.AboutMe, baseTpl)
+	baseTpl := filepath.Join(config.ContentTemplatesPath(), a.ContentType()+".html")
+	result, err := apputils.RenderTemplate(a.ContentType(), a.AboutMe, baseTpl)
 	if err != nil {
 		log.Printf("[ERROR] Failed to render %s\n", baseTpl)
 		return nil, err

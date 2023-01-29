@@ -51,6 +51,6 @@ func setConfigDir(dir string) {
 // LoadConfiguration loads the static configuration from configDir
 func LoadConfiguration(configDir string) (cfg *config.Config, err error) {
 	setConfigDir(configDir)
-	cfg, err = config.GetConfig()
+	cfg, err = config.Load()
 	return
 }

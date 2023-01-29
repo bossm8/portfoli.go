@@ -35,6 +35,8 @@ import (
 	"regexp"
 	"strings"
 
+	apputils "github.com/bossm8/portfoli.go/utils"
+
 	"github.com/bossm8/portfoli.go/models/utils"
 )
 
@@ -48,7 +50,7 @@ const (
 
 var (
 	// All possible content types
-	ContentTypes = []string{"experience", "education", "projects", "certifications", "about"}
+	ContentTypes = []string{"experience", "education", "projects", "certifications", "bio"}
 	// Mappings to easily get the correct content type based on the request path
 	contentMappings = map[string]ContentConfig{
 		ContentTypes[typeExperience]:    &ExperienceConfig{},
@@ -89,14 +91,24 @@ func GetRenderedContent(contentType string) (*ContentTemplateData, error) {
 
 	err := loadContentConfig(obj)
 	if nil != err {
-		log.Printf("[ERROR] Generating content failed: %s\n", err)
+		log.Printf("[ERROR] Loading content failed: %s\n", err)
 		return nil, err
 	}
 
 	data, err := obj.Render()
-	title := obj.Title()
+	if err != nil {
+		log.Printf("[ERROR] Failed to render content for %s: %s\n", contentType, err)
+		return nil, err
+	}
 
-	return &ContentTemplateData{Title: title, HTML: data}, err
+	// make sure the html content is processed, so Assemble (for example) can
+	// be used in the html configuration
+	data, err = apputils.ProcessHTMLContent(data)
+	if err != nil {
+		log.Printf("[ERROR] HTML content prossecing of %s failed\n", contentType)
+	}
+
+	return &ContentTemplateData{Title: obj.Title(), HTML: data}, err
 }
 
 // GetRoutingRegexString returns the regex which catches the endpoints for

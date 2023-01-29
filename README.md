@@ -18,7 +18,9 @@ to you via the portfolio page.
 
 The portfolio template expects its content to come from yaml configuration files.
 Those files need to be in a single directory and their names must be the same as the 
-content type they represent (with the `.yml` extension).
+content type they represent (with the `.yml` extension). They are loaded each time
+the page is requested, meaning you can edit them on the fly without having to restart
+the server (when not using the static version).
 
 The following content types are currently supported:
 
@@ -26,13 +28,25 @@ The following content types are currently supported:
 * education
 * projects
 * certifications
+* about
 
 Each of them might support a different configuration, for possible values and explanaiton see `examples/configs`.
+
+**NOTE** Any *HTML* content in the content configurations (i.e. not `config.yml`) may 
+also contain [go templates](https://pkg.go.dev/text/template), it will be passed through 
+the templating engine when loaded. You might want to use the `Assemble` function, which
+adds the configured base path to relative paths from `/static`, i.e. you can reference your custom images like this:
+
+```go
+{{ "/static/custom/avatar.jpg" | Assemble }}
+```
+
+So you do not have to adjust the configurations should the base path change.
 
 ### Recommendations
 
 I recommend putting your custom content into a subdirectory of `public/img` (e.g. `custom`), and referncing
-this directory then specifying images in the `yaml` configurations. This makes it easier for the usage with e.g. Docker. 
+this directory in the `yaml` configurations when specifying images. This makes it easier for the usage with e.g. Docker. 
 You are able to use a relative path starting with `/static` i.e. `/static/img/custom/avatar.jpg` the rendering process will 
 make sure that any base path (specified with `-srv.base`) of your server is prepended to this path (e.g. when hosing on GitLab pages).
 

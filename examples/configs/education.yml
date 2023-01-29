@@ -1,0 +1,30 @@
+# Your educations
+educations: 
+    # Name of the course for example
+  - name: B.Sc. In Go Programming
+    # The school you studied at
+    school: The Go Playground
+    # Optional specialization you took
+    specialization: Concurrency
+    # Link to the course (for example)
+    link: https://go.dev/play/
+    # Image (either url or path from /static)
+    image: https://go.dev/images/go-logo-blue.svg
+    # The date you started studying there (must be a date)
+    from: 2019-09-01
+    # The date you finished studying there (may be a string or a date)
+    to: 2022-08-01
+    # How your dates shall be interpreted, must be a valid date pattern, default is 2006-01-02
+    # (https://programming.guide/go/format-parse-string-time-date-example.html)
+    dateformat: 2006-01-02
+    # Description content in html
+    description: |
+      <div>
+        <strong>Intro</strong><br/>
+        This study does not really exist but it serves as an example.
+      </div>
+      <div>
+        <a href="https://go.dev/play/" target="_blank">Some</a>
+        <a href="https://www.youtube.com/watch?v=YS4e4q9oBaU" class="mx-2" target="_blank">Cool</a>
+        <a href="https://github.com/golang/go" target="_blank">Links</a>
+      </div>

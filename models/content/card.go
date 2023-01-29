@@ -74,18 +74,28 @@ type CardDateRange struct {
 	From time.Time `yaml:"from"`
 	// To, may be string or date format
 	To interface{} `yaml:"to"`
+	// The format in which the date is present and should be rendered
+	Format string `yaml:"dateformat"`
+}
+
+func (d *CardDateRange) setFormat() {
+	if d.Format == "" {
+		d.Format = "2006-01-02"
+	}
 }
 
 // GetFromDateAsStr returns the date formatted as string
 func (d *CardDateRange) GetFromDateAsStr() string {
-	return d.From.Format("2006-01-02")
+	d.setFormat()
+	return d.From.Format(d.Format)
 }
 
 // GetToDateAsStr checks if to date is a date and formats if not a date
 // the string content is returned, if not set this defaults to 'now'
 func (d *CardDateRange) GetToDateAsStr() string {
+	d.setFormat()
 	if date, ok := d.To.(time.Time); ok {
-		return date.Format("2006-01-02")
+		return date.Format(d.Format)
 	} else if str, ok := d.To.(string); ok {
 		return str
 	}
@@ -117,6 +127,7 @@ func renderCard(card Card) (template.HTML, error) {
 	return template.HTML(rendered), nil
 }
 
+// renderCards, a helper method to render all card content types
 func renderCards(obj CardContentConfig, cardType string) (*template.HTML, error) {
 	// render the content read from yaml into the html models
 	cards := obj.Elements()

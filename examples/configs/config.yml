@@ -1,0 +1,50 @@
+# Static configuration of your profile, this file will only be read once on startup
+profile:
+  # Name displayed in the navigation bar
+  brandname: Portfoli.go
+  # Image displayed in the navigation bar, this may be html content (also bootstrap icons)
+  brandimage: |
+    <img src="/static/img/portfoli.go-ico.svg" style="height: 25px; padding-bottom: 5px;"/>
+  # Your FirsName
+  firstname: Portfoli.go
+  # Your LastName (not yet rendered)
+  lastname: Portfoli.go
+  # Your email address, this will be the address where emails from the contact form will be sent to
+  # or the one which is rendered in mailto tags
+  email: bossm8+portfolio@hotmail.com
+  # Path to the image containing your avatar, may be relative to /static even when
+  # a base path is configured, the rendering process will take care of this
+  avatar: /static/img/portfoli.go-ico.svg
+  # A heading text which will be displayed on index (may contain HTML)
+  heading: |
+    This is where your inspirational text belongs
+  # A subheading text which will be displayed on index (may contain HTML)
+  subheading: |
+    Or maybe here some too?
+  # Slogan displayed on index (no HTML)
+  slogan: An inspiring message to the world
+  # Heading displayed on the contact page (no HTML)
+  contactheading: Wow, this is customizable too
+  # Content types which the application should render the ones below are all possible values
+  content: ["bio", "experience", "education", "certifications", "projects"]
+  # Links to your social media platforms may contain two attributes:
+  #   type: the type of platform - should be one of the social type icons of bootstrap-images 
+  #         It will be appended to 'bi-' i.e. 'bi-<type>'
+  #   link: the link to your profile of the corresponding platform
+  social:
+    - type: linkedin
+      link: https://linkedin.com/in/bossm8
+    - type: medium
+      link: https://medium.com/@bossm8
+    - type: github
+      link: https://github.com/bossm8
+  # If animations should be rendered (find them ;))
+  animations: true
+
+# Configuration of your SMTP server for sending emails directly via the contact form
+# This is completely optional, if not provided, the contact form will be omitted
+smtp:
+  user: b@m.an
+  pass: you-never-guess-this
+  host: bat.cave.com
+  port: 587

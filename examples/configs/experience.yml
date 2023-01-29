@@ -1,0 +1,44 @@
+# Your experiences
+experiences:
+    # A meaningful name
+  - name: Post Man
+    # The company you work(ed) at
+    company: Portfoli.go
+    # Optional image (either url or starting with /static)
+    image: 
+    # The date you started working there (must be a date)
+    from: 2022-10-28
+    # When you finished working there (can be a string or a date)
+    to: now
+    # How your dates shall be interpreted, must be a valid date pattern, default is 2006-01-02
+    # (https://programming.guide/go/format-parse-string-time-date-example.html)
+    dateformat: 2006-01-02
+    # Optional link (to e.g. the company webpage)
+    link:
+    # Description in html
+    description: |
+      <div>
+        <img class="img-fluid" src='{{ "/static/img/status/delivered.svg" | Assemble }}' alt="Letters letters letters"/><br/>
+      </div>
+
+  - name: Hobby Pilot
+    company: Portfoli.go
+    image: 
+    from: 2022-10-28
+    to: now
+    link:
+    description: |
+      <div>
+        <img class="img-fluid" src='{{ "/static/img/status/undelivered.svg" | Assemble }}' alt="Letters letters letters"/><br/>
+      </div>
+
+  - name: Firefighter
+    company: Portfoli.go
+    image: 
+    from: 2022-10-28
+    to: now
+    link:
+    description: |
+      <div>
+        <img class="img-fluid" src='{{ "/static/img/status/error.svg" | Assemble }}' alt="Letters letters letters"/><br/>
+      </div>

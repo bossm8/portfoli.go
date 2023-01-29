@@ -52,6 +52,10 @@ type SocialMedia struct {
 	Link string `yaml:"link"`
 }
 
+var (
+	cfg *Config = nil
+)
+
 // ErrInvalidSMTPConfig signals that the app may continue, but without the contact form
 var ErrInvalidSMTPConfig = errors.New("invalid SMTP configuration")
 
@@ -100,13 +104,13 @@ type Config struct {
 	RenderContact bool
 }
 
-// GetConfig loads and returns the configuration from <config.dir>/config.yaml
-func GetConfig() (*Config, error) {
+// Load loads and returns the configuration from <config.dir>/config.yaml
+func Load() (*Config, error) {
 	// Default values which well be used on first load when nothing is configured
 	defaultBrandImage := template.HTML(
 		"<img src='/static/img/portfoli.go-yellow.svg' style='width: 25px; margin-bottom: 4px;'/>",
 	)
-	cfg := &Config{
+	cfg = &Config{
 		Profile: &ProfileConfig{
 			BrandName:  "Portfoli.go",
 			BrandImage: &defaultBrandImage,
@@ -137,4 +141,12 @@ func GetConfig() (*Config, error) {
 		}
 	}
 	return cfg, nil
+}
+
+// Get returns the loaded config (Load must have been called at least once, else it will fail)
+func Get() *Config {
+	if cfg == nil {
+		log.Fatalln("[ERROR] Cannot return config, please call LoadConfig first")
+	}
+	return cfg
 }

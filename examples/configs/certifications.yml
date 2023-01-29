@@ -1,0 +1,17 @@
+# Your certifications
+certifications:
+    # The name of the certification
+  - name: Being a Gopher
+    # Link (or path starting from /static) to the image to display
+    image: https://m.media-amazon.com/images/I/617Sv01SD0L._AC_SX679_.jpg 
+    # Link to e.g. a desctription of the certification
+    link: https://go.dev/blog/gopher
+    # The date when you obtained the certification (must be a date)
+    from: 2009-11-10
+    # How your dates shall be interpreted, must be a valid date pattern, default is 2006-01-02
+    # (https://programming.guide/go/format-parse-string-time-date-example.html)
+    dateformat: 2006-01-02
+
+  - name: Portfoli.go
+    link: https://github.com/bossm8/portfoli.go
+    from: 2023-02-01

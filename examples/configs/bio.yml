@@ -1,0 +1,30 @@
+# Bio only contains one value named me, it will be a complete page which you
+# can define here it may contain golang templates (see below)
+me: |
+  <div class="row justify-content-center d-flex">
+    <div class="col text-center">
+      <div class="fs-4 mb-3">Hey, I'm a bio page</div> 
+      <div>
+        You can place literally any content in here and use 
+        <a href="https://getbootstrap.com/docs/5.0/getting-started/introduction/" target="_blank">Bootstrap</a>
+        for styling.
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-center d-flex mt-3">
+    <div class="col-7 text-center">
+      <div>
+        <strong>Look at this cute guy for example</strong>
+      </div>
+      <div class="text-muted">
+        (Hee is sooo fluffyyyy!!!)
+      </div>
+      {{/* We are also able to use the template syntax here, how cool is that?! */}}
+      {{/* NOTE: Assemble is a custom function which appends any BasePath configured to the path passed */}}
+      <img class="img-fluid" src='{{ "/static/img/status/404.svg" | Assemble }}'>
+      <div>
+        Seriously Renee French, thank you for creating this 
+        <a href="https://go.dev/doc/gopher/README" target="_blank">thing</a>!
+      </div>
+    </div>
+  </div>

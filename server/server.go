@@ -81,7 +81,7 @@ func StartServer(addr string, basePath string, configDir string) {
 	_http.Handle("/favicon.ico", fs)
 	_http.Handle("/static/", http.StripPrefix("/static", fs))
 	_http.HandleFunc("/mail", sendMail)
-	_http.HandleFunc("/"+messages.GetRoutingRegexString(), serveStatus)
+	_http.HandleFunc("/"+messages.RoutingRegexString(), serveStatus)
 	_http.HandleFunc("/"+content.GetRoutingRegexString(), serveContent)
 	_http.HandleFunc(".*", serveGeneric)
 
