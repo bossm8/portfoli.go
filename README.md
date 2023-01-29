@@ -49,7 +49,7 @@ to you via the portfolio page.
             -e DIST_PATH=/var/www/portfoli.go/dist \
             -e CONF_PATH=/var/www/portfoli.go/configs \
             --entrypoint portfoli-go-static.sh \
-            ghcr.io/bossm8/porfoli-go:latest \
+            ghcr.io/bossm8/porfoli-go:latest
     # move your custom images into the static build
     mv ${PWD}/custom dist/static/img/custom
     ```

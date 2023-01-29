@@ -5,20 +5,19 @@ image:
   entrypoint: /bin/sh
 
 variables:
-  CONFIGS_DIR: ./configs
+  CONF_DIR: ./configs
+  DIST_DIR: ./public
   CUSTOM_CONTENT_DIR: ./custom
   # https://docs.gitlab.com/ee/user/project/pages/getting_started_part_one.html#gitlab-pages-default-domain-names
   # https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
-  BASE_PATH: /${CI_PROJECT_NAME}
+  SRV_BASE_PATH: /${CI_PROJECT_NAME}
 
 pages:
   stage: deploy
   script:
-    - mkdir public
-    - cp -r /var/www/portfoli.go/public public/static
-    - cp -r ${CUSTOM_CONTENT_DIR} public/static/img/custom
-    - mv public/static/favicon.ico public
-    - portfoli-go -config.dir ${CONFIGS_DIR} -dist -dist.dir ${PWD}/public -srv.base ${BASE_PATH}
+    - mkdir ${DIST_DIR}
+    - portfoli-go-static.sh
+    - cp -r ${CUSTOM_CONTENT_DIR} ${DIST_DIR}/static/img/custom
   artifacts:
     paths:
       - public

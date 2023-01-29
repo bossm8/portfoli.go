@@ -12,9 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       MOUNT_DIR: /var/www/portfoli.go/workspace/configs
-      CONFIGS_DIR: configs
+      CONF_DIR: configs
+      DIST_DIR: public
       CUSTOM_CONTENT_DIR: custom
-      BASE_PATH: /${{ github.event.repository.name }}
+      SRV_BASE_PATH: /${{ github.event.repository.name }}
 
     steps:
 
@@ -27,16 +28,14 @@ jobs:
           image: ghcr.io/bossm8/portfoli-go:latest
           options: -v ${{ github.workspace }}:${{ MOUNT_DIR }} --entrypoint /bin/sh
           run: |
-            mkdir ${{ MOUNT_DIR }}/public
-            cp -r /var/www/portfoli.go/public ${{ MOUT_DIR }}/public/static
-            cp -r ${{ MOUNT_DIR }}/${{ CUSTOM_CONTENT_DIR }} ${{ MOUNT_DIR }}/public/static/img/custom
-            mv ${{ MOUNT_DIR }}/public/static/favicon.ico ${{ MOUNT_DIR }}/public
-            portfoli-go -config.dir ${{ MOUNT_DIR }}/${{ CONFIGS_DIR }} -dist -dist.dir ${{ MOUNT_DIR }}/public -srv.base ${{ BASE_PATH }}
+            mkdir ${{ MOUNT_DIR }}/${{ DIST_DIR }}
+            portfoli-go-static.sh
+            cp -r ${{ MOUNT_DIR }}/${{ CUSTOM_CONTENT_DIR }} ${{ MOUNT_DIR }}/${{ DIST_DIR }}/static/img/custom
       
       - name: Build Artifact
         uses: actions/upload-pages-artifact
         with:
-          path: ${{ github.workspace }}/public
+          path: ${{ github.workspace }}/${{ DIST_DIR }}
 
   deploy:
     needs: build-pages
