@@ -8,4 +8,5 @@ _build
 .installed
 **/img/*
 !**/img/portfoli.go*.*
+!**/img/status
 dist
