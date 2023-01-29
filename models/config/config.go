@@ -85,8 +85,6 @@ type ProfileConfig struct {
 	// ContentTypes enabled for the page (each element is optional)
 	// - the element itself not and the list must be valid content types
 	ContentTypes []string `yaml:"content"`
-	// Me: Short introduction shown in the bio and skills page (optional)
-	Me *template.HTML `yaml:"me"`
 	// Animations defines if animations should be added to the page or not
 	Animations bool `yaml:"animations"`
 }

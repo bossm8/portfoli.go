@@ -1,13 +1,4 @@
-{{ define "title" }}{{ .Data.Type }}{{ end }}
+{{ define "title" }}{{ .Data.Title | Title }}{{ end }}
 {{ define "content" }}
-<div class="row justify-content-center my-5 text-center">
-    <div class="display-5">My {{ .Data.Type }}</div>
-</div>
-<div class="row justify-content-center mb-5 text-center">
-    {{ range $card := .Data.HTML }}
-    <div class="col-10 col-sm-8 col-md-6 col-lg-5 col-xl-4 mb-4">
-        {{ $card }}
-    </div>
-    {{ end }}
-</div>
+    {{ .Data.HTML }}
 {{ end }}

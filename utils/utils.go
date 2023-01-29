@@ -80,13 +80,12 @@ func Init(serverBasePath string) {
 	}
 }
 
-// RenderTemplate renders the baseTemplate containing a childTemplate with the data
+// RenderTemplate renders the baseTemplate containing an optional childTemplate with the data
 // passed. (name) is passed to ExecuteTemplate
 func RenderTemplate(
 	tplName string,
-	baseTemplate string,
-	childTemplate string,
 	data interface{},
+	templates ...string,
 ) ([]byte, error) {
 
 	if funcMap == nil {
@@ -99,8 +98,8 @@ func RenderTemplate(
 	var err error
 
 	// Title is used in templates to title case content kind names
-	if tpl, err = template.New(tplName).Funcs(funcMap).ParseFiles(baseTemplate, childTemplate); nil != err {
-		log.Printf("[ERROR] Failed to parse template: %s with error %s\n", childTemplate, err)
+	if tpl, err = template.New(tplName).Funcs(funcMap).ParseFiles(templates...); nil != err {
+		log.Printf("[ERROR] Failed to parse templates: %s with error %s\n", templates, err)
 		return nil, err
 	}
 

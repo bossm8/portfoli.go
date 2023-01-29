@@ -28,43 +28,45 @@
 
 package content
 
-import "html/template"
+import (
+	"html/template"
+	"log"
+	"path/filepath"
 
-type ProjectConfig struct {
-	Projects []*ProjectCard `yaml:"projects"`
+	"github.com/bossm8/portfoli.go/config"
+	apputils "github.com/bossm8/portfoli.go/utils"
+)
+
+const (
+	meTpl = "about.html"
+)
+
+type AboutMeConfig struct {
+	AboutMe template.HTML `yaml:"me"`
 }
 
 // Make sure the interface is implemented
-var _ ContentConfig = &ProjectConfig{}
-var _ CardContentConfig = &ProjectConfig{}
+var _ ContentConfig = &AboutMeConfig{}
 
-func (pc *ProjectConfig) Elements() []Card {
-	return castToCard(pc.Projects)
+func (a *AboutMeConfig) ConfigName() string {
+	return a.ContentType() + ".yml"
 }
 
-func (pc *ProjectConfig) ConfigName() string {
-	return pc.ContentType() + ".yml"
+func (a *AboutMeConfig) ContentType() string {
+	return ContentTypes[typeAbout]
 }
 
-func (pc *ProjectConfig) ContentType() string {
-	return ContentTypes[typeProject]
+func (a *AboutMeConfig) Title() string {
+	return "Bio'n'Skills"
 }
 
-func (pc *ProjectConfig) Render() (*template.HTML, error) {
-	return renderCards(pc, pc.ContentType())
-}
-
-func (pc *ProjectConfig) Title() string {
-	return pc.ContentType()
-}
-
-type ProjectCard struct {
-	CardBase `yaml:",inline"`
-}
-
-// Make sure the interface is implemented
-var _ Card = &ProjectCard{}
-
-func (p *ProjectCard) CardTemplateName() string {
-	return "project.html"
+func (a *AboutMeConfig) Render() (*template.HTML, error) {
+	baseTpl := filepath.Join(config.ContentTemplatesPath(), meTpl)
+	result, err := apputils.RenderTemplate("about", a.AboutMe, baseTpl)
+	if err != nil {
+		log.Printf("[ERROR] Failed to render %s\n", baseTpl)
+		return nil, err
+	}
+	html := template.HTML(result)
+	return &html, nil
 }

@@ -33,11 +33,6 @@
                     <div class="collapse navbar-collapse" id="nav-collapse">
                         <div class="ms-auto float-end text-end">
                         <ul class="navbar-nav mt-2 mt-lg-0">
-                            {{ if .Profile.Me }}
-                            <li class="nav-item">
-                                <a class="nav-link" href='{{ "me" | Assemble }}'>About Me</a>
-                            </li>
-                            {{ end }}
                             {{ range $content := .Profile.ContentTypes }}
                                 <li class="nav-item">
                                     <a class="nav-link" href='{{ $content | Assemble }}'>{{ $content | Title }}</a>

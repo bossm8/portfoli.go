@@ -46,9 +46,6 @@
     </div>
     <div class="col-12 col-lg-7 col-xl-auto mb-2 mb-lg-0">
         <div class="text-center text-lg-start">
-            {{ if .Profile.Me }}
-                <a class="btn btn-outline-primary mb-2 mb-lg-0" href='{{ "me" | Assemble }}'>Bio'n'Skills</a>
-            {{ end }}
             {{ range $content := .Profile.ContentTypes }}
                 <a class="btn btn-outline-primary mb-2 mb-lg-0" href="{{ $content | Assemble }}">{{ $content | Title }}</a>
             {{ end }}

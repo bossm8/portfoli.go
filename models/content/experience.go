@@ -28,34 +28,45 @@
 
 package content
 
+import "html/template"
+
 type ExperienceConfig struct {
-	Experiences []*Experience `yaml:"experiences"`
+	Experiences []*ExperienceCard `yaml:"experiences"`
 }
 
 // Make sure the interface is implemented
 var _ ContentConfig = &ExperienceConfig{}
+var _ CardContentConfig = &ExperienceConfig{}
 
-func (ed *ExperienceConfig) GetElements() []Content {
-	return castToContent(ed.Experiences)
+func (ec *ExperienceConfig) Elements() []Card {
+	return castToCard(ec.Experiences)
 }
 
-func (ed *ExperienceConfig) GetConfigName() string {
-	return ed.GetContentType() + ".yml"
+func (ec *ExperienceConfig) ConfigName() string {
+	return ec.ContentType() + ".yml"
 }
 
-func (ed *ExperienceConfig) GetContentType() string {
+func (ec *ExperienceConfig) ContentType() string {
 	return ContentTypes[typeExperience]
 }
 
-type Experience struct {
-	ContentBase      `yaml:",inline"`
-	Company          string `yaml:"company"`
-	ContentDateRange `yaml:",inline"`
+func (ec *ExperienceConfig) Title() string {
+	return ec.ContentType()
+}
+
+func (ec *ExperienceConfig) Render() (*template.HTML, error) {
+	return renderCards(ec, ec.ContentType())
+}
+
+type ExperienceCard struct {
+	CardBase      `yaml:",inline"`
+	Company       string `yaml:"company"`
+	CardDateRange `yaml:",inline"`
 }
 
 // Make sure the interface is implemented
-var _ Content = &Experience{}
+var _ Card = &ExperienceCard{}
 
-func (e *Experience) GetTemplateName() string {
+func (e *ExperienceCard) CardTemplateName() string {
 	return "experience.html"
 }

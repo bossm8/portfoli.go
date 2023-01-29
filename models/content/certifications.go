@@ -28,33 +28,44 @@
 
 package content
 
+import "html/template"
+
 type CertificationConfig struct {
-	Certifications []*Certification `yaml:"certifications"`
+	Certifications []*CertificationCard `yaml:"certifications"`
 }
 
 // Make sure the interface is implemented
 var _ ContentConfig = &CertificationConfig{}
+var _ CardContentConfig = &CertificationConfig{}
 
-func (cc *CertificationConfig) GetElements() []Content {
-	return castToContent(cc.Certifications)
+func (cc *CertificationConfig) Elements() []Card {
+	return castToCard(cc.Certifications)
 }
 
-func (cc *CertificationConfig) GetConfigName() string {
-	return cc.GetContentType() + ".yml"
+func (cc *CertificationConfig) ConfigName() string {
+	return cc.ContentType() + ".yml"
 }
 
-func (cc *CertificationConfig) GetContentType() string {
+func (cc *CertificationConfig) ContentType() string {
 	return ContentTypes[typeCertification]
 }
 
-type Certification struct {
-	ContentBase      `yaml:",inline"`
-	ContentDateRange `yaml:",inline"`
+func (cc *CertificationConfig) Title() string {
+	return cc.ContentType()
+}
+
+func (cc *CertificationConfig) Render() (*template.HTML, error) {
+	return renderCards(cc, cc.ContentType())
+}
+
+type CertificationCard struct {
+	CardBase      `yaml:",inline"`
+	CardDateRange `yaml:",inline"`
 }
 
 // Make sure the interface is implemented
-var _ Content = &Certification{}
+var _ Card = &CertificationCard{}
 
-func (c *Certification) GetTemplateName() string {
+func (c *CertificationCard) CardTemplateName() string {
 	return "certification.html"
 }

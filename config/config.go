@@ -41,7 +41,6 @@ const (
 	ContentTemplateName = "content"
 	StatusTemplateName  = "status"
 	ContactTemplateName = "contact"
-	AboutMeTemplateName = "me"
 	MailTemplate        = "mail.html"
 )
 

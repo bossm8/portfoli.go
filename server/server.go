@@ -213,8 +213,7 @@ func abortWithStatusTplCheck(templateName string, w http.ResponseWriter, r *http
 func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, data interface{}, status *int) {
 
 	// someone might enter /contact manually - make sure it is not returned if disabled
-	if !cfg.RenderContact && templateName == appconfig.ContactTemplateName ||
-		cfg.Profile.Me == nil && templateName == appconfig.AboutMeTemplateName {
+	if !cfg.RenderContact && templateName == appconfig.ContactTemplateName {
 		fail(w, r, messages.MsgNotFound)
 		return
 	}
@@ -233,7 +232,7 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 		RenderContact: cfg.RenderContact,
 	}
 
-	resp, err := utils.RenderTemplate(appconfig.BaseTemplateName, appconfig.BaseTemplatePath(), htmlTpl, tplData)
+	resp, err := utils.RenderTemplate(appconfig.BaseTemplateName, tplData, appconfig.BaseTemplatePath(), htmlTpl)
 	if nil != err {
 		abortWithStatusTplCheck(templateName, w, r)
 		return

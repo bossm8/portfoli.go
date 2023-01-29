@@ -32,17 +32,10 @@ import (
 	"fmt"
 	"html/template"
 	"log"
-	"path/filepath"
 	"regexp"
 	"strings"
-	"time"
 
-	apputils "github.com/bossm8/portfoli.go/utils"
-
-	"github.com/bossm8/portfoli.go/config"
 	"github.com/bossm8/portfoli.go/models/utils"
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
 )
 
 const (
@@ -50,19 +43,19 @@ const (
 	typeEducation
 	typeProject
 	typeCertification
-	typeMe
+	typeAbout
 )
 
 var (
 	// All possible content types
-	ContentTypes = []string{"experience", "education", "projects", "certifications", "me"}
+	ContentTypes = []string{"experience", "education", "projects", "certifications", "about"}
 	// Mappings to easily get the correct content type based on the request path
 	contentMappings = map[string]ContentConfig{
 		ContentTypes[typeExperience]:    &ExperienceConfig{},
 		ContentTypes[typeEducation]:     &EducationConfig{},
 		ContentTypes[typeProject]:       &ProjectConfig{},
 		ContentTypes[typeCertification]: &CertificationConfig{},
-		ContentTypes[typeMe]:            &AboutMeConfig{},
+		ContentTypes[typeAbout]:         &AboutMeConfig{},
 	}
 	// Regex which contains all possible content types
 	rex = regexp.MustCompile(fmt.Sprintf("(%s)", strings.Join(ContentTypes, "|")))
@@ -70,60 +63,20 @@ var (
 
 // ContentTemplateData the data which must be passed to the content html templates
 type ContentTemplateData struct {
-	Type string
-	HTML []template.HTML
+	Title string
+	HTML  *template.HTML
 }
 
 // ContentConfig interface which represents a configuration of a content
 type ContentConfig interface {
-	// GetElements returns the elements loaded from the corresponding yaml file
-	GetElements() []Content
-	// GetConfigName returns the name of the corresponding yaml config file
-	GetConfigName() string
-	// GetContentType returns the type of content this object contains
-	GetContentType() string
-}
-
-// Content which is contained in the yaml files
-type Content interface {
-	// GetTemplateName returns the name of the corresponding html template
-	GetTemplateName() string
-}
-
-// ContentBase contains shared attributes for all content types
-type ContentBase struct {
-	// Image to render in the card
-	Image string `yaml:"image"`
-	// Name to display in the heading
-	Name string `yaml:"name"`
-	// Link to external content
-	Link string `yaml:"link"`
-	// Description displayed in the card body
-	Description template.HTML `yaml:"description"`
-}
-
-// ContentDateRange specifies a range of two dates
-type ContentDateRange struct {
-	// From a date
-	From time.Time `yaml:"from"`
-	// To, may be string or date format
-	To interface{} `yaml:"to"`
-}
-
-// GetFromDateAsStr returns the date formatted as string
-func (d *ContentDateRange) GetFromDateAsStr() string {
-	return d.From.Format("2006-01-02")
-}
-
-// GetToDateAsStr checks if to date is a date and formats if not a date
-// the string content is returned, if not set this defaults to 'now'
-func (d *ContentDateRange) GetToDateAsStr() string {
-	if date, ok := d.To.(time.Time); ok {
-		return date.Format("2006-01-02")
-	} else if str, ok := d.To.(string); ok {
-		return str
-	}
-	return "now"
+	// ConfigName returns the name of the corresponding yaml config file
+	ConfigName() string
+	// ContentType returns the type of content this object contains
+	ContentType() string
+	// Title returns the title of the content which can be used in the templates
+	Title() string
+	// Render returns the rendered html to be placed in the content template
+	Render() (*template.HTML, error)
 }
 
 // GetRenderedContent reads the content kind passed from its yaml configuration
@@ -140,19 +93,10 @@ func GetRenderedContent(contentType string) (*ContentTemplateData, error) {
 		return nil, err
 	}
 
-	// render the content read from yaml into the html models
-	cards := obj.GetElements()
-	data := make([]template.HTML, 0)
-	for _, crd := range cards {
-		if tpl, err := renderContent(crd); nil != err {
-			return nil, err
-		} else {
-			data = append(data, tpl)
-		}
+	data, err := obj.Render()
+	title := obj.Title()
 
-	}
-	titledType := cases.Title(language.English).String(contentType)
-	return &ContentTemplateData{Type: titledType, HTML: data}, err
+	return &ContentTemplateData{Title: title, HTML: data}, err
 }
 
 // GetRoutingRegexString returns the regex which catches the endpoints for
@@ -161,34 +105,9 @@ func GetRoutingRegexString() string {
 	return rex.String()
 }
 
-// renderContent renders the passed content as html from its template
-func renderContent(content Content) (template.HTML, error) {
-
-	contentBaseTpl := filepath.Join(config.ContentTemplatesPath(), "base.html")
-	htmlTpl := filepath.Join(config.ContentTemplatesPath(), content.GetTemplateName())
-
-	rendered, err := apputils.RenderTemplate("content", contentBaseTpl, htmlTpl, content)
-	if nil != err {
-		log.Printf("[ERROR] Failed to parse template '%s': %s\n", htmlTpl, err)
-		return "", err
-	}
-
-	return template.HTML(rendered), nil
-}
-
-// castToContent casts the array of a specific kind to an array of Content
-// for further use
-func castToContent[T Content](content []T) []Content {
-	casted := make([]Content, len(content))
-	for idx, crd := range content {
-		casted[idx] = crd
-	}
-	return casted
-}
-
 // unmarshallContentConfig
 func unmarshalContentConfig(content ContentConfig) error {
-	return utils.LoadFromYAMLFile(content.GetConfigName(), content)
+	return utils.LoadFromYAMLFile(content.ConfigName(), content)
 }
 
 // loadContentConfig loads the specified content from it's yaml file

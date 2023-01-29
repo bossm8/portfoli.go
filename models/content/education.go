@@ -28,35 +28,46 @@
 
 package content
 
+import "html/template"
+
 type EducationConfig struct {
-	Educations []*Education `yaml:"educations"`
+	Educations []*EducationCard `yaml:"educations"`
 }
 
 // Make sure the interface is implemented
 var _ ContentConfig = &EducationConfig{}
+var _ CardContentConfig = &EducationConfig{}
 
-func (ec *EducationConfig) GetElements() []Content {
-	return castToContent(ec.Educations)
+func (ec *EducationConfig) Elements() []Card {
+	return castToCard(ec.Educations)
 }
 
-func (ec *EducationConfig) GetConfigName() string {
-	return ec.GetContentType() + ".yml"
+func (ec *EducationConfig) ConfigName() string {
+	return ec.ContentType() + ".yml"
 }
 
-func (ec *EducationConfig) GetContentType() string {
+func (ec *EducationConfig) ContentType() string {
 	return ContentTypes[typeEducation]
 }
 
-type Education struct {
-	ContentBase      `yaml:",inline"`
-	School           string `yaml:"school"`
-	Specialization   string `yaml:"specialization"`
-	ContentDateRange `yaml:",inline"`
+func (ec *EducationConfig) Title() string {
+	return ec.ContentType()
+}
+
+func (ec *EducationConfig) Render() (*template.HTML, error) {
+	return renderCards(ec, ec.ContentType())
+}
+
+type EducationCard struct {
+	CardBase       `yaml:",inline"`
+	School         string `yaml:"school"`
+	Specialization string `yaml:"specialization"`
+	CardDateRange  `yaml:",inline"`
 }
 
 // Make sure the interface is implemented
-var _ Content = &Education{}
+var _ Card = &EducationCard{}
 
-func (e *Education) GetTemplateName() string {
+func (e *EducationCard) CardTemplateName() string {
 	return "education.html"
 }

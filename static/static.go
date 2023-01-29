@@ -74,8 +74,7 @@ func buildGeneric() {
 	}
 
 	for _, tpl := range templates {
-		if appconfig.StaticIgnoreRegex().MatchString(tpl.Name()) ||
-			cfg.Profile.Me == nil && tpl.Name() == appconfig.AboutMeTemplateName+".html" {
+		if appconfig.StaticIgnoreRegex().MatchString(tpl.Name()) {
 			continue
 		}
 
@@ -132,9 +131,9 @@ func build(tplFileName string, outputFileName string, data interface{}) {
 
 	resp, err := utils.RenderTemplate(
 		appconfig.BaseTemplateName,
+		tplData,
 		appconfig.BaseTemplatePath(),
 		htmlTpl,
-		tplData,
 	)
 	if nil != err {
 		log.Fatalf("[Error] Failed to render template: %s\n", err)
