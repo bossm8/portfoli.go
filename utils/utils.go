@@ -37,7 +37,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/yosssi/gohtml"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
@@ -113,7 +112,10 @@ func RenderTemplate(
 		log.Printf("[ERROR] Failed to process template %s with error %s\n", tpl.Name(), err)
 		return nil, err
 	}
-	pretty := gohtml.FormatBytes(resp.Bytes())
+
+	// Adds space to text which is not in same element, thus currently disabled
+	// pretty := gohtml.FormatBytes(resp.Bytes())
+	pretty := resp.Bytes()
 
 	return pretty, nil
 }

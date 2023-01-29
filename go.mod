@@ -4,7 +4,6 @@ go 1.19
 
 require (
 	github.com/microcosm-cc/bluemonday v1.0.21
-	github.com/yosssi/gohtml v0.0.0-20201013000340-ee4748c638f4
 	golang.org/x/text v0.6.0
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gopkg.in/yaml.v3 v3.0.1
