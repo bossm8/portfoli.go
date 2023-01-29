@@ -5,7 +5,7 @@
         {{ if .Profile.Avatar }}
             <div class="square rounded-circle shadow" style="background-image: url('{{ .Profile.Avatar | Assemble }}');"></div>
         {{ else }}
-            {{ $img := "/static/img/portfoli.go-yellow.svg"}}
+            {{ $img := "/static/img/portfoli.go-yellow.svg" }}
             <div class="square default-avatar" style="background-image: url('{{ $img | Assemble }}');"></div>
         {{ end }}
     </div> 
@@ -18,12 +18,12 @@
         <form id="contact-form" class="needs-validation" method="post" action='{{ "mail" | Assemble }}' novalidate>
             <div class="mb-4">
                 <label for="name" class="form-label">Your Name</label>
-                <input type="text" class="form-control" id="name" placeholder="Someone" name="name"required>
+                <input type="text" class="form-control" id="name" placeholder="Nananana ..." name="name"required>
                 <div class="invalid-feedback">Plase tell me who you are</div>
             </div>
             <div class="mb-4">
                 <label for="email" class="form-label">Your Email Address</label>
-                <input type="email" class="form-control" id="email" placeholder="b@man.com" name="email" required>
+                <input type="email" class="form-control" id="email" placeholder="b@m.an" name="email" required>
                 <div class="form-text">Your email address will never be logged by this application</div>
                 <div class="invalid-feedback">I need a valid email address to get in touch with you</div>
             </div>
@@ -40,6 +40,8 @@
 </div>
 {{ end }}
 {{ define "scripts" }}
-<script src='{{ "static/js/anime.min.js" | Assemble }}' type="text/javascript"></script>
+{{ if .Profile.Animations }}
+    <script src='{{ "static/js/anime.min.js" | Assemble }}' type="text/javascript"></script>
+{{ end }}
 <script src='{{ "static/js/form-validation.js" | Assemble }}' type="text/javascript"></script>
 {{ end }}

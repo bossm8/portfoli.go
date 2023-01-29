@@ -1,3 +1,5 @@
+## NOTE: This has not been verified yet
+
 image: 
   name: ghcr.io/bossm8/portfoli-go:latest
   entrypoint: /bin/sh

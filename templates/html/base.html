@@ -4,8 +4,8 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ .Profile.BrandName }} - {{ template "title" . }}</title>
-        <meta name="description" content="Portfoli.go the Simple Porfolio Template Written with Go and Bootstrap">
+        <title>{{ .Profile.BrandName }} - {{ template "title" . }} - Portifoli.go</title>
+        {{ template "meta" . }} 
         <link rel="stylesheet" type="text/css" href='{{ "static/css/bootstrap.min.css" | Assemble }}'>
         <link rel="stylesheet" type="text/css" href='{{ "static/css/main.css" | Assemble }}'>
         <link rel="stylesheet" type="text/css" href='{{ "static/css/bootstrap-icons.css" | Assemble }}'>
@@ -15,7 +15,9 @@
             <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
                 <div class="container-fluid">
                     <div class="col align-middle">
-                        <a class="navbar-brand float-start align-middle" href='{{ .BasePath }}'>
+                        {{/* Also pass .BasePath to Assemble, because if it is empty there would be no slash */}}
+                        {{/* which results in the button to reference the current page instead of root */}}
+                        <a class="navbar-brand float-start align-middle" href='{{ .BasePath | Assemble }}'>
                             {{ .Profile.BrandImage }}
                             {{ .Profile.BrandName }}
                         </a>
@@ -53,8 +55,9 @@
             </nav>
         </header>
         
-        {{/* Function which can be used by img elements with the onerror event to set the default image */}}
-        {{/* It is on top as it should be there early, otherwise there might be an error that the function is unknown */}}
+        {{/* Utility functions which can be used throughout the page */}}
+        {{/* It is on top as it should be there early, otherwise there might be errors that the functions are unknown */}}
+        {{/* NOTE: must be inline, it requires the Assemble template function */}}
         <script>
             function setDefaultImage(elem) {
                 elem.src = '{{ "static/img/portfoli.go-yellow.svg" | Assemble }}';
@@ -104,6 +107,9 @@
 </html>
 {{ end }}
 <!-- define the default templates (if not defined) -->
+{{ define "meta" }}
+<meta name="description" content="Portfoli.go the Simple and Flexible Porfolio Template Written with Go and Bootstrap">
+{{ end }}
 {{ define "title" }}Much Wow{{ end }}
 {{ define "content-header" }}{{ end }}
 {{ define "scripts" }}{{ end }}

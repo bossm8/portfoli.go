@@ -50,17 +50,19 @@ const (
 	typeEducation
 	typeProject
 	typeCertification
+	typeMe
 )
 
 var (
 	// All possible content types
-	ContentTypes = []string{"experience", "education", "projects", "certifications"}
+	ContentTypes = []string{"experience", "education", "projects", "certifications", "me"}
 	// Mappings to easily get the correct content type based on the request path
 	contentMappings = map[string]ContentConfig{
 		ContentTypes[typeExperience]:    &ExperienceConfig{},
 		ContentTypes[typeEducation]:     &EducationConfig{},
 		ContentTypes[typeProject]:       &ProjectConfig{},
 		ContentTypes[typeCertification]: &CertificationConfig{},
+		ContentTypes[typeMe]:            &AboutMeConfig{},
 	}
 	// Regex which contains all possible content types
 	rex = regexp.MustCompile(fmt.Sprintf("(%s)", strings.Join(ContentTypes, "|")))
@@ -171,7 +173,7 @@ func renderContent(content Content) (template.HTML, error) {
 		return "", err
 	}
 
-	return template.HTML(rendered.String()), nil
+	return template.HTML(rendered), nil
 }
 
 // castToContent casts the array of a specific kind to an array of Content

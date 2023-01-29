@@ -43,8 +43,6 @@ import (
 	"github.com/bossm8/portfoli.go/models/config"
 	"github.com/bossm8/portfoli.go/models/content"
 	"github.com/bossm8/portfoli.go/utils"
-
-	"github.com/yosssi/gohtml"
 )
 
 var (
@@ -143,8 +141,7 @@ func build(tplFileName string, outputFileName string, data interface{}) {
 	}
 
 	outputFile := filepath.Join(appconfig.DistDir(), outputFileName)
-	prettyHTML := gohtml.FormatBytes(resp.Bytes())
-	if err := os.WriteFile(outputFile, prettyHTML, 0664); nil != err {
+	if err := os.WriteFile(outputFile, resp, 0664); nil != err {
 		log.Fatalf("[ERROR] Failed to write template: %s\n", err)
 	}
 

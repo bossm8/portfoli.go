@@ -78,6 +78,7 @@ func Compile(emailAddress *mail.Address) {
 				Message:    "I will get in touch with you shortly",
 				Kind:       "success",
 				HttpStatus: http.StatusOK,
+				Image:      "delivered.svg",
 			},
 		},
 		EndpointFail: {
@@ -87,6 +88,7 @@ func Compile(emailAddress *mail.Address) {
 				Message:    "I could not understand your email address, please try again",
 				Kind:       "danger",
 				HttpStatus: http.StatusBadRequest,
+				Image:      "undelivered.svg",
 			},
 			MsgContact: {
 				Title:      "Error",
@@ -94,6 +96,7 @@ func Compile(emailAddress *mail.Address) {
 				Message:    template.HTML("I could not process your contact request, please contact me here: " + mailto),
 				Kind:       "warning",
 				HttpStatus: http.StatusInternalServerError,
+				Image:      "delivered.svg",
 			},
 			MsgNotFound: {
 				Title:      "404",
@@ -101,6 +104,7 @@ func Compile(emailAddress *mail.Address) {
 				Message:    "<i class='bi-binoculars me-1'></i> I could not find the page you are looking for <i class='ms-1 bi-binoculars'></i>",
 				Kind:       "danger",
 				HttpStatus: http.StatusNotFound,
+				Image:      "404.svg",
 			},
 			MsgGeneric: {
 				Title:      "Sumthin Wong",
@@ -108,6 +112,7 @@ func Compile(emailAddress *mail.Address) {
 				Message:    template.HTML("There was an error on my end, please try again or contact me on " + mailto),
 				Kind:       "warning",
 				HttpStatus: http.StatusInternalServerError,
+				Image:      "error.svg",
 			},
 		},
 	}

@@ -236,12 +236,13 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 	resp, err := utils.RenderTemplate(appconfig.BaseTemplateName, appconfig.BaseTemplatePath(), htmlTpl, tplData)
 	if nil != err {
 		abortWithStatusTplCheck(templateName, w, r)
+		return
 	}
 
 	if nil != status && 100 <= *status {
 		w.WriteHeader(*status)
 	}
-	w.Write(resp.Bytes())
+	w.Write(resp)
 
 }
 

@@ -1,3 +1,6 @@
+// Copyright (c) 2023, Boss Marco <bossm8@hotmail.com>
+// All rights reserved.
+
 (function () {
     const form = document.getElementById('contact-form');
     const button = document.getElementById("runaway");
@@ -27,12 +30,9 @@
         console.log(button.parentElement.clientWidth)
         const left = randInt(button.parentElement.clientWidth - this.offsetWidth);
         anime({
-          targets: this,
-          ['left']: `${left}px`,
-          easing: "easeOutCirc"
+            targets: this,
+            ['left']: `${left}px`,
+            easing: "easeOutCirc"
         }).play();
     }
-
 })();
-
-

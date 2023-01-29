@@ -1,17 +1,23 @@
 {{ define "title" }}{{ or .Data.Title "404" }}{{ end }}
 {{ define "content" }}
 <div class="row d-flex justify-content-center">
-    <div class="col">
-        <img src='{{ ( print "static/img/" (or .Data.Image "404.png") ) | Assemble }}' alt="Hmm, there might be something missing here">
-        <div class='alert alert-{{ or .Data.Kind "warning" }} justify-content-center"'role="alert">
-            <div class="mb-2 text-center"><strong>{{ .Data.Header }}</strong></div>
-            <div class="text-center">{{ .Data.Message }}</div>
-        </div>
+    <div class="col-10 col-md-8">
+        <img src='{{ ( print "static/img/status/" ( or .Data.Image "404.svg" ) ) | Assemble }}' alt="Hmm, there might be something missing here">
     </div>
 </div>
 <div class="row">
     <div class="col">
-        <a href="{{ .BasePath }}" class="btn btn-primary float-end">Take me home</a>
+        <div class='alert alert-{{ or .Data.Kind "warning" }} justify-content-center"'role="alert">
+            <div class="mb-2 text-center"><strong>{{ .Data.Header }}</strong></div>
+            <div class="text-center">{{ .Data.Message }}</div>
+            <div class="col-12 text-center mt-4 mb-2">
+                <span class="mx-2"><strong>Take Me</strong></span>
+            </div>
+            <div class="col text-center">
+                <a href="{{ .BasePath | Assemble }}" class="btn btn-primary">Home</a>
+                <button class="btn btn-primary" onclick="window.history.go(-1);">Back</button>
+            </div>
+        </div>
     </div>
 </div>
 {{ end }}

@@ -1,6 +1,6 @@
 {{ define "title" }}Welcome{{ end }}
 {{ define "content-header" }}
-{{ $banner := or .Profile.BannerImage ( print .BasePath "static/img/portfoli.go-banner.webp") }}
+{{ $banner := ( or .Profile.BannerImage "static/img/portfoli.go-banner.webp" ) | Assemble }}
 <!-- Default image from https://unsplash.com/photos/xC7Ho08RYF4 thx!-->
 <div class="text-center bg-image"
      style="background-image: url('{{ $banner | Assemble }}'); background-size: cover;">
@@ -66,5 +66,7 @@
 </div>
 {{ end }}
 {{ define "scripts" }}
-<script type="text/javascript" src='{{ "static/js/index.js" | Assemble }}'></script>
+{{ if .Profile.Animations }}
+    <script type="text/javascript" src='{{ "static/js/index.js" | Assemble }}'></script>
+{{ end }}
 {{ end }}

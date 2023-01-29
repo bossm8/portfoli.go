@@ -1,3 +1,6 @@
+// Copyright (c) 2023, Boss Marco <bossm8@hotmail.com>
+// All rights reserved.
+
 (function () {
     let nameField = document.getElementById("my-name");
     var running = false;
@@ -34,6 +37,7 @@
         animate(0, running);
         running = true;
     };
+    test();
 })();
 
 function shake(element) {

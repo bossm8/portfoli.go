@@ -87,6 +87,8 @@ type ProfileConfig struct {
 	ContentTypes []string `yaml:"content"`
 	// Me: Short introduction shown in the bio and skills page (optional)
 	Me *template.HTML `yaml:"me"`
+	// Animations defines if animations should be added to the page or not
+	Animations bool `yaml:"animations"`
 }
 
 // Config contains the static configuration of the portfolio,

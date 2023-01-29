@@ -37,6 +37,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/yosssi/gohtml"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
@@ -54,7 +55,11 @@ func assembleBasePath(basePath string) func(string) string {
 			return path
 		}
 		path = strings.TrimPrefix(path, basePath)
-		return filepath.Join(basePath, path)
+		res := filepath.Join(basePath, path)
+		if filepath.IsAbs(res) {
+			return res
+		}
+		return string(filepath.Separator) + res
 	}
 }
 
@@ -82,7 +87,7 @@ func RenderTemplate(
 	baseTemplate string,
 	childTemplate string,
 	data interface{},
-) (*bytes.Buffer, error) {
+) ([]byte, error) {
 
 	if funcMap == nil {
 		log.Fatal(
@@ -104,6 +109,7 @@ func RenderTemplate(
 		log.Printf("[ERROR] Failed to process template %s with error %s\n", tpl.Name(), err)
 		return nil, err
 	}
+	pretty := gohtml.FormatBytes(resp.Bytes())
 
-	return resp, nil
+	return pretty, nil
 }
