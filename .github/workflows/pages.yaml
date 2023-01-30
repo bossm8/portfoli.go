@@ -10,21 +10,23 @@ on:
   push:
     branches:
       - "main"
-    paths:
-      - '**/*.go'
-      - '**/*.sh'
-      - 'public/**/*'
-      - '.github/workflows/pages.yaml'
-      - 'go.*'
+    #paths:
+    #  - '**/*.go'
+    #  - '**/*.sh'
+    #  - 'public/**/*'
+    #  - '.github/workflows/pages.yaml'
+    #  - 'go.*'
+
+env:
+  MOUNT_DIR: /var/www/portfoli.go/workspace
+  CONF_DIR: /var/www/portfoli.go/workspace/examples/configs
+  DIST_DIR: /var/www/portfoli.go/workspace/public
+  SRV_BASE_PATH: /${{ github.event.repository.name }}
     
 jobs:
   build-pages:
     runs-on: ubuntu-latest
     environment:
-      MOUNT_DIR: /var/www/portfoli.go/workspace/configs
-      CONF_DIR: examples/configs
-      DIST_DIR: public
-      SRV_BASE_PATH: /${{ github.event.repository.name }}
 
     steps:
 
@@ -35,15 +37,15 @@ jobs:
         uses: addnab/docker-run-action@v3
         with: 
           image: ghcr.io/bossm8/portfoli-go:latest
-          options: -v ${{ github.workspace }}:${{ MOUNT_DIR }} --entrypoint /bin/sh
+          options: -v ${{ github.workspace }}:${{ env.MOUNT_DIR }} --entrypoint /bin/sh
           run: |
-            mkdir ${{ MOUNT_DIR }}/${{ DIST_DIR }}
+            mkdir ${{ env.DIST_DIR }}
             portfoli-go-static.sh
       
       - name: Build Artifact
-        uses: actions/upload-pages-artifact
+        uses: actions/upload-pages-artifact@v1
         with:
-          path: ${{ github.workspace }}/${{ DIST_DIR }}
+          path: ${{ github.workspace }}/${{ env.DIST_DIR }}
 
   deploy:
     needs: build-pages
@@ -51,11 +53,11 @@ jobs:
     permissions:
       pages: write
       id-token: write
-      environment:
-        name: github-pages
-        url: ${{ steps.deployment.outputs.page_url }}
-      steps:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
 
-        - name: Deploy to GitHub Pages
-          id: deployment
-          uses: actions/deploy-pages@v1
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
