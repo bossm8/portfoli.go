@@ -4,6 +4,13 @@ on:
   push:
     branches:
       - '*'
+    paths:
+      - '**/*.go'
+      - '**/*.sh'
+      - 'public/**/*'
+      - '.github/workflows/test.yaml'
+      - 'go.*'
+
   pull_request:
     branches:
       - '*'

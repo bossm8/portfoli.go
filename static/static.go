@@ -61,6 +61,10 @@ func Build(srvBasePath string, configDir string) {
 	utils.Init(srvBasePath)
 	messages.Compile(cfg.Profile.Email.Address)
 
+	if err := cfg.Profile.RenderHTML(); err != nil {
+		log.Fatalf("[WARNING] Aborting due to previous error")
+	}
+
 	buildGeneric()
 	buildContent()
 	buildErrors()

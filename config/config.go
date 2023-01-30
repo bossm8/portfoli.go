@@ -37,11 +37,16 @@ import (
 )
 
 const (
-	BaseTemplateName    = "base"
+	// BaseTemplateName holds the name of the template containing all other templates
+	BaseTemplateName = "base"
+	// ContentTemplateName holds the name of the template containing all content templates
 	ContentTemplateName = "content"
-	StatusTemplateName  = "status"
+	// StatusTemplateName holds the name of the template showing status meessages
+	StatusTemplateName = "status"
+	// ContanctTemplateName holds the name of the template with the contact form
 	ContactTemplateName = "contact"
-	MailTemplate        = "mail.html"
+	// MailTemplate holds the name of the template which will be used in emails
+	MailTemplate = "mail.html"
 )
 
 var (

@@ -71,6 +71,9 @@ func StartServer(addr string, basePath string, configDir string) {
 	srvBasePath = basePath
 	utils.Init(basePath)
 
+	if err := cfg.Profile.RenderHTML(); err != nil {
+		log.Fatalf("[WARNING] Aborting due to previous error")
+	}
 	messages.Compile(cfg.Profile.Email.Address)
 
 	fs := http.FileServer(http.Dir(appconfig.StaticContentPath()))

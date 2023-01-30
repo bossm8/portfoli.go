@@ -3,9 +3,9 @@ name: Build Pages
 on:
   workflow_run:
     workflows:
-      - Build Latest Tag
+      - 'Build Latest Tag'
     types:
-      - completed
+      - 'completed'
       
 env:
   MOUNT_DIR: /var/www/portfoli.go/workspace
@@ -17,6 +17,7 @@ jobs:
   build-pages:
     runs-on: ubuntu-latest
     environment:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
 

@@ -35,6 +35,8 @@ import (
 	"reflect"
 	"strings"
 
+	apputils "github.com/bossm8/portfoli.go/utils"
+
 	"github.com/bossm8/portfoli.go/models/content"
 	"github.com/bossm8/portfoli.go/models/utils"
 )
@@ -91,6 +93,23 @@ type ProfileConfig struct {
 	ContentTypes []string `yaml:"content"`
 	// Animations defines if animations should be added to the page or not
 	Animations bool `yaml:"animations"`
+}
+
+// RenderHTML renders all HTML fields of the profile by passing them through the
+// templates engine. This enables having e.g. the Assemble function the configs
+func (p *ProfileConfig) RenderHTML() error {
+	val := reflect.ValueOf(*p)
+	for i := 0; i < val.NumField(); i++ {
+		if res, ok := val.Field(i).Interface().(*template.HTML); ok {
+			newHTML, err := apputils.ProcessHTMLContent(res)
+			if err != nil {
+				log.Printf("failed to process HTML template for %s", val.Type().Field(i).Name)
+				return err
+			}
+			*res = *newHTML
+		}
+	}
+	return nil
 }
 
 // Config contains the static configuration of the portfolio,

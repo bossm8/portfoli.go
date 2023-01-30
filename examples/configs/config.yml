@@ -4,7 +4,7 @@ profile:
   brandname: Portfoli.go
   # Image displayed in the navigation bar, this may be html content (also bootstrap icons)
   brandimage: |
-    <img src="https://raw.githubusercontent.com/bossm8/portfoli.go/main/public/img/portfoli.go-ico.svg" style="height: 25px; padding-bottom: 5px;"/>
+    <img src='{{ "/static/img/portfoli.go-ico.svg" | Assemble }}' style="height: 25px; padding-bottom: 5px;"/>
   # Your FirsName
   firstname: Portfoli.go
   # Your LastName (not yet rendered)

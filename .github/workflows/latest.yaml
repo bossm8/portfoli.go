@@ -4,21 +4,20 @@ on:
   schedule:
     - cron: "00 01 * * 0"
 
-  workflow_run:
-    workflows:
-      - Run Tests
-    types:
-      - completed
-      
   push:
     branches:
-      - "main"
+      - 'main'
     paths:
-      - '**/*.go'
-      - '**/*.sh'
-      - 'public/**/*'
       - '.github/workflows/latest.yaml'
-      - 'go.*'
+
+  workflow_run:
+    workflows:
+      - 'Run Tests'
+    branches:
+      - 'main'
+    types:
+      - 'completed'
+      
 
 env:
   REGISTRY: ghcr.io
