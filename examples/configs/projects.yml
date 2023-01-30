@@ -6,7 +6,7 @@ projects:
     link: https://github.com/bossm8/portfoli.go/tree/main/static/img
     # Optional image (either url or path starting from /static)
     image: /static/img/portfoli.go-gray.svg
-    # A description of the project, this may be html content
+    # A description of the project, this may be HTML content
     description: |
       <div>
         <img class="img-fluid" src='{{ "/static/img/status/404.svg" | Assemble }}' alt="Much Wow"/><br/>

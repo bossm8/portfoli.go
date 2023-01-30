@@ -15,7 +15,7 @@ experiences:
     dateformat: 2006-01-02
     # Optional link (to e.g. the company webpage)
     link:
-    # Description in html
+    # Description in HTML
     description: |
       <div>
         <img class="img-fluid" src='{{ "/static/img/status/delivered.svg" | Assemble }}' alt="Letters letters letters"/><br/>

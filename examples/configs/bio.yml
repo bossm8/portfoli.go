@@ -1,5 +1,5 @@
 # Bio only contains one value named me, it will be a complete page which you
-# can define here it may contain golang templates (see below)
+# can define here in HTML (it may contain golang templates - see below)
 me: |
   <div class="row justify-content-center d-flex">
     <div class="col text-center">

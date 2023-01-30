@@ -75,7 +75,7 @@ The following content types are currently supported:
 
 Each of them might support a different configuration, for possible values and explanaiton see `examples/configs`.
 
-**NOTE** Any *HTML* content in the content configurations (i.e. not `config.yml`) may 
+**NOTE** Any *HTML* content in the configurations may 
 also contain [go templates](https://pkg.go.dev/text/template), it will be passed through 
 the templating engine when loaded. You might want to use the `Assemble` function, which
 adds the configured base path to relative paths from `/static`, i.e. you can reference your custom images like this:
@@ -84,7 +84,7 @@ adds the configured base path to relative paths from `/static`, i.e. you can ref
 {{ "/static/custom/avatar.jpg" | Assemble }}
 ```
 
-So you do not have to adjust the configurations should the base path change.
+So you do not have to adjust the configurations should the base path ever change.
 
 ### Recommendations
 

@@ -2,7 +2,7 @@
 profile:
   # Name displayed in the navigation bar
   brandname: Portfoli.go
-  # Image displayed in the navigation bar, this may be html content (also bootstrap icons)
+  # Image displayed in the navigation bar, this may be HTML content (also bootstrap icons)
   brandimage: |
     <img src='{{ "/static/img/portfoli.go-ico.svg" | Assemble }}' style="height: 25px; padding-bottom: 5px;"/>
   # Your FirsName

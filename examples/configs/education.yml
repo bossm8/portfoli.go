@@ -17,7 +17,7 @@ educations:
     # How your dates shall be interpreted, must be a valid date pattern, default is 2006-01-02
     # (https://programming.guide/go/format-parse-string-time-date-example.html)
     dateformat: 2006-01-02
-    # Description content in html
+    # Description content in HTML
     description: |
       <div>
         <strong>Intro</strong><br/>

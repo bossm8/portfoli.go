@@ -34,11 +34,11 @@ jobs:
         go-version: ${{ matrix.go-version }}
       id: go
 
-    - name: Check out code into the Go module directory
+    - name: Check Source Code
       uses: actions/checkout@v3
 
     - name: Install staticcheck
       run: go install honnef.co/go/tools/cmd/staticcheck@latest
 
-    - name: Run tests
+    - name: Run Tests
       run: make test
