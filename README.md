@@ -7,7 +7,7 @@
 The simple and flexible portfolio template written with [Go](https://golang.org) and [Bootstrap](https://getbootstrap.com)
 Build your portfolio with simple yaml files!
 
-**See the live example on [bossm8.ch](https://bossm8.ch)** 
+**See the live example on [bossm8.ch](https://me.bossm8.ch)** 
 
 This template can be used for either hosting a static webpage with e.g. 
 [GitLab](https://docs.gitlab.com/ee/user/project/pages/) / [GitHub](https://pages.github.com) pages. Or if you

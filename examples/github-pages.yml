@@ -8,10 +8,9 @@ on:
 
 env:
   MOUNT_DIR: /var/www/portfoli.go/workspace
-  CONF_DIR: /var/www/portfoli.go/workspace/examples/configs
-  DIST_DIR: /var/www/portfoli.go/workspace/public
-  SRV_BASE_PATH: /${{ github.event.repository.name }}
-  CUSTOM_CONTENT_DIR: custom
+  CONF_PATH: /var/www/portfoli.go/workspace/examples/configs
+  DIST_PATH: /var/www/portfoli.go/workspace/public
+  SRV_BASE_PATH: /
     
 jobs:
   build-pages:
@@ -31,12 +30,12 @@ jobs:
           run: |
             mkdir ${{ env.DIST_DIR }}
             portfoli-go-static.sh
-            cp -r ${{ env.MOUNT_DIR }}/${{ env.CUSTOM_CONTENT_DIR }} ${{ env.DIST_DIR }}/static/img/custom
+            cp -r ${{ env.MOUNT_DIR }}/${{ env.CUSTOM_CONTENT_DIR }} ${{ env.DIST_PATH }}/static/img/custom
       
       - name: Build Artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ${{ github.workspace }}/${{ env.DIST_DIR }}
+          path: ${{ github.workspace }}/public
 
   deploy:
     needs: build-pages

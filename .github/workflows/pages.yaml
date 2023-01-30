@@ -19,9 +19,8 @@ on:
 
 env:
   MOUNT_DIR: /var/www/portfoli.go/workspace
-  CONF_DIR: /var/www/portfoli.go/workspace/examples/configs
-  DIST_DIR: /var/www/portfoli.go/workspace/public
-  SRV_BASE_PATH: /${{ github.event.repository.name }}
+  CONF_DIR: examples/configs
+  DIST_DIR: public
     
 jobs:
   build-pages:
@@ -37,9 +36,9 @@ jobs:
         uses: addnab/docker-run-action@v3
         with: 
           image: ghcr.io/bossm8/portfoli-go:latest
-          options: -v ${{ github.workspace }}:${{ env.MOUNT_DIR }} --entrypoint /bin/sh
+          options: -v ${{ github.workspace }}:${{ env.MOUNT_DIR }} --entrypoint /bin/sh -e DIST_PATH=${{ env.MOUNT_DIR }}/${{ env.DIST_DIR }} -e CONF_PATH=${{ env.MOUNT_DIR }}/${{ env.CONF_DIR }}
           run: |
-            mkdir ${{ env.DIST_DIR }}
+            mkdir ${{ env.DIST_PATH }}
             portfoli-go-static.sh
       
       - name: Build Artifact
