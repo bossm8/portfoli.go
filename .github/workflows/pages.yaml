@@ -7,16 +7,6 @@ on:
     types:
       - completed
       
-  push:
-    branches:
-      - "main"
-    #paths:
-    #  - '**/*.go'
-    #  - '**/*.sh'
-    #  - 'public/**/*'
-    #  - '.github/workflows/pages.yaml'
-    #  - 'go.*'
-
 env:
   MOUNT_DIR: /var/www/portfoli.go/workspace
   CONF_DIR: examples/configs

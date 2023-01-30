@@ -3,6 +3,7 @@ name: Build Latest Tag
 on:
   schedule:
     - cron: "00 01 * * 0"
+
   workflow_run:
     workflows:
       - Run Tests
