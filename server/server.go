@@ -198,18 +198,18 @@ func serveStatus(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func abortWithStatusTplCheck(templateName string, w http.ResponseWriter, r *http.Request) {
+func abortWithStatusTplCheck(templateName string, w http.ResponseWriter, r *http.Request, kind messages.MessageType) {
 	if templateName == appconfig.StatusTemplateName {
 		// This catches the case when the server cant find or has an error with the status template
 		// if this check is not made we end up having an infinite amount of requests
 		// because we would again be redirected to the status template
 		log.Printf(
 			"[WARNING] The template failed is the status template, aborting with %d\n",
-			http.StatusInternalServerError,
+			messages.Get("fail", string(kind)).HttpStatus,
 		)
 		w.WriteHeader(http.StatusInternalServerError)
 	} else {
-		fail(w, r, messages.MsgGeneric)
+		fail(w, r, kind)
 	}
 }
 
@@ -227,7 +227,7 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 
 	if res, err := os.Stat(htmlTpl); os.IsNotExist(err) || res.IsDir() {
 		log.Printf("[ERROR] Could not find or read from %s\n", htmlTpl)
-		abortWithStatusTplCheck(templateName, w, r)
+		abortWithStatusTplCheck(templateName, w, r, messages.MsgNotFound)
 		return
 	}
 
@@ -239,7 +239,7 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 
 	resp, err := utils.RenderTemplate(appconfig.BaseTemplateName, tplData, appconfig.BaseTemplatePath(), htmlTpl)
 	if nil != err {
-		abortWithStatusTplCheck(templateName, w, r)
+		abortWithStatusTplCheck(templateName, w, r, messages.MsgGeneric)
 		return
 	}
 

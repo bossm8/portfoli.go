@@ -100,7 +100,7 @@ func Compile(emailAddress *mail.Address) {
 				Message:    template.HTML("I could not process your contact request, please contact me here: " + mailto),
 				Kind:       "warning",
 				HttpStatus: http.StatusInternalServerError,
-				Image:      "delivered.svg",
+				Image:      "undelivered.svg",
 			},
 			MsgNotFound: {
 				Title:      "404",
