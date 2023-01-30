@@ -181,3 +181,12 @@ open the devcontainer with [VSCode](https://code.visualstudio.com/) and run `mak
 ## TODO
 
 * Write tests
+
+## Gopher Artwork
+
+Here are some gopher images I created for this page:
+
+![NotFound](public/img/status/404.svg)
+![Error](public/img/status/error.svg)
+![Delivered](public/img/status/delivered.svg)
+![Undelivered](public/img/status/undelivered.svg)
