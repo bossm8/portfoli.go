@@ -20,7 +20,8 @@ on:
 env:
   MOUNT_DIR: /var/www/portfoli.go/workspace
   CONF_DIR: examples/configs
-  DIST_DIR: public
+  DIST_DIR: dist
+  BASE_PATH: /${{ github.event.repository.name }}
     
 jobs:
   build-pages:
@@ -31,14 +32,16 @@ jobs:
 
       - name: Checkout Configs
         uses: actions/checkout@v3
+      
+      - name: Create Dist Dir
+        run: mkdir ${{ github.workspace }}/${{ env.DIST_DIR }}
 
       - name: Build Pages
         uses: addnab/docker-run-action@v3
         with: 
           image: ghcr.io/bossm8/portfoli-go:latest
-          options: -v ${{ github.workspace }}:${{ env.MOUNT_DIR }} --entrypoint /bin/sh -e DIST_PATH=${{ env.MOUNT_DIR }}/${{ env.DIST_DIR }} -e CONF_PATH=${{ env.MOUNT_DIR }}/${{ env.CONF_DIR }}
+          options: -v ${{ github.workspace }}:${{ env.MOUNT_DIR }} --entrypoint /bin/sh -u root -e DIST_PATH=${{ env.MOUNT_DIR }}/${{ env.DIST_DIR }} -e CONF_PATH=${{ env.MOUNT_DIR }}/${{ env.CONF_DIR }} -e SRV_BASE_PATH=${{ env.BASE_PATH }}
           run: |
-            mkdir ${{ env.DIST_PATH }}
             portfoli-go-static.sh
       
       - name: Build Artifact
