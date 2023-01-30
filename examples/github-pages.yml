@@ -1,21 +1,22 @@
 ## NOTE: This has not been verified yet
-
 name: Build Pages
 
 on:
   push:
     branches:
       - "main"
+
+env:
+  MOUNT_DIR: /var/www/portfoli.go/workspace
+  CONF_DIR: /var/www/portfoli.go/workspace/examples/configs
+  DIST_DIR: /var/www/portfoli.go/workspace/public
+  SRV_BASE_PATH: /${{ github.event.repository.name }}
+  CUSTOM_CONTENT_DIR: custom
     
 jobs:
   build-pages:
     runs-on: ubuntu-latest
     environment:
-      MOUNT_DIR: /var/www/portfoli.go/workspace/configs
-      CONF_DIR: configs
-      DIST_DIR: public
-      CUSTOM_CONTENT_DIR: custom
-      SRV_BASE_PATH: /${{ github.event.repository.name }}
 
     steps:
 
@@ -26,16 +27,16 @@ jobs:
         uses: addnab/docker-run-action@v3
         with: 
           image: ghcr.io/bossm8/portfoli-go:latest
-          options: -v ${{ github.workspace }}:${{ MOUNT_DIR }} --entrypoint /bin/sh
+          options: -v ${{ github.workspace }}:${{ env.MOUNT_DIR }} --entrypoint /bin/sh
           run: |
-            mkdir ${{ MOUNT_DIR }}/${{ DIST_DIR }}
+            mkdir ${{ env.DIST_DIR }}
             portfoli-go-static.sh
-            cp -r ${{ MOUNT_DIR }}/${{ CUSTOM_CONTENT_DIR }} ${{ MOUNT_DIR }}/${{ DIST_DIR }}/static/img/custom
+            cp -r ${{ env.MOUNT_DIR }}/${{ env.CUSTOM_CONTENT_DIR }} ${{ env.DIST_DIR }}/static/img/custom
       
       - name: Build Artifact
-        uses: actions/upload-pages-artifact
+        uses: actions/upload-pages-artifact@v1
         with:
-          path: ${{ github.workspace }}/${{ DIST_DIR }}
+          path: ${{ github.workspace }}/${{ env.DIST_DIR }}
 
   deploy:
     needs: build-pages
@@ -43,11 +44,11 @@ jobs:
     permissions:
       pages: write
       id-token: write
-      environment:
-        name: github-pages
-        url: ${{ steps.deployment.outputs.page_url }}
-      steps:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
 
-        - name: Deploy to GitHub Pages
-          id: deployment
-          uses: actions/deploy-pages@v1
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
