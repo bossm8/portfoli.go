@@ -1,7 +1,7 @@
 services:
 
   portfoli.go:
-    image: gchr.io/bossm8/portfoli-go:latest
+    image: ghcr.io/bossm8/portfoli-go:latest
     container_name: portfoli.go
     volumes:
       - ${PWD}/configs:/var/www/portfoli.go/configs:ro
