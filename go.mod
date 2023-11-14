@@ -3,7 +3,7 @@ module github.com/bossm8/portfoli.go
 go 1.19
 
 require (
-	github.com/microcosm-cc/bluemonday v1.0.21
+	github.com/microcosm-cc/bluemonday v1.0.26
 	golang.org/x/text v0.13.0
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gopkg.in/yaml.v3 v3.0.1
