@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM docker.io/library/golang:latest
 
 RUN apt-get update && \
     apt-get upgrade -y && \

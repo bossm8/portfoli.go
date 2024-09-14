@@ -5,6 +5,10 @@
         "context": "."
     },
 
+    "runArgs": ["--userns=keep-id:uid=1000,gid=1000"],
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,relabel=shared",
+    "workspaceFolder": "/workspace",
+
     "customizations": {
         "vscode": {
             "extensions": [
@@ -17,5 +21,7 @@
 
     "onCreateCommand": "/bin/bash .devcontainer/setup.sh",
 
-    "remoteUser": "port"
+    "remoteUser": "port",
+    "containerUser": "port",
+    "updateRemoteUserUID": true
 }
