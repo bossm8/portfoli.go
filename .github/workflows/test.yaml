@@ -8,7 +8,7 @@ on:
       - '**/*.go'
       - '**/*.sh'
       - 'public/**/*'
-      - '.github/workflows/test.yaml'
+      - '**/*.yaml'
       - 'go.*'
 
   pull_request:
