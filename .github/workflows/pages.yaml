@@ -41,7 +41,7 @@ jobs:
             portfoli-go-static.sh
       
       - name: Build Artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ${{ github.workspace }}/${{ env.DIST_DIR }}
 
