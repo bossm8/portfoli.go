@@ -1,10 +1,10 @@
 module github.com/bossm8/portfoli.go
 
-go 1.23.0
+go 1.24.0
 
 require (
 	github.com/microcosm-cc/bluemonday v1.0.27
-	golang.org/x/text v0.28.0
+	golang.org/x/text v0.33.0
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gopkg.in/yaml.v3 v3.0.1
 )
