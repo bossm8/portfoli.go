@@ -50,7 +50,7 @@ var (
 )
 
 // Build builds the static website by using the configs found in configDir
-func Build(srvBasePath string, configDir string) {
+func Build(srvBasePath string, configDir string, imageCacheDir string) {
 
 	var err error
 	cfg, err = models.LoadConfiguration(configDir)
@@ -58,6 +58,11 @@ func Build(srvBasePath string, configDir string) {
 		log.Fatalf("[ERROR] Loading configuration failed: %s\n", err)
 	}
 
+	if err := utils.SetImageCacheConfig(cfg.Images.Cache, cfg.Images.Force, imageCacheDir); err != nil {
+		log.Printf("[WARNING] Failed to configure image cache: %s\n", err)
+	}
+	cfg.Profile.ApplyImageCache()
+	content.PrefetchImages(cfg.Profile.ContentTypes)
 	utils.Init(srvBasePath)
 	messages.Compile(cfg.Profile.Email.Address)
 

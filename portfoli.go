@@ -85,6 +85,11 @@ func main() {
 		config.DistDir(),
 		"Path to the directory of where to output the static build",
 	)
+	imageCacheDir := flag.String(
+		"images.cache.dir",
+		"",
+		"Path to the directory where cached images are stored (default: img/cache, relative to static dir only)",
+	)
 	verbose := flag.Bool(
 		"verbose",
 		false,
@@ -106,11 +111,11 @@ func main() {
 
 	if *dist {
 		config.SetPaths(templatesDir, staticDir, distDir)
-		static.Build(*basePath, *configDir)
+		static.Build(*basePath, *configDir, *imageCacheDir)
 	} else {
 		// Do not log the dist dir path by using nil
 		config.SetPaths(templatesDir, staticDir, nil)
-		server.StartServer(fmt.Sprintf("%s:%d", *addr, *port), *basePath, *configDir)
+		server.StartServer(fmt.Sprintf("%s:%d", *addr, *port), *basePath, *configDir, *imageCacheDir)
 	}
 
 }
