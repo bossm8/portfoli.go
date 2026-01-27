@@ -57,7 +57,7 @@ var (
 )
 
 // StartServer will attempt to start and listen the server on the specified address
-func StartServer(addr string, basePath string, configDir string) {
+func StartServer(addr string, basePath string, configDir string, imageCacheDir string) {
 
 	var err error
 	cfg, err = models.LoadConfiguration(configDir)
@@ -69,6 +69,11 @@ func StartServer(addr string, basePath string, configDir string) {
 	}
 
 	srvBasePath = basePath
+	if err := utils.SetImageCacheConfig(cfg.Images.Cache, cfg.Images.Force, imageCacheDir); err != nil {
+		log.Printf("[WARNING] Failed to configure image cache: %s\n", err)
+	}
+	cfg.Profile.ApplyImageCache()
+	content.PrefetchImages(cfg.Profile.ContentTypes)
 	utils.Init(basePath)
 
 	if err := cfg.Profile.RenderHTML(); err != nil {

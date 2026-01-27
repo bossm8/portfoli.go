@@ -68,6 +68,11 @@ type CardBase struct {
 	Description template.HTML `yaml:"description"`
 }
 
+// ImageRef returns a pointer to the image field for cache updates.
+func (c *CardBase) ImageRef() *string {
+	return &c.Image
+}
+
 // CardDateRange specifies a range of two dates
 type CardDateRange struct {
 	// From a date
@@ -131,6 +136,7 @@ func renderCard(card Card) (template.HTML, error) {
 func renderCards(obj CardContentConfig, cardType string) (*template.HTML, error) {
 	// render the content read from yaml into the html models
 	cards := obj.Elements()
+	updateCardImages(cards)
 	data := make([]template.HTML, 0)
 	for _, crd := range cards {
 		if tpl, err := renderCard(crd); nil != err {
@@ -157,4 +163,20 @@ func renderCards(obj CardContentConfig, cardType string) (*template.HTML, error)
 	html := template.HTML(rendered)
 
 	return &html, nil
+}
+
+// imageRef exposes an image field for cache updates.
+type imageRef interface {
+	ImageRef() *string
+}
+
+// updateCardImages rewrites card image URLs to cached paths when enabled.
+func updateCardImages(cards []Card) {
+	for _, card := range cards {
+		if ref, ok := card.(imageRef); ok {
+			if img := ref.ImageRef(); img != nil && *img != "" {
+				*img = apputils.MaybeCacheImage(*img)
+			}
+		}
+	}
 }

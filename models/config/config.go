@@ -95,6 +95,14 @@ type ProfileConfig struct {
 	Animations bool `yaml:"animations"`
 }
 
+// ImagesConfig contains configuration for image caching behavior
+type ImagesConfig struct {
+	// Cache controls if remote images should be cached locally
+	Cache bool `yaml:"cache"`
+	// Force forces a re-download of cached images on startup
+	Force bool `yaml:"force"`
+}
+
 // RenderHTML renders all HTML fields of the profile by passing them through the
 // templates engine. This enables having e.g. the Assemble function the configs
 func (p *ProfileConfig) RenderHTML() error {
@@ -112,6 +120,19 @@ func (p *ProfileConfig) RenderHTML() error {
 	return nil
 }
 
+// ApplyImageCache updates image fields to use a cached local path when enabled.
+func (p *ProfileConfig) ApplyImageCache() {
+	if p == nil {
+		return
+	}
+	if p.BannerImage != "" {
+		p.BannerImage = apputils.MaybeCacheImage(p.BannerImage)
+	}
+	if p.Avatar != "" {
+		p.Avatar = apputils.MaybeCacheImage(p.Avatar)
+	}
+}
+
 // Config contains the static configuration of the portfolio,
 // meaning the mailing config and your profile settings
 type Config struct {
@@ -119,6 +140,8 @@ type Config struct {
 	Profile *ProfileConfig `yaml:"profile"`
 	// SMTP configuration used to send emails via the contact form
 	SMTP *SMTPConfig `yaml:"smtp"`
+	// Images configuration for caching remote images
+	Images *ImagesConfig `yaml:"images"`
 	// RenderContact signals if the contact form should be rendered or not
 	RenderContact bool
 }
@@ -134,9 +157,13 @@ func Load() (*Config, error) {
 			BrandName:  "Portfoli.go",
 			BrandImage: &defaultBrandImage,
 		},
+		Images: &ImagesConfig{},
 	}
 	if err := utils.LoadFromYAMLFile(ConfigFile, cfg); nil != err {
 		return nil, err
+	}
+	if cfg.Images == nil {
+		cfg.Images = &ImagesConfig{}
 	}
 
 	for _, contentType := range cfg.Profile.ContentTypes {

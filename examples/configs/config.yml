@@ -28,7 +28,7 @@ profile:
   # Content types which the application should render the ones below are all possible values
   content: ["bio", "experience", "education", "certifications", "projects"]
   # Links to your social media platforms may contain two attributes:
-  #   type: the type of platform - should be one of the social type icons of bootstrap-images 
+  #   type: the type of platform - should be one of the social type icons of bootstrap-images
   #         It will be appended to 'bi-' i.e. 'bi-<type>'
   #   link: the link to your profile of the corresponding platform
   social:
@@ -40,6 +40,13 @@ profile:
       link: https://github.com/bossm8
   # If animations should be rendered (find them ;))
   animations: true
+
+# Image caching configuration
+images:
+  # Cache remote images locally and use the cached path in templates
+  cache: false
+  # Force re-download of cached images on startup
+  force: false
 
 # Configuration of your SMTP server for sending emails directly via the contact form
 # This is completely optional, if not provided, the contact form will be omitted

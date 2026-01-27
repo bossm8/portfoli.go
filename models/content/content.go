@@ -128,6 +128,26 @@ func loadContentConfig(content ContentConfig) error {
 	return err
 }
 
+// PrefetchImages loads content configs and caches remote images if configured.
+func PrefetchImages(contentTypes []string) {
+	for _, contentType := range contentTypes {
+		if !IsValidContentType(contentType) {
+			continue
+		}
+		obj := contentMappings[contentType]
+		if obj == nil {
+			continue
+		}
+		if err := loadContentConfig(obj); err != nil {
+			log.Printf("[WARNING] Prefetching content %s failed: %s\n", contentType, err)
+			continue
+		}
+		if cards, ok := obj.(CardContentConfig); ok {
+			updateCardImages(cards.Elements())
+		}
+	}
+}
+
 // IsValidContentType returns if the content type passed is a valid one
 func IsValidContentType(contentType string) bool {
 	isValid := true
