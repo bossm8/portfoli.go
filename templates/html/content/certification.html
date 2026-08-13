@@ -1,13 +1,20 @@
 {{ define "content" }}
 {{ $image := or .Image "/static/img/portfoli.go-yellow.svg" }}
+{{ if .Link }}
+<a href="{{ .Link }}" class="cert-item reveal" target="_blank">
+    <img class="cert-item__logo" src="{{ $image | Assemble }}" alt="{{ .Name }}" onerror="setDefaultImage(this)"/>
+    <div class="cert-item__body">
+        <div class="cert-item__name">{{ .Name }}</div>
+    </div>
+    <div class="cert-item__date">{{ .GetFromDateAsStr }}</div>
+</a>
+{{ else }}
 <div class="cert-item reveal">
     <img class="cert-item__logo" src="{{ $image | Assemble }}" alt="{{ .Name }}" onerror="setDefaultImage(this)"/>
     <div class="cert-item__body">
         <div class="cert-item__name">{{ .Name }}</div>
     </div>
     <div class="cert-item__date">{{ .GetFromDateAsStr }}</div>
-    {{ if .Link }}
-    <a href="{{ .Link }}" class="cert-item__link" target="_blank" aria-label="View certificate"><i class="bi-box-arrow-up-right"></i></a>
-    {{ end }}
 </div>
+{{ end }}
 {{ end }}
