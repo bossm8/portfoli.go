@@ -49,7 +49,8 @@ type Card interface {
 }
 
 // CardContentConfig defines a specific type of content config,
-// which contains a list of elements to be renderer as bootstrap cards
+// which contains a list of elements to be rendered as individual entries
+// (a card, a timeline entry, a list row, etc. depending on the content type)
 type CardContentConfig interface {
 	// Elements returns the elements loaded from the corresponding yaml file
 	// Each of those will be rendered in its own card

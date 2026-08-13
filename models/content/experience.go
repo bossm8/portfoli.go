@@ -70,3 +70,11 @@ var _ Card = &ExperienceCard{}
 func (e *ExperienceCard) CardTemplateName() string {
 	return "experience.html"
 }
+
+// ImageRef shadows CardBase's promoted method: experience entries no longer
+// render an image (see experience.html), so there's nothing to cache. The
+// `image` yaml field is kept on CardBase only so existing configs which
+// still set it keep loading without error.
+func (e *ExperienceCard) ImageRef() *string {
+	return nil
+}

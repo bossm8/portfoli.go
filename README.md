@@ -4,8 +4,8 @@
     <img src="./public/img/portfoli.go-yellow.svg" style="width: 200px" />
 </p>
 
-The simple and flexible portfolio template written with [Go](https://golang.org) and [Bootstrap](https://getbootstrap.com)
-Build your portfolio with simple yaml files!
+The simple and flexible portfolio template written with [Go](https://golang.org), with a modern,
+dark-mode-ready design out of the box. Build your portfolio with simple yaml files!
 
 **See the live example on [bossm8.ch](https://me.bossm8.ch) or [GitHub Pages](https://bossm8.github.io/portfoli.go)**
 
@@ -101,6 +101,18 @@ this directory in the `yaml` configurations when specifying images. This makes i
 You are able to use a relative path starting with `/static` i.e. `/static/img/custom/avatar.jpg` the rendering process will
 make sure that any base path (specified with `-srv.base`) of your server is prepended to this path (e.g. when hosing on GitLab pages).
 
+
+## Appearance
+
+The page follows the visitor's system light/dark preference automatically, and
+also offers a manual toggle (top right of the navigation bar) which overrides
+the system preference and is remembered on the visitor's device.
+
+If your existing YAML content contains raw HTML with Bootstrap-style classes
+(e.g. `btn btn-primary`, `row`/`col-*`, `text-muted`, `fs-4`, `img-fluid`,
+`bi-*` icons), it will keep rendering without any changes to your
+configuration - those class names are still supported and automatically pick
+up the new color palette and dark mode.
 
 ## Usage
 

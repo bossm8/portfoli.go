@@ -150,7 +150,7 @@ type Config struct {
 func Load() (*Config, error) {
 	// Default values which well be used on first load when nothing is configured
 	defaultBrandImage := template.HTML(
-		"<img src='/static/img/portfoli.go-yellow.svg' style='width: 25px; margin-bottom: 4px;'/>",
+		"<img src='/static/img/portfoli.go-yellow.svg' style='height: 26px;'/>",
 	)
 	cfg = &Config{
 		Profile: &ProfileConfig{
