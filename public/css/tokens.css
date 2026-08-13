@@ -1,0 +1,136 @@
+/*
+ * Design tokens for portfoli.go.
+ * Three-state theme: system preference by default, explicit override via
+ * [data-theme] (set by public/js/theme.js) always wins.
+ */
+
+@font-face {
+  font-family: "Inter";
+  src: url("fonts/InterVariable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 999px;
+
+  --text-sm: clamp(0.8rem, 0.78rem + 0.1vw, 0.875rem);
+  --text-base: clamp(0.95rem, 0.92rem + 0.15vw, 1.05rem);
+  --text-lg: clamp(1.1rem, 1.05rem + 0.25vw, 1.3rem);
+  --text-xl: clamp(1.4rem, 1.25rem + 0.75vw, 1.85rem);
+  --text-2xl: clamp(1.9rem, 1.6rem + 1.5vw, 2.75rem);
+  --text-3xl: clamp(2.4rem, 1.9rem + 2.5vw, 3.75rem);
+
+  --transition-fast: 150ms ease;
+  --transition-theme: background-color 200ms ease, color 200ms ease,
+    border-color 200ms ease;
+
+  /* Light theme (default) - plain neutral grays, no warm/brown tint */
+  --color-bg: #ffffff;
+  --color-bg-elevated: #f7f7f8;
+  --color-bg-muted: #eeeef1;
+  --color-text: #18181b;
+  --color-text-muted: #6b7280;
+  --color-border: #e4e4e7;
+  --color-accent: #475569;
+  --color-accent-solid: #475569;
+  --color-accent-solid-text: #ffffff;
+  --color-link: var(--color-accent);
+  --color-success: #16a34a;
+  --color-danger: #dc2626;
+  --color-warning: #d97706;
+  --color-info: #0284c7;
+  --color-secondary: #6b7280;
+  --color-light: #eeeef1;
+  --color-dark: #27272a;
+  --color-nav-bg: rgba(255, 255, 255, 0.88);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg: #131316;
+    --color-bg-elevated: #1c1c20;
+    --color-bg-muted: #232328;
+    --color-text: #f4f4f5;
+    --color-text-muted: #a1a1aa;
+    --color-border: #2e2e34;
+    --color-accent: #94a3b8;
+    --color-accent-solid: #94a3b8;
+    --color-accent-solid-text: #0f172a;
+    --color-success: #4ade80;
+    --color-danger: #f87171;
+    --color-warning: #fbbf24;
+    --color-info: #38bdf8;
+    --color-secondary: #a1a1aa;
+    --color-light: #232328;
+    --color-dark: #f4f4f5;
+    --color-nav-bg: rgba(19, 19, 22, 0.88);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.35);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.45);
+  }
+}
+
+:root[data-theme="dark"] {
+  --color-bg: #131316;
+  --color-bg-elevated: #1c1c20;
+  --color-bg-muted: #232328;
+  --color-text: #f4f4f5;
+  --color-text-muted: #a1a1aa;
+  --color-border: #2e2e34;
+  --color-accent: #94a3b8;
+  --color-accent-solid: #94a3b8;
+  --color-accent-solid-text: #0f172a;
+  --color-success: #4ade80;
+  --color-danger: #f87171;
+  --color-warning: #fbbf24;
+  --color-info: #38bdf8;
+  --color-secondary: #a1a1aa;
+  --color-light: #232328;
+  --color-dark: #f4f4f5;
+  --color-nav-bg: rgba(19, 19, 22, 0.88);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+:root[data-theme="light"] {
+  --color-bg: #ffffff;
+  --color-bg-elevated: #f7f7f8;
+  --color-bg-muted: #eeeef1;
+  --color-text: #18181b;
+  --color-text-muted: #6b7280;
+  --color-border: #e4e4e7;
+  --color-accent: #475569;
+  --color-accent-solid: #475569;
+  --color-accent-solid-text: #ffffff;
+  --color-success: #16a34a;
+  --color-danger: #dc2626;
+  --color-warning: #d97706;
+  --color-info: #0284c7;
+  --color-secondary: #6b7280;
+  --color-light: #eeeef1;
+  --color-dark: #27272a;
+  --color-nav-bg: rgba(255, 255, 255, 0.88);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12);
+}

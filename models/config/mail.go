@@ -33,6 +33,9 @@ import (
 	"log"
 	"net/mail"
 
+	appconfig "github.com/bossm8/portfoli.go/config"
+	apputils "github.com/bossm8/portfoli.go/utils"
+
 	"gopkg.in/gomail.v2"
 	"gopkg.in/yaml.v3"
 )
@@ -72,6 +75,11 @@ func (smtp *SMTPConfig) SendMail(
 		"Subject":  {subject},
 	})
 	mail.SetBody("text/plain", message)
+	if html, err := renderMailHTML(senderName, replyTo.Address, message); nil != err {
+		log.Printf("[WARNING] Failed to render HTML mail body, sending plain text only: %s\n", err)
+	} else {
+		mail.AddAlternative("text/html", html)
+	}
 
 	dialer := gomail.NewDialer(smtp.Host, smtp.Port, smtp.User.Address.Address, smtp.Pass)
 	if err := dialer.DialAndSend(mail); err != nil {
@@ -79,6 +87,25 @@ func (smtp *SMTPConfig) SendMail(
 		return err
 	}
 	return nil
+}
+
+// mailData is passed to the mail html template
+type mailData struct {
+	Name    string
+	Email   string
+	Message string
+}
+
+// renderMailHTML renders the html alternative body sent alongside the plain
+// text one, so contact form notifications also look decent in mail clients
+// which prefer HTML.
+func renderMailHTML(name, email, message string) (string, error) {
+	data := mailData{Name: name, Email: email, Message: message}
+	rendered, err := apputils.RenderTemplate("mail", data, appconfig.MailTemplatePath())
+	if nil != err {
+		return "", err
+	}
+	return string(rendered), nil
 }
 
 // EmailAddress is a wrapper around mail.Address, which does not implement

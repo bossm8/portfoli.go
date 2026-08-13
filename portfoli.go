@@ -26,7 +26,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// porfoli.go the simple and dynamic portfolio written with Go and Bootstrap
+// porfoli.go the simple and dynamic portfolio written with Go
 package main
 
 import (

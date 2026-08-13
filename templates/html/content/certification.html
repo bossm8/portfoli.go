@@ -1,26 +1,13 @@
-{{ define "header" }}
+{{ define "content" }}
 {{ $image := or .Image "/static/img/portfoli.go-yellow.svg" }}
-<div class="h-80 py-4 px-5 d-flex flex-column align-items-center justify-content-center">
-    <img class="card-img-top img-fluid mh-100" src="{{ $image | Assemble }}" alt="{{ .Name }}" onerror="setDefaultImage(this)"/>
-</div>
-<div class="card-footer h-20 d-flex flex-column align-items-center justify-content-center">
-    <div class="align-self-center w-100">
-        <div class="row">
-            <div class="col-2"></div>
-            <div class="col">
-                {{ .Name }}
-            </div>
-            <div class="col-2">
-                {{ if .Link }}
-                <a href="{{ .Link }}" class="float-end flex" target="_blank"><i class="bi-box-arrow-up-right"></i></a>
-                {{ end }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="text-muted col-12">Achieved: {{ .GetFromDateAsStr }}</div>
-        </div>
+<div class="cert-item reveal">
+    <img class="cert-item__logo" src="{{ $image | Assemble }}" alt="{{ .Name }}" onerror="setDefaultImage(this)"/>
+    <div class="cert-item__body">
+        <div class="cert-item__name">{{ .Name }}</div>
     </div>
+    <div class="cert-item__date">{{ .GetFromDateAsStr }}</div>
+    {{ if .Link }}
+    <a href="{{ .Link }}" class="cert-item__link" target="_blank" aria-label="View certificate"><i class="bi-box-arrow-up-right"></i></a>
+    {{ end }}
 </div>
 {{ end }}
-{{ define "body" }}{{ "" }}{{ end }}
-{{ define "footer" }}{{ "" }}{{ end }}

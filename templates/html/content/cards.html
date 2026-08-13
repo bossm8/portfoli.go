@@ -1,12 +1,30 @@
 {{ define "cards" }}
-<div class="row justify-content-center my-5 text-center">
+<div class="text-center mb-5">
     <div class="display-5">My {{ .Type | Title }}</div>
 </div>
-<div class="row justify-content-center mb-5 text-center">
+{{ if or (eq .Type "experience") (eq .Type "education") }}
+<div class="timeline">
     {{ range $card := .Cards }}
-    <div class="col-10 col-sm-8 col-md-6 col-lg-5 col-xl-4 mb-4">
         {{ $card }}
-    </div>
     {{ end }}
 </div>
+{{ else if eq .Type "projects" }}
+<div class="project-list">
+    {{ range $card := .Cards }}
+        {{ $card }}
+    {{ end }}
+</div>
+{{ else if eq .Type "certifications" }}
+<div class="cert-list">
+    {{ range $card := .Cards }}
+        {{ $card }}
+    {{ end }}
+</div>
+{{ else }}
+<div class="card-grid">
+    {{ range $card := .Cards }}
+        {{ $card }}
+    {{ end }}
+</div>
+{{ end }}
 {{ end }}

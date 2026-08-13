@@ -1,13 +1,13 @@
-{{ define "header-text" }}{{ .School }}{{ end }}
-{{ define "body" }}
-<div class="card-body overflow-auto">
-    <h5 class="card-title">{{ template "body-title" . }}</h5>
-    {{ if .Specialization }}
-        <h6 class="card-text text-muted"><small>Specialization in {{ .Specialization }}</small></h6>
+{{ define "content" }}
+<div class="timeline-item reveal">
+    <div class="timeline-marker"></div>
+    <div class="timeline-date">{{ .GetFromDateAsStr }} &ndash; {{ .GetToDateAsStr }}</div>
+    <h3 class="timeline-title">{{ .School }}</h3>
+    {{ if .Name }}<div class="timeline-subtitle">{{ .Name }}</div>{{ end }}
+    {{ if .Specialization }}<div class="timeline-meta">Specialization in {{ .Specialization }}</div>{{ end }}
+    {{ if .Description }}<div class="timeline-desc">{{ .Description }}</div>{{ end }}
+    {{ if .Link }}
+    <a href="{{ .Link }}" class="timeline-link link-secondary" target="_blank">Learn more <i class="bi-box-arrow-up-right"></i></a>
     {{ end }}
-    <p class="card-text overflow-auto">
-        {{ .Description }}
-    </p>
 </div>
 {{ end }}
-{{ define "footer-text" }}{{ .GetFromDateAsStr }} — {{ .GetToDateAsStr }}{{ end }}

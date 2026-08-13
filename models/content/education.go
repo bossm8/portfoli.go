@@ -71,3 +71,11 @@ var _ Card = &EducationCard{}
 func (e *EducationCard) CardTemplateName() string {
 	return "education.html"
 }
+
+// ImageRef shadows CardBase's promoted method: education entries no longer
+// render an image (see education.html), so there's nothing to cache. The
+// `image` yaml field is kept on CardBase only so existing configs which
+// still set it keep loading without error.
+func (e *EducationCard) ImageRef() *string {
+	return nil
+}

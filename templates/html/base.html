@@ -3,53 +3,58 @@
 <html>
     <head>
         <meta charset="utf-8">
+        {{/* Set the theme before first paint to avoid a flash of the wrong theme */}}
+        {{/* Also mark scroll-reveal sections as hidden before first paint, so they never */}}
+        {{/* render visible and then flash to hidden once reveal.js runs later on */}}
+        <script>
+            (function () {
+                try {
+                    var stored = localStorage.getItem('theme');
+                    if (stored === 'dark' || stored === 'light') {
+                        document.documentElement.setAttribute('data-theme', stored);
+                    }
+                } catch (e) {}
+                try {
+                    if (!window.matchMedia || !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                        document.documentElement.classList.add('js-reveal');
+                    }
+                } catch (e) {}
+            })();
+        </script>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ .Profile.BrandName }} - {{ template "title" . }} - Portifoli.go</title>
-        {{ template "meta" . }} 
-        <link rel="stylesheet" type="text/css" href='{{ "static/css/bootstrap.min.css" | Assemble }}'>
+        <title>{{ .Profile.BrandName }} - {{ template "title" . }} - Portfoli.go</title>
+        {{ template "meta" . }}
+        <link rel="stylesheet" type="text/css" href='{{ "static/css/tokens.css" | Assemble }}'>
         <link rel="stylesheet" type="text/css" href='{{ "static/css/main.css" | Assemble }}'>
         <link rel="stylesheet" type="text/css" href='{{ "static/css/bootstrap-icons.css" | Assemble }}'>
     </head>
-    <body class="min-vh-100 d-flex flex-column">
-        <header>
-            <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-                <div class="container-fluid">
-                    <div class="col align-middle">
-                        {{/* Also pass .BasePath to Assemble, because if it is empty there would be no slash */}}
-                        {{/* which results in the button to reference the current page instead of root */}}
-                        <a class="navbar-brand float-start align-middle" href='{{ .BasePath | Assemble }}'>
-                            {{ .Profile.BrandImage }}
-                            {{ .Profile.BrandName }}
-                        </a>
-                    </div>
-                    <div class="col align-middle">
-                        <button class="navbar-toggler d-lg-none float-end" 
-                                type="button" 
-                                data-bs-toggle="collapse" data-bs-target="#nav-collapse" 
-                                aria-controls="nav-collapse" aria-expanded="false" aria-label="Toggle navigation">
-                                <i class="bi-list"></i>
-                        </button>
-                    </div>
-                    <div class="collapse navbar-collapse" id="nav-collapse">
-                        <div class="ms-auto float-end text-end">
-                        <ul class="navbar-nav mt-2 mt-lg-0">
-                            {{ range $content := .Profile.ContentTypes }}
-                                <li class="nav-item">
-                                    <a class="nav-link" href='{{ $content | Assemble }}'>{{ $content | Title }}</a>
-                                </li>
-                            {{ end }}
-                            {{ if .RenderContact }}
-                            <li class="nav-item">
-                                <a class="nav-link" href='{{ "contact" | Assemble }}'>Contact</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                        </div>
-                    </div>
+    <body class="page">
+        <header class="site-nav">
+            <div class="container site-nav__inner">
+                <a class="site-nav__brand" href='{{ .BasePath | Assemble }}'>
+                    {{ .Profile.BrandImage }}
+                    {{ .Profile.BrandName }}
+                </a>
+                <div class="site-nav__actions">
+                    <button id="theme-toggle" class="site-nav__icon-btn" type="button" aria-pressed="false" aria-label="Toggle color theme">
+                        <i id="theme-toggle-icon" class="bi-moon-stars"></i>
+                    </button>
+                    <button id="nav-toggle" class="site-nav__icon-btn site-nav__toggle" type="button"
+                            aria-controls="nav-links" aria-expanded="false" aria-label="Toggle navigation">
+                        <i id="nav-toggle-icon" class="bi-list"></i>
+                    </button>
                 </div>
-            </nav>
+                <ul id="nav-links" class="site-nav__links">
+                    {{ range $content := .Profile.ContentTypes }}
+                        <li><a href='{{ $content | Assemble }}'>{{ $content | Title }}</a></li>
+                    {{ end }}
+                    {{ if .RenderContact }}
+                    <li><a href='{{ "contact" | Assemble }}'>Contact</a></li>
+                    {{ end }}
+                </ul>
+            </div>
         </header>
-        
+
         {{/* Utility functions which can be used throughout the page */}}
         {{/* It is on top as it should be there early, otherwise there might be errors that the functions are unknown */}}
         {{/* NOTE: must be inline, it requires the Assemble template function */}}
@@ -64,46 +69,40 @@
         </script>
 
         {{ template "content-header" . }}
-        <div class="container h-100" style="padding-top: 55px; margin-bottom: 25px">
-            {{ template "content" . }}
-        </div>
+        <main class="site-main container">{{- template "content" . -}}</main>
 
-        <footer class="text-center mt-auto">
-            <div class="container-fluid pb-4 pt-2 px-4">
-              <div class="row text-sm fw-light" style="font-size: small;">
-                <div class="col-12 col-lg-6 justify-content-start text-start text-secondary">
-                    <span class="text-decoration-none ms-2">Find me on</span>
-                    <span class="mx-2">-</span>
+        <footer class="site-footer">
+            <div class="container site-footer__inner">
+                <div class="site-footer__social">
+                    <span>Find me on</span>
                     {{ range $social := .Profile.SocialMedia }}
-                    <a href="{{ $social.Link }}" class="link-secondary text-decoration-none me-1" target="_blank">
+                    <a href="{{ $social.Link }}" target="_blank">
                         <i class="bi-{{ $social.Type }}"></i>
                     </a>
                     {{ end }}
-                    <span class="ms-1 me-2">-</span>
-                    <a class="link-secondary text-decoration-none" href="mailto:{{ .Profile.Email }}">
-                        <i class="bi-envelope-at me-1"></i>Mail
+                    <a href="mailto:{{ .Profile.Email }}">
+                        <i class="bi-envelope-at"></i> Mail
                     </a>
                 </div>
-                <div class="col-12 col-lg-6 justify-content-start justify-content-lg-end text-start text-lg-end">
-                    <a href='{{ "about" | Assemble }}' class="link-secondary text-decoration-none mx-2">About</a>-
-                    <span class="text-decoration-none mx-2 text-secondary">
-                        Portfolio template by <a href="https://github.com/bossm8" class="text-decoration-none" target="_blank">@bossm8</a>
-                    </span>-
-                    <a href="https://github.com/bossm8/portfoli.go" class="link-secondary text-decoration-none mx-2" target="_blank">
-                        <i class="bi-github me-1"></i>Source
+                <div class="site-footer__links">
+                    <a href='{{ "about" | Assemble }}'>About</a>
+                    <span>Portfolio template by <a href="https://github.com/bossm8" target="_blank">@bossm8</a></span>
+                    <a href="https://github.com/bossm8/portfoli.go" target="_blank">
+                        <i class="bi-github"></i> Source
                     </a>
                 </div>
-              </div>
             </div>
         </footer>
-        <script src='{{ "static/js/bootstrap.min.js" | Assemble }}'></script>
+        <script src='{{ "static/js/theme.js" | Assemble }}'></script>
+        <script src='{{ "static/js/nav.js" | Assemble }}'></script>
+        <script src='{{ "static/js/reveal.js" | Assemble }}'></script>
         {{ template "scripts" . }}
     </body>
 </html>
 {{ end }}
 <!-- define the default templates (if not defined) -->
 {{ define "meta" }}
-<meta name="description" content="Portfoli.go the Simple and Flexible Porfolio Template Written with Go and Bootstrap">
+<meta name="description" content="Portfoli.go the Simple and Flexible Porfolio Template Written with Go">
 {{ end }}
 {{ define "title" }}Much Wow{{ end }}
 {{ define "content-header" }}{{ end }}

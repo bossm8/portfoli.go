@@ -8,8 +8,6 @@ educations:
     specialization: Concurrency
     # Link to the course (for example)
     link: https://go.dev/play/
-    # Image (either url or path from /static)
-    image: https://go.dev/images/go-logo-blue.svg
     # The date you started studying there (must be a date)
     from: 2019-09-01
     # The date you finished studying there (may be a string or a date)

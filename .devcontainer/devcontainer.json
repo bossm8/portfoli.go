@@ -5,16 +5,14 @@
         "context": "."
     },
 
-    "runArgs": ["--userns=keep-id:uid=1000,gid=1000"],
-    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,relabel=shared",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
     "workspaceFolder": "/workspace",
 
     "customizations": {
         "vscode": {
             "extensions": [
 				"golang.go",
-				"ms-vscode.makefile-tools",
-                "AnbuselvanRocky.bootstrap5-vscode"
+				"ms-vscode.makefile-tools"
             ]
         }
     },

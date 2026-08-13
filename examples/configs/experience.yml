@@ -4,8 +4,6 @@ experiences:
   - name: Post Man
     # The company you work(ed) at
     company: Portfoli.go
-    # Optional image (either url or starting with /static)
-    image: 
     # The date you started working there (must be a date)
     from: 2022-10-28
     # When you finished working there (can be a string or a date)
@@ -18,27 +16,28 @@ experiences:
     # Description in HTML
     description: |
       <div>
-        <img class="img-fluid" src='{{ "/static/img/status/delivered.svg" | Assemble }}' alt="Letters letters letters"/><br/>
+        Delivering pull requests to your mailbox, rain or shine.
+        <img src='{{ "/static/img/status/delivered.svg" | Assemble }}' alt="Letters letters letters"/>
       </div>
 
   - name: Hobby Pilot
     company: Portfoli.go
-    image: 
     from: 2022-10-28
     to: now
     link:
     description: |
       <div>
-        <img class="img-fluid" src='{{ "/static/img/status/undelivered.svg" | Assemble }}' alt="Letters letters letters"/><br/>
+        Folding paper airplanes and pretending they're production deploys.
+        <img src='{{ "/static/img/status/undelivered.svg" | Assemble }}' alt="Letters letters letters"/>
       </div>
 
   - name: Firefighter
     company: Portfoli.go
-    image: 
     from: 2022-10-28
     to: now
     link:
     description: |
       <div>
-        <img class="img-fluid" src='{{ "/static/img/status/error.svg" | Assemble }}' alt="Letters letters letters"/><br/>
+        Putting out (fake) server fires before they can spread.
+        <img src='{{ "/static/img/status/error.svg" | Assemble }}' alt="Letters letters letters"/>
       </div>

@@ -1,2 +1,12 @@
-{{ define "header-text" }}{{ .Company }}{{ end }}
-{{ define "footer-text" }}{{ .GetFromDateAsStr }} — {{ .GetToDateAsStr }}{{ end }}
+{{ define "content" }}
+<div class="timeline-item reveal">
+    <div class="timeline-marker"></div>
+    <div class="timeline-date">{{ .GetFromDateAsStr }} &ndash; {{ .GetToDateAsStr }}</div>
+    <h3 class="timeline-title">{{ .Company }}</h3>
+    {{ if .Name }}<div class="timeline-subtitle">{{ .Name }}</div>{{ end }}
+    {{ if .Description }}<div class="timeline-desc">{{ .Description }}</div>{{ end }}
+    {{ if .Link }}
+    <a href="{{ .Link }}" class="timeline-link link-secondary" target="_blank">Learn more <i class="bi-box-arrow-up-right"></i></a>
+    {{ end }}
+</div>
+{{ end }}
