@@ -7,9 +7,6 @@
     <div class="project-item__body">
         <h3 class="project-item__title">{{ .Name }}</h3>
         {{ if .Description }}<div class="project-item__desc">{{ .Description }}</div>{{ end }}
-        {{ if .Link }}
-        <a href="{{ .Link }}" class="btn btn-outline-primary" target="_blank">View project <i class="bi-box-arrow-up-right ms-2"></i></a>
-        {{ end }}
     </div>
 </div>
 {{ end }}

@@ -493,10 +493,14 @@ a:hover {
   border-radius: var(--radius-md);
 }
 
-.timeline-link {
-  display: inline-block;
-  margin-top: var(--space-2);
-  font-size: var(--text-sm);
+.timeline-inline-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.timeline-inline-link:hover {
+  color: var(--color-accent);
+  text-decoration: underline;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -615,10 +619,14 @@ a:hover {
 a.cert-item:hover {
   background: var(--color-bg-muted);
   color: inherit;
+  /* .cert-item is itself the <a> - without this, the site-wide a:hover
+     underline rule still paints through under all the row's text (name,
+     date, everything), regardless of what .cert-item__name's own style says */
+  text-decoration: none;
 }
 
 a.cert-item:hover .cert-item__name {
-  text-decoration: underline;
+  color: var(--color-accent);
 }
 
 .cert-item:nth-child(2) {
@@ -1040,10 +1048,6 @@ main.site-main:empty {
 
   .timeline-desc img {
     margin-inline: auto;
-  }
-
-  .timeline-link {
-    display: inline-flex;
   }
 
   .project-item,

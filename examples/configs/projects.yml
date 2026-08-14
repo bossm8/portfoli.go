@@ -2,17 +2,33 @@
 projects:
     # Name of the project
   - name: Gopher Artwork
-    # Link to e.g. the website of your project
-    link: https://github.com/bossm8/portfoli.go/tree/main/public/img
     # Optional image (either url or path starting from /static)
     image: /static/img/portfoli.go-gray.svg
-    # A description of the project, this may be HTML content
+    # A description of the project, this may be HTML content - including
+    # links and even a <style> block for custom per-entry CSS. Note that
+    # <style> isn't scoped to just this card though - it applies to the
+    # whole page, so prefix class names (like gopher-artwork-* below) to
+    # avoid clashing with styles from other entries' descriptions.
     description: |
+      <style>
+        .gopher-artwork-note {
+          display: inline-block;
+          margin-top: 0.75rem;
+          padding: 0.4rem 0.9rem;
+          border-radius: 999px;
+          background: color-mix(in srgb, var(--color-accent) 15%, transparent);
+          color: var(--color-accent);
+          font-size: 0.85rem;
+          font-weight: 600;
+        }
+      </style>
       <div>
         A little collection of gopher illustrations drawn for this project -
         used everywhere from the 404 page to the contact form. Renée French,
-        we owe you one. Follow the link above for the full set.
+        we owe you one. See the
+        <a href="https://github.com/bossm8/portfoli.go/tree/main/public/img" target="_blank">full set on GitHub</a>.
       </div>
+      <span class="gopher-artwork-note">100% hand-drawn</span>
       <div class="img-gallery">
         <img src='{{ "/static/img/status/404.svg" | Assemble }}' alt="Much Wow"/>
         <img src='{{ "/static/img/status/error.svg" | Assemble }}' alt="Hmm - cannot find this"/>
@@ -21,7 +37,6 @@ projects:
       </div>
 
   - name: Portfoli.go
-    link: /about
     description: |
       <div class="mb-3">
         <strong>The simple and flexible portfolio written in Go.</strong>

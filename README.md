@@ -114,6 +114,16 @@ If your existing YAML content contains raw HTML with Bootstrap-style classes
 configuration - those class names are still supported and automatically pick
 up the new color palette and dark mode.
 
+### Custom CSS per entry
+
+Fields that accept HTML content (`description` on experience/education/
+certifications/projects entries, `me` on the bio page, and the profile's
+`heading`/`subheading`) can also contain a `<style>` block for one-off custom
+styling - see `examples/configs/projects.yml`'s "Gopher Artwork" entry for a
+worked example. Keep in mind a `<style>` block isn't scoped to just that
+entry - it applies to the whole page - so prefix your class names (e.g.
+`.my-project-badge`) to avoid clashing with styles from other entries.
+
 ## Usage
 
 There are different approaches on how to use this template, select the one which might fit you the most.

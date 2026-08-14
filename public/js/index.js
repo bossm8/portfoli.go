@@ -4,7 +4,11 @@
 (function () {
     let nameField = document.getElementById("my-name");
     var running = false;
+    var hasPlayed = false;
     nameField.addEventListener("mouseover", () => {
+        if (hasPlayed)
+            return;
+        hasPlayed = true;
         doTheHarlemShake(nameField);
     });
 
