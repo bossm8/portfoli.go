@@ -29,6 +29,7 @@
 package config
 
 import (
+	"encoding/json"
 	"errors"
 	"html/template"
 	"log"
@@ -103,6 +104,23 @@ type ImagesConfig struct {
 	Force bool `yaml:"force"`
 }
 
+// SEOConfig contains configuration for page title/metadata and social
+// share previews
+type SEOConfig struct {
+	// SiteName is appended to every page's <title> (e.g. "Name - Page - SiteName")
+	SiteName string `yaml:"sitename"`
+	// Description is the default meta/og/twitter description for pages
+	// which do not define their own (e.g. the about page does)
+	Description string `yaml:"description"`
+	// Image used for social share previews (og:image/twitter:image),
+	// falls back to profile.avatar when unset
+	Image string `yaml:"image"`
+	// SiteURL is the absolute base URL of the deployed site (e.g.
+	// https://example.com), optional - if set, it is used to build an
+	// absolute image URL for maximum share-card compatibility
+	SiteURL string `yaml:"siteurl"`
+}
+
 // RenderHTML renders all HTML fields of the profile by passing them through the
 // templates engine. This enables having e.g. the Assemble function the configs
 func (p *ProfileConfig) RenderHTML() error {
@@ -133,11 +151,74 @@ func (p *ProfileConfig) ApplyImageCache() {
 	}
 }
 
+// personSchema is the JSON-LD payload describing the profile as a
+// schema.org Person, embedded on every page for richer search engine
+// results (e.g. a knowledge-panel-style entry).
+type personSchema struct {
+	Context  string   `json:"@context"`
+	Type     string   `json:"@type"`
+	Name     string   `json:"name"`
+	JobTitle string   `json:"jobTitle,omitempty"`
+	Email    string   `json:"email,omitempty"`
+	Image    string   `json:"image,omitempty"`
+	URL      string   `json:"url,omitempty"`
+	SameAs   []string `json:"sameAs,omitempty"`
+}
+
+// PersonJSONLD returns a JSON-LD <script> payload describing the profile as
+// a schema.org Person. Built via encoding/json rather than assembled as
+// text in the template, so field values (which may contain quotes,
+// ampersands, etc.) are guaranteed to be correctly JSON-escaped rather than
+// HTML-escaped, which would produce invalid JSON. image should already be
+// fully resolved (e.g. via the Assemble template function) since this
+// method has no access to the request's base path.
+func (p *ProfileConfig) PersonJSONLD(seo *SEOConfig, image string) template.JS {
+	if p == nil {
+		return ""
+	}
+	name := strings.TrimSpace(p.FirstName + " " + p.LastName)
+	if name == "" {
+		name = p.BrandName
+	}
+	var email string
+	if p.Email != nil && p.Email.Address != nil {
+		email = p.Email.Address.Address
+	}
+	var sameAs []string
+	for _, s := range p.SocialMedia {
+		if s.Link != "" {
+			sameAs = append(sameAs, s.Link)
+		}
+	}
+	var siteURL string
+	if seo != nil {
+		siteURL = seo.SiteURL
+	}
+	schema := personSchema{
+		Context:  "https://schema.org",
+		Type:     "Person",
+		Name:     name,
+		JobTitle: p.Slogan,
+		Email:    email,
+		Image:    image,
+		URL:      siteURL,
+		SameAs:   sameAs,
+	}
+	b, err := json.Marshal(schema)
+	if err != nil {
+		log.Printf("[WARNING] Failed to marshal person JSON-LD: %s\n", err)
+		return ""
+	}
+	return template.JS(b)
+}
+
 // Config contains the static configuration of the portfolio,
 // meaning the mailing config and your profile settings
 type Config struct {
 	// Profile: the static configuration about the profile loaded on start
 	Profile *ProfileConfig `yaml:"profile"`
+	// SEO configuration for page title/metadata and social share previews
+	SEO *SEOConfig `yaml:"seo"`
 	// SMTP configuration used to send emails via the contact form
 	SMTP *SMTPConfig `yaml:"smtp"`
 	// Images configuration for caching remote images

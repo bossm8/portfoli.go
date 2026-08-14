@@ -98,14 +98,15 @@ func buildGeneric() {
 // buildContent builds the content pages
 func buildContent() {
 	for _, contentType := range cfg.Profile.ContentTypes {
-		content, err := content.GetRenderedContent(contentType)
+		data, err := content.GetRenderedContent(contentType)
 		if nil != err {
 			log.Fatalf("[ERROR] Rendering content %s: %s\n", contentType, err)
 		}
+		data.Prev, data.Next = content.GetPagerLinks(contentType, cfg.Profile.ContentTypes)
 		build(
 			appconfig.ContentTemplateName+".html",
 			contentType+".html",
-			content,
+			data,
 		)
 	}
 }
@@ -135,6 +136,7 @@ func build(tplFileName string, outputFileName string, data interface{}) {
 	tplData := &models.TemplateData{
 		Data:          data,
 		Profile:       cfg.Profile,
+		SEO:           cfg.SEO,
 		RenderContact: false,
 	}
 

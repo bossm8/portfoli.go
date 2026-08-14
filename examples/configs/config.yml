@@ -41,6 +41,22 @@ profile:
   # If animations should be rendered (find them ;))
   animations: true
 
+# Page title, meta description, and social share preview configuration.
+# Entirely optional - omit this whole section (or any field in it) to keep
+# the built-in defaults.
+seo:
+  # Appended to every page's <title>, e.g. "FirstName - Page - SiteName"
+  sitename: Portfoli.go
+  # Default meta/Open Graph/Twitter Card description for pages which don't
+  # define their own (the about page does, for example)
+  description: The simple and flexible portfolio template written with Go!
+  # Image used for social share previews (og:image/twitter:image), falls
+  # back to profile.avatar when unset
+  image: /static/img/portfoli.go-ico.svg
+  # Absolute base URL of your deployed site (optional). If set, used to
+  # build an absolute image URL for maximum share-card compatibility
+  # siteurl: https://example.com
+
 # Image caching configuration
 images:
   # Cache remote images locally and use the cached path in templates
