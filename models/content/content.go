@@ -67,6 +67,56 @@ var (
 type ContentTemplateData struct {
 	Title string
 	HTML  *template.HTML
+	// Prev and Next are the content type slugs to link to as
+	// previous/next at the bottom of the page (see GetPagerLinks), empty
+	// when there is no link on that side
+	Prev string
+	Next string
+}
+
+// pagerContentTypes is the fixed order experience/education/certifications/
+// projects are linked to each other at the bottom of their pages (see
+// GetPagerLinks). Independent of the order the site owner lists them in
+// `content:`. bio is intentionally not part of this chain.
+var pagerContentTypes = []string{
+	ContentTypes[typeExperience],
+	ContentTypes[typeEducation],
+	ContentTypes[typeCertification],
+	ContentTypes[typeProject],
+}
+
+// GetPagerLinks returns the content type slugs to link to as
+// previous/next at the bottom of contentType's page. Only pagerContentTypes
+// are ever linked, and any type not present in enabledTypes is skipped so
+// the pager only ever connects pages that actually exist - "" means no
+// link on that side (e.g. contentType isn't part of the pager sequence, or
+// it's the first/last enabled entry).
+func GetPagerLinks(contentType string, enabledTypes []string) (prev string, next string) {
+	enabled := make(map[string]bool, len(enabledTypes))
+	for _, t := range enabledTypes {
+		enabled[t] = true
+	}
+
+	var sequence []string
+	for _, t := range pagerContentTypes {
+		if enabled[t] {
+			sequence = append(sequence, t)
+		}
+	}
+
+	for i, t := range sequence {
+		if t != contentType {
+			continue
+		}
+		if i > 0 {
+			prev = sequence[i-1]
+		}
+		if i < len(sequence)-1 {
+			next = sequence[i+1]
+		}
+		return
+	}
+	return "", ""
 }
 
 // ContentConfig interface which represents a configuration of a content

@@ -124,6 +124,18 @@ worked example. Keep in mind a `<style>` block isn't scoped to just that
 entry - it applies to the whole page - so prefix your class names (e.g.
 `.my-project-badge`) to avoid clashing with styles from other entries.
 
+### Title and SEO
+
+An optional top-level `seo:` block in `config.yml` controls the page
+`<title>`, the default meta description, and social share previews (Open
+Graph/Twitter Card tags), plus a JSON-LD `Person` block for richer search
+results built from your profile automatically. All fields are optional -
+omit the whole section, or any field within it, to keep the current
+defaults. See `examples/configs/config.yml` for the available fields
+(`sitename`, `description`, `image`, `siteurl`). A page can still override
+just its own description (as the about page does) without touching this
+site-wide default.
+
 ## Usage
 
 There are different approaches on how to use this template, select the one which might fit you the most.

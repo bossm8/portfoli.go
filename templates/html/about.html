@@ -1,9 +1,8 @@
 {{ define "meta" }}
-<meta name="description"
-      content="
-        Portfoli.go is an open source, simple and flexible portfolio template written with Go.
-        Find out more on https://github.com/bossm8/portfoli.go"
->
+{{ $aboutDescription := "Portfoli.go is an open source, simple and flexible portfolio template written with Go. Find out more on https://github.com/bossm8/portfoli.go" }}
+<meta name="description" content="{{ $aboutDescription }}">
+<meta property="og:description" content="{{ $aboutDescription }}">
+<meta name="twitter:description" content="{{ $aboutDescription }}">
 {{ end }}
 {{ define "content" }}
 <div class="text-center mt-5 mb-4">

@@ -341,6 +341,72 @@ a:hover {
 }
 
 /* ---------------------------------------------------------------------- */
+/* Content pager (bottom of experience/education/certifications/projects,  */
+/* and the Home button alone on other content pages like bio)              */
+/* ---------------------------------------------------------------------- */
+
+.content-pager {
+  display: none;
+}
+
+@media (max-width: 991px) {
+  .content-pager {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: var(--space-4);
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border);
+  }
+}
+
+.content-pager__side--next {
+  justify-self: end;
+}
+
+.content-pager__link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text);
+  font-size: 1.2rem;
+}
+
+.content-pager__side--next .content-pager__link {
+  text-align: right;
+}
+
+.content-pager__link:hover {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.content-pager__title {
+  display: block;
+  font-weight: 600;
+  font-size: var(--text-base);
+}
+
+.content-pager__home {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-full);
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
+  transition: var(--transition-fast);
+}
+
+.content-pager__home:hover {
+  background: var(--color-bg-muted);
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+/* ---------------------------------------------------------------------- */
 /* Cards                                                                    */
 /* ---------------------------------------------------------------------- */
 
@@ -870,9 +936,32 @@ main.site-main:empty {
   flex: 0 1 260px;
 }
 
-@media (max-width: 991px) {
+/* Below 768px: explicit vertical stack, avatar on top. Deliberately not
+   left to flex-wrap to decide - an emergent wrap point is derived from the
+   configured name/slogan/heading's actual text length, so it silently
+   drifts whenever that content changes length. Stacking and reordering are
+   both driven by this one breakpoint so they can never fall out of sync. */
+@media (max-width: 767px) {
+  .hero__inner {
+    flex-direction: column;
+    align-items: center;
+  }
+
   .hero__avatar {
     order: -1;
+    /* flex-basis (260px) now sizes height, not width, since the main axis
+       is vertical in column mode - without an explicit width the item (and
+       the width:100% .avatar inside it) collapses to 0. */
+    width: 100%;
+  }
+}
+
+/* 768px and up: always side by side, never wraps - the two items compress
+   via their existing flex-shrink instead, so the row holds no matter how
+   long the configured text gets. */
+@media (min-width: 768px) {
+  .hero__inner {
+    flex-wrap: nowrap;
   }
 }
 

@@ -40,6 +40,7 @@ type TemplateData struct {
 	RenderContact bool
 	Data          interface{}
 	Profile       *config.ProfileConfig
+	SEO           *config.SEOConfig
 	BasePath      string
 }
 

@@ -1,4 +1,25 @@
 {{ define "title" }}{{ .Data.Title | Title }}{{ end }}
 {{ define "content" }}
     {{ .Data.HTML }}
+    <nav class="content-pager" aria-label="Content navigation">
+        <div class="content-pager__side content-pager__side--prev">
+        {{ if .Data.Prev }}
+        <a class="content-pager__link" href='{{ .Data.Prev | Assemble }}'>
+            <i class="bi-chevron-left"></i>
+            <span class="content-pager__title">{{ .Data.Prev | Title }}</span>
+        </a>
+        {{ end }}
+        </div>
+        <a class="content-pager__home" href='{{ .BasePath | Assemble }}' aria-label="Home">
+            <i class="bi-house"></i>
+        </a>
+        <div class="content-pager__side content-pager__side--next">
+        {{ if .Data.Next }}
+        <a class="content-pager__link" href='{{ .Data.Next | Assemble }}'>
+            <span class="content-pager__title">{{ .Data.Next | Title }}</span>
+            <i class="bi-chevron-right"></i>
+        </a>
+        {{ end }}
+        </div>
+    </nav>
 {{ end }}

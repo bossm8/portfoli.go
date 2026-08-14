@@ -22,8 +22,27 @@
             })();
         </script>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ .Profile.BrandName }} - {{ template "title" . }} - Portfoli.go</title>
+        {{ if .SEO }}
+        <title>{{ .Profile.BrandName }} - {{ template "title" . }} - {{ .SEO.SiteName }}</title>
+        {{ else }}
+        <title>{{ .Profile.BrandName }} - {{ template "title" . }}</title>
+        {{ end }}
+        {{ if .SEO }}
         {{ template "meta" . }}
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="{{ .SEO.SiteName }}">
+        <meta property="og:title" content="{{ .Profile.BrandName }} - {{ template "title" . }}">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{{ .Profile.BrandName }} - {{ template "title" . }}">
+        {{ $ogImage := or .SEO.Image .Profile.Avatar }}
+        {{ $assembledImage := "" }}
+        {{ if $ogImage }}
+            {{ $assembledImage = ( $ogImage | Assemble ) }}
+        <meta property="og:image" content="{{ .SEO.SiteURL }}{{ $assembledImage }}">
+        <meta name="twitter:image" content="{{ .SEO.SiteURL }}{{ $assembledImage }}">
+        {{ end }}
+        <script type="application/ld+json">{{ .Profile.PersonJSONLD .SEO $assembledImage }}</script>
+        {{ end }}
         <link rel="stylesheet" type="text/css" href='{{ "static/css/tokens.css" | Assemble }}'>
         <link rel="stylesheet" type="text/css" href='{{ "static/css/main.css" | Assemble }}'>
         <link rel="stylesheet" type="text/css" href='{{ "static/css/bootstrap-icons.css" | Assemble }}'>
@@ -102,7 +121,9 @@
 {{ end }}
 <!-- define the default templates (if not defined) -->
 {{ define "meta" }}
-<meta name="description" content="Portfoli.go the Simple and Flexible Porfolio Template Written with Go">
+<meta name="description" content="{{ .SEO.Description }}">
+<meta property="og:description" content="{{ .SEO.Description }}">
+<meta name="twitter:description" content="{{ .SEO.Description }}">
 {{ end }}
 {{ define "title" }}Much Wow{{ end }}
 {{ define "content-header" }}{{ end }}

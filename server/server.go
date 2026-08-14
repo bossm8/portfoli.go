@@ -133,6 +133,7 @@ func serveContent(w http.ResponseWriter, r *http.Request) {
 		fail(w, r, messages.MsgGeneric)
 		return
 	}
+	data.Prev, data.Next = content.GetPagerLinks(contentType, cfg.Profile.ContentTypes)
 
 	sendTemplate(w, r, appconfig.ContentTemplateName, data, nil)
 
@@ -239,6 +240,7 @@ func sendTemplate(w http.ResponseWriter, r *http.Request, templateName string, d
 	tplData := &models.TemplateData{
 		Data:          data,
 		Profile:       cfg.Profile,
+		SEO:           cfg.SEO,
 		RenderContact: cfg.RenderContact,
 	}
 
